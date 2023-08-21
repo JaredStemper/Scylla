@@ -37,7 +37,7 @@ Pro tips:
 * `prefix + (` == shift to next session (e.g., from initScan to unauth)
 * `prefix + )` == shift to prior session
 * `prefix + [` == enter copy mode. Use vim key bindings to move cursor; use spacebar to start selection; use either `y` to copy and stay in copy mode or `enter` to copy and break out
-* Copy mode can also be entered by highlighting text with the mouse like normal (note: this does not place the highlighted text into your MACHINE'S clipboard, but rather TMUX'S clipboard
+* Copy mode can also be entered by highlighting text with the mouse like normal (note: this does not place the highlighted text into your MACHINE'S clipboard, but rather TMUX'S clipboard)
 * `prefix + ]` == paste the last item copied from copy mode
 * `prefix + =` == view all items copied in copy mode (useful to quickly paste various IPs/passphrases)
 * Use the `shift + arrow key` to move to other windows quickly
