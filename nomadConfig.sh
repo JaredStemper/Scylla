@@ -18,6 +18,6 @@ mv mux/tmuxSessionHistoryCapture.sh /RSM/tmuxSessionHistoryCapture.sh
 #create crontab to log all data captured in tmux currently on nomad every 15 minutes
 (crontab -l ; echo "0,15,30,45 * * * * /bin/bash /RSM/tmuxSessionHistoryCapture.sh") | crontab -
 
-cd /RSM
+cd /RSM; clear
 
 python3 /RSM/prefillTest.py "mux start client=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY nomadPass='nomadPass' providedUser=providedUser providedPass='providedPass'"
