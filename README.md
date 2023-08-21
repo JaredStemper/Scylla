@@ -25,6 +25,7 @@ tmuxSessionHistoryCapture.sh - script used to periodically log all data currentl
 
 classic guide is [tmuxcheatsheet.com](tmuxcheatsheet.com).
 
+
 Strong recommendation to read through the provided configuration file and understand what the various lines do.
 
 Pro tips:
