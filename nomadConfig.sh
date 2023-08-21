@@ -20,3 +20,4 @@ mv mux/tmuxSessionHistoryCapture.sh /RSM/tmuxSessionHistoryCapture.sh
 
 cd /RSM
 
+python3 /RSM/prefillTest.py "mux start client=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY nomadPass='nomadPass' providedUser=providedUser providedPass='providedPass'"
