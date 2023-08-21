@@ -1,0 +1,87 @@
+name: intialize
+root: /RSM/
+
+#Note:
+#   - create new authd testing for new user/pass; can just run tmuxinator copy internalTemplate-authd internalTemplate-authd-2
+#   - 
+#   - 
+
+# Variables/Defaults are set here
+<%
+  @settings["prefill"] ||= "python3 /RSM/newNomad/prefillTest.py"
+  @settings["client"] ||= "newClient"
+  @settings["domain"] ||= "domain.local"
+  @settings["user"] ||= "user"
+  @settings["pass"] ||= "pass"
+  @settings["providedUser"] ||= "providedUser"
+  @settings["providedPass"] ||= "providedPass"
+  @settings["nessusKey"] ||= "NESSUSKEYVALUE"
+  @settings["nomadPass"] ||= "nomadPass"
+  @settings["rootDir"] ||= "/RSM"
+  ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J##"
+%>
+
+# create and cd into client/testing folder before running
+windows:
+  - masscan: 
+      panes:
+        - masscan:
+          - printf '\033]2;%s\033\\' 'masscan'
+          - echo <%= @settings["nomadPass"] %> | sudo -S su
+          - touch <%= @settings["rootDir"] %>/exclude.txt
+          - mkdir <%= @settings["rootDir"] %>/scans; cd <%= @settings["rootDir"] %>/scans
+          - sudo masscan -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile <%= @settings["rootDir"] %>/exclude.txt --rate 750 -p 21,22,23,25,80,81,82,88,111,137,161,162,389,443,444,445,623,1433,2222,3306,3389,4443,8000,8080,8081,8082,8443,8888,9080,9443,10080,10443 | tee masscanCommonPorts.txt 
+          - wget https://raw.githubusercontent.com/vexance/ShellScripts/main/portsort.sh -P /opt/nomad-tools
+          - bash /opt/nomad-tools/portsort.sh <%= @settings["rootDir"] %>/scans/masscanCommonPorts.txt
+  - DC: 
+      layout: 00fb,195x50,0,0[195x33,0,0{97x33,0,0,1,97x33,98,0,11},195x16,0,34,6]
+      panes:
+        - etc/resolv:
+          - printf '\033]2;%s\033\\' 'etc/resolv'
+          - cat /etc/resolv.conf
+        - dig:
+          - printf '\033]2;%s\033\\' 'dig'
+          - dig any _kerberos._tcp.<%= @settings["domain"] %>
+        - set DC:
+          - printf '\033]2;%s\033\\' 'set DC'
+          - <%= @settings["prefill"] %> 'echo "" >> <%= @settings["rootDir"] %>/dcIP.txt'
+        - nomad IP:
+          - printf '\033]2;%s\033\\' 'nomad IP'
+          - ip a
+  - run: 
+      panes:
+        - unauthd:
+          - printf '\033]2;%s\033\\' 'unauthd'
+          - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/newNomad/tmuxinator/internalTemplate-unauthd domain=<%= @settings["domain"] %> workspace=<%= @settings["client"] %> nomadPass=<%= @settings["nomadPass"] %>'; clear
+        - misc:
+          - printf '\033]2;%s\033\\' 'misc'
+          - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/newNomad/tmuxinator/internalTemplate-misc domain=<%= @settings["domain"] %> workspace=<%= @settings["client"] %> providedUser=<%= @settings["providedUser"] %> providedPass=<%= @settings["providedPass"] %> nomadPass=<%= @settings["nomadPass"] %> nessusKey=<%= @settings["nessusKey"] %>'; clear
+        - authd:
+          - printf '\033]2;%s\033\\' 'authd'
+          - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/newNomad/tmuxinator/internalTemplate-authd domain=<%= @settings["domain"] %> user=<%= @settings["user"] %> pass=<%= @settings["pass"] %> workspace=<%= @settings["client"] %> nomadPass=<%= @settings["nomadPass"] %>'; clear; echo -e "\e[0;31mTRIPLE CHECK THAT USER/PASS IS CORRECT OR THIS WILL LOCKOUT THE ACCOUNT\033[0m"
+        - localAdmin:
+          - printf '\033]2;%s\033\\' 'localAdmin'
+          - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/newNomad/tmuxinator/internalTemplate-localAdmin domain=<%= @settings["domain"] %> user=<%= @settings["user"] %> pass=<%= @settings["pass"] %>'; clear
+  - install&config:
+      panes:
+        - tmux source:
+          - printf '\033]2;%s\033\\' 'tmux config'
+          - tmux source-file <%= @settings["rootDir"] %>/.tmux.conf
+        - apt installs + docker:
+          - printf '\033]2;%s\033\\' 'apt installs'
+          - echo <%= @settings["nomadPass"] %> | sudo -S su
+          - sudo apt update && sudo apt upgrade -y && sudo apt install -y pipenv dnsrecon smbmap docker.io && sudo systemctl enable docker --now && sudo usermod -aG docker $USER
+        - msf init:
+          - printf '\033]2;%s\033\\' 'msf init'
+          - echo <%= @settings["nomadPass"] %> | sudo -S su
+          - sudo systemctl start postgresql && sudo msfdb delete && sudo msfdb init && msfconsole
+  - initScan:
+    - vim ~/.config/tmuxinator/internalTemplate-initScan.yml
+  - unauthd:
+    - vim ~/.config/tmuxinator/internalTemplate-unauthd.yml
+  - misc:
+    - vim ~/.config/tmuxinator/internalTemplate-misc.yml
+  - authd:
+    - vim ~/.config/tmuxinator/internalTemplate-authd.yml
+  - localAdmin:
+    - vim ~/.config/tmuxinator/internalTemplate-localAdmin.yml
