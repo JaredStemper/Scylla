@@ -3,7 +3,7 @@ tmuxinator automation pentesting template
 
 ## Get started / Installation
 
-MAKE SURE TO RUN THIS ONLY AFTER MOUNTING NOMAD.
+MAKE SURE TO RUN THIS **_ONLY_** AFTER MOUNTING NOMAD.
 ```bash
 wget https://raw.githubusercontent.com/JaredStemper/mux/main/nomadConfig.sh -O /RSM/nomadConfig.sh
 /bin/bash /RSM/nomadConfig.sh
