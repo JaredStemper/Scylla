@@ -30,6 +30,7 @@ Pro tips:
 * prefix key with provided config is `Ctrl+b`
 * `prefix + ,` == rename pane
 * `prefix + c` == new window
+* `prefix + w` == view all sessions, windows, and panes. Use vim bindings or mouse to quickly switch)
 * use the mouse to click to other panes/windows
 * `prefix + (` == shift to next session (e.g., from initScan to unauth)
 * `prefix + )` == shift to prior session
