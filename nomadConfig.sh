@@ -15,6 +15,9 @@ mv -t ~/.config/tmuxinator mux/*.yml
 mv mux/prefillTest.py /RSM/prefillTest.py
 mv mux/tmuxSessionHistoryCapture.sh /RSM/tmuxSessionHistoryCapture.sh
 
+#enable usage of TIOCSTI for prefill tool to work (more details https://bugs.archlinux.org/task/77745 and https://lore.kernel.org/linux-hardening/20221015041626.1467372-2-keescook@chromium.org/
+sudo sysctl -w dev.tty.legacy_tiocsti=1
+
 #create crontab to log all data captured in tmux currently on nomad every 15 minutes
 (crontab -l ; echo "0,15,30,45 * * * * /bin/bash /RSM/tmuxSessionHistoryCapture.sh") | crontab -
 
