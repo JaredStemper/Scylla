@@ -29,7 +29,8 @@ classic guide is [tmuxcheatsheet.com](tmuxcheatsheet.com).
 Strong recommendation to read through the provided configuration file and understand what the various lines do.
 
 Pro tips:
-* prefix key with default config is `Ctrl+b`
+* The prefix key with default config is `Ctrl+b`
+* Anytime a command is typed through the `prefix + :` command prompt, tab completion can be used if you don't recall the exact name of a command (e.g., `"kill-server"` can be found from tabbing `"kill"`) 
 * `prefix + w`: view all panes, windows, and sessions. Use vim bindings or mouse to quickly switch (h j k l `+ enter`)
 * Panes
   * `prefix + v`: split pane vertically
@@ -45,7 +46,11 @@ Pro tips:
 * Sessions
   * `prefix + (`: shift to next session (e.g., from initScan to unauth)
   * `prefix + )`: shift to prior session
-  * `prefix + e`:  set current session path to current pane path (useful if constantly in a different directory and wanting to open up new windows/panes in that new directory)
+  * `prefix + e`: set current session path to current pane path (useful if constantly in a different directory and wanting to open up new windows/panes in that new directory)
+  * `prefix + d`: detach from current session. Now you will be back directly on the terminal and tmux will be running in the background
+  * `tmux attach`: ran on the command line to re-attach to your most recent tmux session
+  * `tmux kill-session`: kills the current session
+* `tmux kill-server`: used to kill all tmux sessions
 * Copy/Paste
   * Regular Clipboard
     * `shift + mouse` will highlight things you can use the classic ctrl+shift+c to copy/paste
