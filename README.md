@@ -1,5 +1,15 @@
 # mux
-tmuxinator pentesting template
+tmuxinator automation pentesting template
+
+## Get started / Installation
+
+MAKE SURE TO RUN THIS ONLY AFTER MOUNTING NOMAD.
+```bash
+wget https://raw.githubusercontent.com/JaredStemper/mux/main/nomadConfig.sh -O /RSM/nomadConfig.sh
+/bin/bash /RSM/nomadConfig.sh
+```
+
+## Overview of files
 
 tmuxinator - where the magic happens. Full guide will be included in separate word doc. main thing to remember is order (init-scan, unauthd, misc, authd, local-admin)
 
