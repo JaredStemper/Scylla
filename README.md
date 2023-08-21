@@ -35,7 +35,7 @@ Pro tips:
 * `prefix + ,`: rename pane
 * `prefix + c`: new window
 * `prefix + w`: view all sessions, windows, and panes. Use vim bindings or mouse to quickly switch
-* use the mouse to click to other panes/windows
+* use the mouse to click to other panes/windows and resize any panes
 * `prefix + (`: shift to next session (e.g., from initScan to unauth)
 * `prefix + )`: shift to prior session
 * Use the `shift + arrow key` to move to other windows quickly
