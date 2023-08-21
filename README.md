@@ -30,17 +30,34 @@ Strong recommendation to read through the provided configuration file and unders
 
 Pro tips:
 *  prefix key with provided config is `Ctrl+b`
-* `prefix + v` == split pane vertically
-* `prefix + s` == split pane horizontally
-* `prefix + ,` == rename pane
-* `prefix + c` == new window
-* `prefix + w` == view all sessions, windows, and panes. Use vim bindings or mouse to quickly switch
+* `prefix + v`: split pane vertically
+* `prefix + s`: split pane horizontally
+* `prefix + ,`: rename pane
+* `prefix + c`: new window
+* `prefix + w`: view all sessions, windows, and panes. Use vim bindings or mouse to quickly switch
 * use the mouse to click to other panes/windows
-* `prefix + (` == shift to next session (e.g., from initScan to unauth)
-* `prefix + )` == shift to prior session
-* `prefix + [` == enter copy mode. Use vim key bindings to move cursor; use spacebar to start selection; use either `y` to copy and stay in copy mode or `enter` to copy and break out
-* Copy mode can also be entered by highlighting text with the mouse like normal (note: this does not place the highlighted text into your MACHINE'S clipboard, but rather TMUX'S clipboard)
-* `prefix + ]` == paste the last item copied from copy mode
-* `prefix + =` == view all items copied in copy mode (useful to quickly paste various IPs/passphrases)
+* `prefix + (`: shift to next session (e.g., from initScan to unauth)
+* `prefix + )`: shift to prior session
 * Use the `shift + arrow key` to move to other windows quickly
-* `prefix + e` ==  set current session path to current pane path (useful if constantly in a different directory and wanting to open up new windows/panes in that new directory)
+* `prefix + e`:  set current session path to current pane path (useful if constantly in a different directory and wanting to open up new windows/panes in that new directory)
+* Copy/Paste
+  * Regular Clipboard
+    * `shift + mouse` will highlight things you can use the classic ctrl+shift+c to copy/paste
+  * Tmux Clipboard
+    * Using your mouse to highlight text automatically copies whatever is highlighted to your Tmux clipboard
+    * `prefix + [`: enter copy mode to more carefully copy items
+      * Use vim key bindings to move cursor; use spacebar to start selection;
+      * use either `y` to copy and stay in copy mode (useful if in large text files) or `enter` to copy and exit copy mode
+    * `prefix + ]`: paste the last item copied from copy mode
+    * `prefix + =`: view all items copied in copy mode (useful to quickly paste various IPs/passphrases)
+    * ;
+  * ;
+* ;
+
+two ways to copy things - using your tmux clipboard and using your main clipboard
+
+prefix + ] pastes the last thing you copied from your tmux clipboard. prefix + = shows all of the things you've copied in your tmux clipboard
+
+alternatively, it's easier to just use your mouse cursor to highlight something which will automatically get copied to your tmux clipboard once you finish highlighting
+
+if you want it in your regular clipboard, shift + cursor will highlight things you can use the classic ctrl+shift+c to copy/paste
