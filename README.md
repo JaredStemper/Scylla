@@ -37,8 +37,10 @@ Pro tips:
   * `prefix + s`: split pane horizontally
   * `prefix + ,`: rename pane
   * `prefix + enter`: cycle through all standard pane formatting (useful to quickly resize)
-  * `prefix + {` or `prefix + }`: swap pane locations either right or left (useful if
-  * `prefix + z`: Zoom! used as a way to "fullscreen" a pane without saving that formatting. The active pane will fill the screen until you shift to another pane or press `prefix + z` again 
+  * `prefix + {` or `prefix + }`: swap pane locations either right or left (useful in changing the pane you're focusing on without hiding the other pane) 
+  * `prefix + z`: Zoom! used as a way to "fullscreen" a pane without saving that formatting. The active pane will fill the screen until you shift to another pane or press `prefix + z` again
+  * `prefix + arrow key`: used to resize a pane slightly in the direction of the arrow key
+  * `prefix  ctrl+arrow key` (two separate key strokes):  while holding the `ctrl` key, rapidly hitting the arrow key will more rapidly change the size of a pane
 * Windows
   * `prefix + c`: new window
   * Use the `shift + arrow key` to move to other windows quickly
