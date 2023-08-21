@@ -29,17 +29,23 @@ classic guide is [tmuxcheatsheet.com](tmuxcheatsheet.com).
 Strong recommendation to read through the provided configuration file and understand what the various lines do.
 
 Pro tips:
-*  prefix key with default config is `Ctrl+b`
-* `prefix + v`: split pane vertically
-* `prefix + s`: split pane horizontally
-* `prefix + ,`: rename pane
-* `prefix + c`: new window
-* Use the `shift + arrow key` to move to other windows quickly
-* Use the mouse to click to other panes/windows and resize any panes
-* `prefix + (`: shift to next session (e.g., from initScan to unauth)
-* `prefix + )`: shift to prior session
-* `prefix + w`: view all sessions, windows, and panes. Use vim bindings or mouse to quickly switch
-* `prefix + e`:  set current session path to current pane path (useful if constantly in a different directory and wanting to open up new windows/panes in that new directory)
+* prefix key with default config is `Ctrl+b`
+* `prefix + w`: view all panes, windows, and sessions. Use vim bindings or mouse to quickly switch (h j k l `+ enter`)
+* Panes
+  * `prefix + v`: split pane vertically
+  * `prefix + s`: split pane horizontally
+  * `prefix + ,`: rename pane
+  * `prefix + enter`: cycle through all standard pane formatting (useful to quickly resize)
+  * `prefix + {` or `prefix + }`: swap pane locations either right or left (useful if
+  * `prefix + z`: Zoom! used as a way to "fullscreen" a pane without saving that formatting. The active pane will fill the screen until you shift to another pane or press `prefix + z` again 
+* Windows
+  * `prefix + c`: new window
+  * Use the `shift + arrow key` to move to other windows quickly
+  * Use the mouse to click to other panes/windows and resize any panes
+* Sessions
+  * `prefix + (`: shift to next session (e.g., from initScan to unauth)
+  * `prefix + )`: shift to prior session
+  * `prefix + e`:  set current session path to current pane path (useful if constantly in a different directory and wanting to open up new windows/panes in that new directory)
 * Copy/Paste
   * Regular Clipboard
     * `shift + mouse` will highlight things you can use the classic ctrl+shift+c to copy/paste
