@@ -50,14 +50,3 @@ Pro tips:
       * use either `y` to copy and stay in copy mode (useful if in large text files) or `enter` to copy and exit copy mode
     * `prefix + ]`: paste the last item copied from copy mode
     * `prefix + =`: view all items copied in copy mode (useful to quickly paste various IPs/passphrases)
-    * ;
-  * ;
-* ;
-
-two ways to copy things - using your tmux clipboard and using your main clipboard
-
-prefix + ] pastes the last thing you copied from your tmux clipboard. prefix + = shows all of the things you've copied in your tmux clipboard
-
-alternatively, it's easier to just use your mouse cursor to highlight something which will automatically get copied to your tmux clipboard once you finish highlighting
-
-if you want it in your regular clipboard, shift + cursor will highlight things you can use the classic ctrl+shift+c to copy/paste
