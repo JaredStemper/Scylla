@@ -7,7 +7,7 @@ root: /RSM/
 
 # Variables/Defaults are set here
 <%
-  @settings["prefill"] ||= "python3 /RSM/newNomad/prefillTest.py"
+  @settings["prefill"] ||= "python3 /RSM/prefillTest.py"
   @settings["domain"] ||= "domain.local"
   @settings["user"] ||= "user"
   @settings["pass"] ||= "pass"
