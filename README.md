@@ -52,7 +52,7 @@ Pro tips:
   * `prefix + d`: detach from current session. Now you will be back directly on the terminal and tmux will be running in the background
   * `tmux attach`: ran on the command line to re-attach to your most recent tmux session
   * `tmux kill-session`: kills the current session
-* `tmux kill-server`: used to kill all tmux sessions
+* `tmux kill-server`: used to kill all tmux sessions (useful at end of assessment)
 * Copy/Paste
   * Regular Clipboard
     * `shift + mouse` will highlight things you can use the classic ctrl+shift+c to copy/paste
