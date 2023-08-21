@@ -1,0 +1,57 @@
+name: misc
+root: /RSM/
+
+#Notes:
+#   - test setting default for variable at top vs passing it in 
+#   - 
+#   - 
+
+# Variables/Defaults are set here
+<%
+  @settings["prefill"] ||= "python3 /RSM/newNomad/prefillTest.py"
+  @settings["domain"] ||= "domain.local"
+  @settings["providedUser"] ||= "user"
+  @settings["providedPass"] ||= "pass"
+  @settings["nessusKey"] ||= "NESSUSKEYVALUE"
+  @settings["nomadPass"] ||= "nomadPass"
+  @settings["workspace"] ||= "default"
+    #this must be unique to avoid potential conflict with prior testers
+  @settings["rootDir"] ||= "/RSM"
+  ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J##"
+%>
+
+# create and cd into client/testing folder before running
+windows:
+  - tools: cd /opt/nomad-tools
+  - msf: 
+      layout: tiled
+      panes:
+        - msf1: 
+          - printf '\033]2;%s\033\\' 'msf1'
+          - msfconsole
+          - workspace -a <%= @settings['workspace'] %>
+        - msf2: 
+          - printf '\033]2;%s\033\\' 'msf2'
+          - msfconsole
+          - workspace -a <%= @settings['workspace'] %>
+  - gowitness: 
+      panes: 
+        - gowitness:
+          - cd <%= @settings["rootDir"] %>/scans/List/ && cat http.lst https.lst p80* p9* > webservices.txt
+          - gowitness file -f webservices.txt
+          - gowitness server
+  - nessus: 
+      panes:
+        - nessus: 
+          - printf '\033]2;%s\033\\' 'nessus'
+          - echo <%= @settings['nomadPass'] %> | sudo -S su
+          - sudo su
+          - echo "service nessusd stop"
+          - echo "/opt/nessus/sbin/nessuscli fetch --register <%= @settings['nessusKey'] %>"
+          - echo "/opt/nessus/sbin/nessuscli update --all"
+          - echo "service nessusd start"
+  - validateCreds: 
+      panes:
+        - validateCreds: 
+          - printf '\033]2;%s\033\\' 'validateCreds'
+          - <%= @settings['prefill'] %> 'smbclient.py <%= @settings['domain'] %>/<%= @settings['providedUser'] %>:'<%= @settings['providedPass'] %>'@$(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1)'

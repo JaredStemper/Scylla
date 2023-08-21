@@ -1,0 +1,64 @@
+# /home/kali/.config/tmuxinator/externalTemplate.yml
+
+name: externalTemplate
+root: /mnt/hgfs/projects/work/a-externals/
+
+#Note:
+#   -
+#   -
+
+# Variables/Defaults are set here
+<%
+  @settings["prefill"] ||= "python3.11 /mnt/hgfs/projects/work/tools/tmuxinatorTool/prefill/prefillTest.py"
+  @settings["client"] ||= "newClient"
+  @settings["domain"] ||= "domain.local"
+  ### example of starting project with arguments: tmuxinator start externalTemplate domain=rsmus.local client="buhbuh"
+%>
+
+on_project_start: mkdir -p <%= @settings["client"] %>
+
+# create and cd into client/testing folder before running
+windows:
+  - auto:
+      root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
+      panes:
+        - reconFTW:
+          - printf '\033]2;%s\033\\' 'reconFTW'
+          - <%= @settings["prefill"] %> 'docker run -it --rm -v "$(pwd)":"/reconftw/Recon/" six2dez/reconftw:main -d <%= @settings["domain"] %> -r'; clear
+        - amass:
+          - printf '\033]2;%s\033\\' 'amass'
+          - <%= @settings["prefill"] %> 'amass --help'; clear
+  - enum:
+      root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
+      panes:
+        # additional warning text added for user when pre-populating potentially dangerous commands
+        - gobuster:
+          - printf '\033]2;%s\033\\' 'gobuster'; clear
+          - gobuster dir -u http://<%= @settings["domain"] %> -w /opt/SecLists/Discovery/Web-Content/common.txt
+        - subfinder:
+          - printf '\033]2;%s\033\\' 'subfinder'; clear
+          - subfinder -d <%= @settings["domain"] %>
+  - DNSSEC:
+      root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
+      panes:
+        - dnsrecon:
+          - printf '\033]2;%s\033\\' 'dnsrecon'; clear
+          - dnsrecond -d <%= @settings["domain"] %>
+        - testssl:
+          - printf '\033]2;%s\033\\' 'testssl'; clear
+          - testssl <%= @settings["domain"] %>
+  - cloud:
+      root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
+      panes:
+        - cloud_enum:
+          - printf '\033]2;%s\033\\' 'cloud_enum'; clear
+          - cd /mnt/hgfs/projects/work/tools/cloud_enum/
+          - <%= @settings["prefill"] %> python3.11 ./cloud_enum.py -l /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>/cloud_enum.txt -k <%= @settings["domain"] %> --disable-gcp | tee /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>/cloud_enum-doubleCheck.txt; clear
+  - scanning:
+      root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
+      panes:
+        - masscan:
+          - printf '\033]2;%s\033\\' 'masscan'
+          - <%= @settings["prefill"] %> 'sudo masscan -iL ./ipList.txt --excludefile ./exclude.txt --rate 750 -p 21,22,23,25,80,81,82,88,111,137,161,162,389,443,444,445,623,1433,2222,3306,3389,4443,8000,8080,8081,8082,8443,8888,9080,9443,10080,10443 | tee masscan-full.grepable'; clear
+  - gowitness: gowitness --version
+  - tools: work; cd tools/
