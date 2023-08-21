@@ -9,7 +9,7 @@ echo "alias mux=tmuxinator">>~/.zshrc && echo "setopt append_history; setopt his
 
 #grab tmuxinator files
 git clone https://github.com/JaredStemper/mux.git
-mv mux/tmux.conf /RSM/.tmux.conf
+mv mux/tmux.conf ~/.tmux.conf
 mkdir -p ~/.config/tmuxinator
 mv -t ~/.config/tmuxinator mux/*.yml
 mv mux/prefillTest.py /RSM/prefillTest.py
