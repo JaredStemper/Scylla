@@ -34,11 +34,11 @@ Pro tips:
 * `prefix + s`: split pane horizontally
 * `prefix + ,`: rename pane
 * `prefix + c`: new window
-* `prefix + w`: view all sessions, windows, and panes. Use vim bindings or mouse to quickly switch
-* use the mouse to click to other panes/windows and resize any panes
+* Use the `shift + arrow key` to move to other windows quickly
+* Use the mouse to click to other panes/windows and resize any panes
 * `prefix + (`: shift to next session (e.g., from initScan to unauth)
 * `prefix + )`: shift to prior session
-* Use the `shift + arrow key` to move to other windows quickly
+* `prefix + w`: view all sessions, windows, and panes. Use vim bindings or mouse to quickly switch
 * `prefix + e`:  set current session path to current pane path (useful if constantly in a different directory and wanting to open up new windows/panes in that new directory)
 * Copy/Paste
   * Regular Clipboard
@@ -47,6 +47,6 @@ Pro tips:
     * Using your mouse to highlight text automatically copies whatever is highlighted to your Tmux clipboard
     * `prefix + [`: enter copy mode to more carefully copy items
       * Use vim key bindings to move cursor; use spacebar to start selection;
-      * use either `y` to copy and stay in copy mode (useful if in large text files) or `enter` to copy and exit copy mode
+      * Use either `y` to copy and stay in copy mode (useful if in large text files) or `enter` to copy and exit copy mode
     * `prefix + ]`: paste the last item copied from copy mode
     * `prefix + =`: view all items copied in copy mode (useful to quickly paste various IPs/passphrases)
