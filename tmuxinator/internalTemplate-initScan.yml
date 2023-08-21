@@ -8,7 +8,7 @@ root: /RSM/
 
 # Variables/Defaults are set here
 <%
-  @settings["prefill"] ||= "python3 /RSM/newNomad/prefillTest.py"
+  @settings["prefill"] ||= "python3 /RSM/prefillTest.py"
   @settings["client"] ||= "newClient"
   @settings["domain"] ||= "domain.local"
   @settings["user"] ||= "user"
@@ -34,7 +34,6 @@ windows:
           - wget https://raw.githubusercontent.com/vexance/ShellScripts/main/portsort.sh -P /opt/nomad-tools
           - bash /opt/nomad-tools/portsort.sh <%= @settings["rootDir"] %>/scans/masscanCommonPorts.txt
   - DC: 
-      layout: 00fb,195x50,0,0[195x33,0,0{97x33,0,0,1,97x33,98,0,11},195x16,0,34,6]
       panes:
         - etc/resolv:
           - printf '\033]2;%s\033\\' 'etc/resolv'
@@ -52,16 +51,16 @@ windows:
       panes:
         - unauthd:
           - printf '\033]2;%s\033\\' 'unauthd'
-          - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/newNomad/tmuxinator/internalTemplate-unauthd domain=<%= @settings["domain"] %> workspace=<%= @settings["client"] %> nomadPass=<%= @settings["nomadPass"] %>'; clear
+          - <%= @settings["prefill"] %> 'tmuxinator start internalTemplate-unauthd domain=<%= @settings["domain"] %> workspace=<%= @settings["client"] %> nomadPass=<%= @settings["nomadPass"] %>'; clear
         - misc:
           - printf '\033]2;%s\033\\' 'misc'
-          - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/newNomad/tmuxinator/internalTemplate-misc domain=<%= @settings["domain"] %> workspace=<%= @settings["client"] %> providedUser=<%= @settings["providedUser"] %> providedPass=<%= @settings["providedPass"] %> nomadPass=<%= @settings["nomadPass"] %> nessusKey=<%= @settings["nessusKey"] %>'; clear
+          - <%= @settings["prefill"] %> 'tmuxinator start internalTemplate-misc domain=<%= @settings["domain"] %> workspace=<%= @settings["client"] %> providedUser=<%= @settings["providedUser"] %> providedPass=<%= @settings["providedPass"] %> nomadPass=<%= @settings["nomadPass"] %> nessusKey=<%= @settings["nessusKey"] %>'; clear
         - authd:
           - printf '\033]2;%s\033\\' 'authd'
-          - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/newNomad/tmuxinator/internalTemplate-authd domain=<%= @settings["domain"] %> user=<%= @settings["user"] %> pass=<%= @settings["pass"] %> workspace=<%= @settings["client"] %> nomadPass=<%= @settings["nomadPass"] %>'; clear; echo -e "\e[0;31mTRIPLE CHECK THAT USER/PASS IS CORRECT OR THIS WILL LOCKOUT THE ACCOUNT\033[0m"
+          - <%= @settings["prefill"] %> 'tmuxinator start internalTemplate-authd domain=<%= @settings["domain"] %> user=<%= @settings["user"] %> pass=<%= @settings["pass"] %> workspace=<%= @settings["client"] %> nomadPass=<%= @settings["nomadPass"] %>'; clear; echo -e "\e[0;31mTRIPLE CHECK THAT USER/PASS IS CORRECT OR THIS WILL LOCKOUT THE ACCOUNT\033[0m"
         - localAdmin:
           - printf '\033]2;%s\033\\' 'localAdmin'
-          - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/newNomad/tmuxinator/internalTemplate-localAdmin domain=<%= @settings["domain"] %> user=<%= @settings["user"] %> pass=<%= @settings["pass"] %>'; clear
+          - <%= @settings["prefill"] %> 'tmuxinator start internalTemplate-localAdmin domain=<%= @settings["domain"] %> user=<%= @settings["user"] %> pass=<%= @settings["pass"] %>'; clear
   - install&config:
       panes:
         - tmux source:
