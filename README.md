@@ -29,7 +29,7 @@ classic guide is [tmuxcheatsheet.com](tmuxcheatsheet.com).
 Strong recommendation to read through the provided configuration file and understand what the various lines do.
 
 Pro tips:
-*  prefix key with provided config is `Ctrl+b`
+*  prefix key with default config is `Ctrl+b`
 * `prefix + v`: split pane vertically
 * `prefix + s`: split pane horizontally
 * `prefix + ,`: rename pane
