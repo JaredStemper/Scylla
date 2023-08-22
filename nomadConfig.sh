@@ -10,8 +10,6 @@ echo "alias mux=tmuxinator">>~/.zshrc && echo "setopt append_history; setopt his
 #grab tmuxinator files
 git clone https://github.com/JaredStemper/mux.git
 mv mux/tmux.conf ~/.tmux.conf
-mkdir -p ~/.config/tmuxinator
-mv -t ~/.config/tmuxinator mux/*.yml
 mv mux/prefillTest.py /RSM/prefillTest.py
 mv mux/tmuxSessionHistoryCapture.sh /RSM/tmuxSessionHistoryCapture.sh
 
@@ -23,4 +21,4 @@ sudo sysctl -w dev.tty.legacy_tiocsti=1
 
 cd /RSM; clear
 
-python3 /RSM/prefillTest.py "mux start client=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY nomadPass='nomadPass' providedUser=providedUser providedPass='providedPass'"
+python3 /RSM/prefillTest.py "mux start -p /RSM/mux/tmuxinator/internalTemplate-initScan.yml client=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY nomadPass='nomadPass' providedUser=providedUser providedPass='providedPass'"
