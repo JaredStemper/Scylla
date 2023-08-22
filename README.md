@@ -64,9 +64,8 @@ Authenticated:
 
 LocalAdmin:
 * Manual:
-  * 
-* Automatic:
-  * 
+  * secretsdump, passTheHash, lsassy, DonPAPI
+
 
 ## Learning Tmux
 
