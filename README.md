@@ -51,9 +51,16 @@ Misc:
 Authenticated:
 * Note: This section __REQUIRES__ valid domain credentials. Use the ValidateCreds window in `Misc` to verify that the credentials are correct- otherwise you may potentially lock out the account.
 * Manual:
-  * 
+  * samTheAdmin exploit
+  * auth'd ASREProast
 * Automatic:
-  * 
+  * enumerate SMB shares (crackampexec, smbmap, dumpsterdiver)
+  * enumerate LDAP (ldapdomaindump, getADUsers, ldap signing, get user desc, check MAQs, ldap-checker)
+  * kerberoasting, findDelegations
+  * samTheAdmin check
+  * bloodhoud
+  * ADCS (crackmapexec, certipy)
+  * PetitPotam, PrintNightmare, GPP passwords
 
 LocalAdmin:
 * Manual:
