@@ -25,7 +25,7 @@ tmuxSessionHistoryCapture.sh - script used to periodically log all data currentl
 
 To help avoid surprised for what is ran automatically vs manually at various stages, the details of each session are listed here.
 
-InitScan:
+### InitScan:
 * Manual:
   * masscan, portsort, setting DC
 * Automatic:
@@ -34,21 +34,21 @@ InitScan:
   * preparing all other mux commands
   * install and configuring tmux, pipenv, dnsrecon, smbmap, docker, and msf db
 
-Unauthenticated:
+### Unauthenticated:
 * Note - this stage expects a masscan to have been ran and then the portsort utility having created a directory under `/RSM/scans/Lists` 
 * Manual:
   * nmap, asreproast, zerologon
 * Automatic:
   * dnsrecon, anon ftp, snmp, IPMI ciphers, smb, enum4linux, coercAuth, bluekeep, eternalblue, ldap signing check, timeroasting
 
-Misc:
+### Misc:
 * Note: This step requires the Nessus license key as well as the masscan/portsort from the InitScan.
 * Manual:
   * prepare command to validate credentials
 * Automatic:
   * prepares msf, start gowitness, start nessus
 
-Authenticated:
+### Authenticated:
 * Note: This section __REQUIRES__ valid domain credentials. Use the ValidateCreds window in `Misc` to verify that the credentials are correct- otherwise you may potentially lock out the account.
 * Manual:
   * samTheAdmin exploit
@@ -62,7 +62,7 @@ Authenticated:
   * ADCS (crackmapexec, certipy)
   * PetitPotam, PrintNightmare, GPP passwords
 
-LocalAdmin:
+### LocalAdmin:
 * Manual:
   * secretsdump, passTheHash, lsassy, DonPAPI
 
