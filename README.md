@@ -21,6 +21,46 @@ tmux.conf - the default tmux configurations are somewhat lacking. This helps bri
 
 tmuxSessionHistoryCapture.sh - script used to periodically log all data currently found in the tmux server. This is especially useful when finishing a project and needing the ability to review every command that was ran once a nomad is disconnected from the client network.
 
+## Automated vs Manual
+
+To help avoid surprised for what is ran automatically vs manually at various stages, the details of each session are listed here.
+
+InitScan:
+* Manual:
+  * masscan, portsort, setting DC
+* Automatic:
+  * locating DC (/etc/resolv, dig)
+  * validate nomad IP
+  * preparing all other mux commands
+  * install and configuring tmux, pipenv, dnsrecon, smbmap, docker, and msf db
+
+Unauthenticated:
+* Note - this stage expects a masscan to have been ran and then the portsort utility having created a directory under `/RSM/scans/Lists` 
+* Manual:
+  * nmap, asreproast, zerologon
+* Automatic:
+  * dnsrecon, anon ftp, snmp, IPMI ciphers, smb, enum4linux, coercAuth, bluekeep, eternalblue, ldap signing check, timeroasting
+
+Misc:
+* Note: This step requires the Nessus license key as well as the masscan/portsort from the InitScan.
+* Manual:
+  * prepare command to validate credentials
+* Automatic:
+  * prepares msf, start gowitness, start nessus
+
+Authenticated:
+* Note: This section __REQUIRES__ valid domain credentials. Use the ValidateCreds window in `Misc` to verify that the credentials are correct- otherwise you may potentially lock out the account.
+* Manual:
+  * 
+* Automatic:
+  * 
+
+LocalAdmin:
+* Manual:
+  * 
+* Automatic:
+  * 
+
 ## Learning Tmux
 
 classic guide is [tmuxcheatsheet.com](tmuxcheatsheet.com).
