@@ -66,7 +66,7 @@ windows:
       panes:
         - tmux source:
           - printf '\033]2;%s\033\\' 'tmux config'
-          - tmux source-file <%= @settings["rootDir"] %>/.tmux.conf
+          - tmux source-file <%= @settings["rootDir"] %>/mux/tmux.conf
         - apt installs + docker:
           - printf '\033]2;%s\033\\' 'apt installs'
           - echo <%= @settings["nomadPass"] %> | sudo -S su
