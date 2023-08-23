@@ -125,3 +125,7 @@ Pro tips:
       * Use either `y` to copy and stay in copy mode (useful if in large text files) or `enter` to copy and exit copy mode
     * `prefix + ]`: paste the last item copied from copy mode
     * `prefix + =`: view all items copied in copy mode (useful to quickly paste various IPs/passphrases)
+
+## Later TODO:
+
+* Organizing all port/IP information through the Metasploit DB instead of text files
