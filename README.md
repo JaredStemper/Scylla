@@ -10,6 +10,8 @@ Through an advanced configuration, it is possible to prepare and execute tools a
 
 For testing sensitive systems or utilizing potentially dangerous tools (common examples are zerologon, Eternal Blue, and BlueKeep), we instead use mux to help organize and prepare the commands ahead of time. The tester remains in control the whole time!
 
+Additionally, as a large history can be kept when organizing testing through Tmux, we have established automatic logging in order to avoid any potential loss of data. This is also highly beneficial in the instace that a client wishes to understand exactly what commands were ran, or in the occasion that a tester's access to a nomad will be cut off but they wish to review the exact steps of testing for reporting purposes.
+
 [Tmux](https://github.com/tmux/tmux/wiki): A terminal tool used to switch easily between several programs in one terminal.
 * Here is a cheatsheet for [Tmux commands](https://tmuxcheatsheet.com/)
 
