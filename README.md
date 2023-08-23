@@ -1,5 +1,18 @@
 # mux
-tmuxinator automation pentesting template
+
+## What is it?
+
+mux is a tool built on Tmux and Tmuxinator to orchestrate and automate testing of internal networks. 
+
+Tmux can be used to run simultaneous terminal commands and organize testing under a single SSH session; Tmuxinator is a tool lets you automatically set up those windows and commands. Through an advanced configuration, it is possible to prepare and execute tools and commands in an exact manner- which would allow testers to focus on the interesting portions of their work and spend less time manually enumerating.
+
+For testing sensitive systems or utilizing potentially dangerous tools (common examples are zerologon, Eternal Blue, and BlueKeep), we instead use mux to help organize and prepare the commands ahead of time. The tester remains in control the whole time!
+
+[Tmux](https://github.com/tmux/tmux/wiki): A terminal tool used to switch easily between several programs in one terminal.
+* Here is a cheatsheet for [Tmux commands](https://tmuxcheatsheet.com/)
+
+[Tmuxinator](https://github.com/tmuxinator/tmuxinator): Tool used to create and manage Tmux sessions automatically.
+* Tmuxinator uses YAML files to organize and create Tmux sessions
 
 ## Get started / Installation
 
