@@ -33,7 +33,7 @@ To help avoid surprises - below is a comprehensive list of what is ran automatic
   * install and configuring tmux, pipenv, dnsrecon, smbmap, docker, and msf db
 
 ### Unauthenticated:
-* Note - this stage expects a masscan to have been ran and then the portsort utility having created a directory under `/RSM/scans/Lists` __AND__ for a dc or multiple DCs to have been set under `/RSM/dcIP.txt`.
+* Note - this stage expects a masscan to have been ran and then the portsort utility having created a directory under `/RSM/scans/Lists` __AND__ for a DC or multiple DCs to have been set under `/RSM/dcIP.txt`.
 * Manual:
   * nmap, asreproast, zerologon
 * Automatic:
