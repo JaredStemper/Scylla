@@ -35,14 +35,14 @@ To help avoid surprised for what is ran automatically vs manually at various sta
   * install and configuring tmux, pipenv, dnsrecon, smbmap, docker, and msf db
 
 ### Unauthenticated:
-* Note - this stage expects a masscan to have been ran and then the portsort utility having created a directory under `/RSM/scans/Lists` 
+* Note - this stage expects a masscan to have been ran and then the portsort utility having created a directory under `/RSM/scans/Lists` AND for a dc or multiple DCs to have been set under `/RSM/dcIP.txt`.
 * Manual:
   * nmap, asreproast, zerologon
 * Automatic:
   * dnsrecon, anon ftp, snmp, IPMI ciphers, smb, enum4linux, coercAuth, bluekeep, eternalblue, ldap signing check, timeroasting
 
 ### Misc:
-* Note: This step requires the Nessus license key as well as the masscan/portsort from the InitScan.
+* Note: This step requires the Nessus license key as well as the masscan/portsort/dcIP.txt from the InitScan.
 * Manual:
   * prepare command to validate credentials
 * Automatic:
