@@ -12,7 +12,7 @@ For testing sensitive systems or utilizing potentially dangerous tools (common e
 
 Additionally, as a large history can be kept when organizing testing through Tmux, we have established automatic logging in order to avoid any potential loss of data. This is also highly beneficial in the instance that a client wishes to understand exactly what commands were ran, or in the occasion that a tester's access to a nomad will be cut off but they wish to review the exact steps of testing for reporting purposes.
 
-[Tmux](https://github.com/tmux/tmux/wiki): A terminal tool used to switch easily between several programs in one terminal.
+[Tmux](https://github.com/tmux/tmux/wiki): A terminal tool used to concurrently run and switch between several programs in one terminal.
 * Here is a cheatsheet for [Tmux commands](https://tmuxcheatsheet.com/)
 
 [Tmuxinator](https://github.com/tmuxinator/tmuxinator): Tool used to create and manage Tmux sessions automatically.
