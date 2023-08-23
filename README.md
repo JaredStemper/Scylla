@@ -43,14 +43,14 @@ To help avoid surprised for what is ran automatically vs manually at various sta
   * dnsrecon, anon ftp, snmp, IPMI ciphers, smb, enum4linux, coercAuth, bluekeep, eternalblue, ldap signing check, timeroasting
 
 ### Misc:
-* Note: This step requires the Nessus license key as well as the masscan/portsort/dcIP.txt from the InitScan.
+* Note: This step requires the Nessus license key as well as the masscan/portsort/dcIP.txt from the `InitScan`.
 * Manual:
   * prepare command to validate credentials
 * Automatic:
   * prepares msf, start gowitness, start nessus
 
 ### Authenticated:
-* Note: This section __REQUIRES__ valid domain credentials. Use the ValidateCreds window in `Misc` to verify that the credentials are correct- otherwise you may potentially lock out the account.
+* Note: Beyond the standard masscan/portsort/dcIP.txt, this section __REQUIRES__ valid domain credentials. Use the `ValidateCreds` window in `Misc` to verify that the credentials are correct- otherwise you may potentially lock out the account.
 * Manual:
   * samTheAdmin exploit
   * auth'd ASREProast
@@ -64,6 +64,7 @@ To help avoid surprised for what is ran automatically vs manually at various sta
   * PetitPotam, PrintNightmare, GPP passwords
 
 ### LocalAdmin:
+* Requires account credentials with local administrative privileges.
 * Manual:
   * secretsdump, passTheHash, lsassy, DonPAPI
 
