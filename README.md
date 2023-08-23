@@ -26,6 +26,7 @@ tmuxSessionHistoryCapture.sh - script used to periodically log all data currentl
 To help avoid surprised for what is ran automatically vs manually at various stages, the details of each session are listed here.
 
 ### InitScan:
+* Note - this scan expects only two files: `/RSM/ipList.txt` and `/RSM/exclude.txt`. Both can be formatted as any typical nmap/masscan input file.
 * Manual:
   * masscan, portsort, setting DC
 * Automatic:
@@ -35,7 +36,7 @@ To help avoid surprised for what is ran automatically vs manually at various sta
   * install and configuring tmux, pipenv, dnsrecon, smbmap, docker, and msf db
 
 ### Unauthenticated:
-* Note - this stage expects a masscan to have been ran and then the portsort utility having created a directory under `/RSM/scans/Lists` AND for a dc or multiple DCs to have been set under `/RSM/dcIP.txt`.
+* Note - this stage expects a masscan to have been ran and then the portsort utility having created a directory under `/RSM/scans/Lists` __AND__ for a dc or multiple DCs to have been set under `/RSM/dcIP.txt`.
 * Manual:
   * nmap, asreproast, zerologon
 * Automatic:
@@ -97,8 +98,8 @@ Pro tips:
   * `prefix + e`: set current session path to current pane path (useful if constantly in a different directory and wanting to open up new windows/panes in that new directory)
   * `prefix + d`: detach from current session. Now you will be back directly on the terminal and tmux will be running in the background
   * `tmux attach`: ran on the command line to re-attach to your most recent tmux session
-  * `tmux kill-session`: kills the current session
-* `tmux kill-server`: used to kill all tmux sessions (useful at end of assessment)
+  * `tmux kill-session`: ran on command line to kill the current session
+* `tmux kill-server`: ran on command line to kill all tmux sessions (useful at end of assessment)
 * Copy/Paste
   * Regular Clipboard
     * `shift + mouse` will highlight things you can use the classic ctrl+shift+c to copy/paste
