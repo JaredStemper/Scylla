@@ -4,7 +4,7 @@
 
 mux is a tool built on Tmux and Tmuxinator to orchestrate and automate testing of internal networks. 
 
-Tmux can be used to run simultaneous terminal commands and organize testing under a single SSH session; Tmuxinator is a tool lets you automatically set up those windows and commands. 
+Tmux can be used to run simultaneous terminal commands and organize testing under a single SSH session; Tmuxinator is a tool that lets you automatically set up those windows and commands. 
 
 Through an advanced configuration, it is possible to prepare and execute tools and commands in an exact manner- which would allow testers to focus on the interesting portions of their work and spend less time manually enumerating.
 
