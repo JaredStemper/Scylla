@@ -16,29 +16,9 @@ For testing sensitive systems or utilizing potentially dangerous tools (common e
 [Tmuxinator](https://github.com/tmuxinator/tmuxinator): Tool used to create and manage Tmux sessions automatically.
 * Tmuxinator uses YAML files to organize and create Tmux sessions
 
-## Get started / Installation
-
-MAKE SURE TO RUN THIS **_ONLY_** AFTER MOUNTING NOMAD.
-```bash
-wget https://raw.githubusercontent.com/JaredStemper/mux/main/nomadConfig.sh -O /RSM/nomadConfig.sh
-/bin/bash /RSM/nomadConfig.sh
-```
-
-## Overview of files
-
-tmuxinator - where the magic happens. Full guide will be included in separate word doc. main thing to remember is order (init-scan, unauthd, misc, authd, local-admin)
-
-nomadConfig.sh - script to pull and organize all the files for this project into the nomad automatically (intended to be ran after ensuring nomad mounting is complete).
-
-prefillTest.py - python script that grabs text and places it onto the command line so that the user can choose to modify it or more carefully track it's runtime.
-
-tmux.conf - the default tmux configurations are somewhat lacking. This helps bridge the gap and adds a lot of power to tmux usage. (highly recommended to read through and understand all capabilities).
-
-tmuxSessionHistoryCapture.sh - script used to periodically log all data currently found in the tmux server. This is especially useful when finishing a project and needing the ability to review every command that was ran once a nomad is disconnected from the client network.
-
 ## Automated vs Manual
 
-To help avoid surprised for what is ran automatically vs manually at various stages, the details of each session are listed here.
+To help avoid surprises - below is a comprehensive list of what is ran automatically vs manually at various stages, and what steps need to happen before the start of each stage.
 
 ### InitScan:
 * Note - this scan expects only two files: `/RSM/ipList.txt` and `/RSM/exclude.txt`. Both can be formatted as any typical nmap/masscan input file.
@@ -83,6 +63,25 @@ To help avoid surprised for what is ran automatically vs manually at various sta
 * Manual:
   * secretsdump, passTheHash, lsassy, DonPAPI
 
+## Get started / Installation
+
+MAKE SURE TO RUN THIS **_ONLY_** AFTER MOUNTING NOMAD.
+```bash
+wget https://raw.githubusercontent.com/JaredStemper/mux/main/nomadConfig.sh -O /RSM/nomadConfig.sh
+/bin/bash /RSM/nomadConfig.sh
+```
+
+## Overview of files
+
+tmuxinator - where the magic happens. Full guide will be included in separate word doc. main thing to remember is order (init-scan, unauthd, misc, authd, local-admin)
+
+nomadConfig.sh - script to pull and organize all the files for this project into the nomad automatically (intended to be ran after ensuring nomad mounting is complete).
+
+prefillTest.py - python script that grabs text and places it onto the command line so that the user can choose to modify it or more carefully track it's runtime.
+
+tmux.conf - the default tmux configurations are somewhat lacking. This helps bridge the gap and adds a lot of power to tmux usage. (highly recommended to read through and understand all capabilities).
+
+tmuxSessionHistoryCapture.sh - script used to periodically log all data currently found in the tmux server. This is especially useful when finishing a project and needing the ability to review every command that was ran once a nomad is disconnected from the client network.
 
 ## Learning Tmux
 
