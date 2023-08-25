@@ -99,7 +99,7 @@ Pro tips:
 * Panes
   * `prefix + v`: split pane vertically
   * `prefix + s`: split pane horizontally
-  * `prefix + ,`: rename pane
+  * `alt + r newName` or `select-pane -T "newName"`: rename current pane
   * `prefix + enter`: cycle through all standard pane formatting (useful to quickly resize)
   * `prefix + {` or `prefix + }`: swap pane locations either right or left (useful in changing the pane you're focusing on without hiding the other pane) 
   * `prefix + z`: Zoom! used as a way to "fullscreen" a pane without saving that formatting. The active pane will fill the screen until you shift to another pane or press `prefix + z` again
@@ -108,6 +108,7 @@ Pro tips:
   * `:break-pane`: used to "break" a pane out of its current window and become a new window
 * Windows
   * `prefix + c`: new window
+  * `prefix + ,`: rename window
   * Use the `shift + arrow key` to move to other windows quickly
   * Use the mouse to click to other panes/windows and resize any panes
   * `prefix + windowIndex`: go to specific window. e.g., `prefix + 2` will go straight to the window at index 2 
