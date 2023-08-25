@@ -133,9 +133,9 @@ Pro tips:
     * `prefix + ]`: paste the last item copied from copy mode
     * `prefix + =`: view all items copied in copy mode (useful to quickly paste various IPs/passphrases)
 * Misc
- * `prefix + r` or `:source-file ~/.tmux.conf`: to reload the tmux configuration file automatically
-   * The only other way to reload the tmux configuration would be to `:kill-server` and then restart it, which forces tmux to source the configuration file at `~/.tmux.conf`
- * `ctrl + s`: synchronize panes so that any key typed will type on all panes in the current pane. This is most often useful when running multiple commands that expect the sudo password or when closing multiple panes at once with `exit`
+  * `prefix + r` or `:source-file ~/.tmux.conf`: to reload the tmux configuration file automatically
+    * The only other way to reload the tmux configuration would be to `:kill-server` and then restart it, which forces tmux to source the configuration file at `~/.tmux.conf`
+  * `ctrl + s`: synchronize panes so that any key typed will type on all panes in the current pane. This is most often useful when running multiple commands that expect the sudo password or when closing multiple panes at once with `exit`
 
 ## Later TODO:
 
