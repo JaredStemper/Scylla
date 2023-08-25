@@ -94,7 +94,7 @@ __Note__: A provided Tmux configuration file is automatically provided for quali
 Pro tips:
 * The prefix key with default config is `Ctrl+b`
 * Any command listed below starting with `:` is typed through the `prefix + :` command prompt
- * tab completion can be used if you don't recall the exact name of a command (e.g., `":kill-server"` can be found from tabbing `":kill"`) 
+  * tab completion can be used if you don't recall the exact name of a command (e.g., `":kill-server"` can be found from tabbing `":kill"`) 
 * `prefix + w`: view all panes, windows, and sessions. Use vim bindings or mouse to quickly switch (h j k l `+ enter`)
 * Panes
   * `prefix + v`: split pane vertically
@@ -113,7 +113,7 @@ Pro tips:
   * `prefix + windowIndex`: go to specific window. e.g., `prefix + 2` will go straight to the window at index 2 
   * `prefix + b`: go to previously open window (useful when popping between two different windows often)
   * `:swap-window -t targetIndex`: swaps the place of two windows (using the current window as the one being swapped with and the targetIndex as the target)
-   * e.g., `:swap-window -t 3` will swap the place of the current window, such as a window with index 1, with the window at index 3
+    * e.g., `:swap-window -t 3` will swap the place of the current window, such as a window with index 1, with the window at index 3
 * Sessions
   * `prefix + (`: shift to next session (e.g., from initScan to unauth)
   * `prefix + )`: shift to prior session
@@ -134,7 +134,7 @@ Pro tips:
     * `prefix + =`: view all items copied in copy mode (useful to quickly paste various IPs/passphrases)
 * Misc
  * `prefix + r` or `:source-file ~/.tmux.conf`: to reload the tmux configuration file automatically
-  * The only other way to reload the tmux configuration would be to `:kill-server` and then restart it, which forces tmux to source the configuration file at `~/.tmux.conf`
+   * The only other way to reload the tmux configuration would be to `:kill-server` and then restart it, which forces tmux to source the configuration file at `~/.tmux.conf`
  * `ctrl + s`: synchronize panes so that any key typed will type on all panes in the current pane. This is most often useful when running multiple commands that expect the sudo password or when closing multiple panes at once with `exit`
 
 ## Later TODO:
