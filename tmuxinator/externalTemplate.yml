@@ -23,42 +23,42 @@ windows:
       root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
       panes:
         - reconFTW:
-          - printf '\033]2;%s\033\\' 'reconFTW'
+          - tmux select-pane -T 'reconFTW'
           - <%= @settings["prefill"] %> 'docker run -it --rm -v "$(pwd)":"/reconftw/Recon/" six2dez/reconftw:main -d <%= @settings["domain"] %> -r'; clear
         - amass:
-          - printf '\033]2;%s\033\\' 'amass'
+          - tmux select-pane -T 'amass'
           - <%= @settings["prefill"] %> 'amass --help'; clear
   - enum:
       root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
       panes:
         # additional warning text added for user when pre-populating potentially dangerous commands
         - gobuster:
-          - printf '\033]2;%s\033\\' 'gobuster'; clear
+          - tmux select-pane -T 'gobuster'; clear
           - gobuster dir -u http://<%= @settings["domain"] %> -w /opt/SecLists/Discovery/Web-Content/common.txt
         - subfinder:
-          - printf '\033]2;%s\033\\' 'subfinder'; clear
+          - tmux select-pane -T 'subfinder'; clear
           - subfinder -d <%= @settings["domain"] %>
   - DNSSEC:
       root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
       panes:
         - dnsrecon:
-          - printf '\033]2;%s\033\\' 'dnsrecon'; clear
+          - tmux select-pane -T 'dnsrecon'; clear
           - dnsrecond -d <%= @settings["domain"] %>
         - testssl:
-          - printf '\033]2;%s\033\\' 'testssl'; clear
+          - tmux select-pane -T 'testssl'; clear
           - testssl <%= @settings["domain"] %>
   - cloud:
       root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
       panes:
         - cloud_enum:
-          - printf '\033]2;%s\033\\' 'cloud_enum'; clear
+          - tmux select-pane -T 'cloud_enum'; clear
           - cd /mnt/hgfs/projects/work/tools/cloud_enum/
           - <%= @settings["prefill"] %> python3.11 ./cloud_enum.py -l /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>/cloud_enum.txt -k <%= @settings["domain"] %> --disable-gcp | tee /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>/cloud_enum-doubleCheck.txt; clear
   - scanning:
       root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
       panes:
         - masscan:
-          - printf '\033]2;%s\033\\' 'masscan'
+          - tmux select-pane -T 'masscan'
           - <%= @settings["prefill"] %> 'sudo masscan -iL ./ipList.txt --excludefile ./exclude.txt --rate 750 -p 21,22,23,25,80,81,82,88,111,137,161,162,389,443,444,445,623,1433,2222,3306,3389,4443,8000,8080,8081,8082,8443,8888,9080,9443,10080,10443 | tee masscan-full.grepable'; clear
   - gowitness: gowitness --version
   - tools: work; cd tools/

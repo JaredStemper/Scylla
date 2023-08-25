@@ -27,11 +27,11 @@ windows:
       layout: tiled
       panes:
         - msf1: 
-          - printf '\033]2;%s\033\\' 'msf1'
+          - tmux select-pane -T 'msf1'
           - msfconsole
           - workspace -a <%= @settings['workspace'] %>
         - msf2: 
-          - printf '\033]2;%s\033\\' 'msf2'
+          - tmux select-pane -T 'msf2'
           - msfconsole
           - workspace -a <%= @settings['workspace'] %>
   - gowitness: 
@@ -43,7 +43,7 @@ windows:
   - nessus: 
       panes:
         - nessus: 
-          - printf '\033]2;%s\033\\' 'nessus'
+          - tmux select-pane -T 'nessus'
           - echo <%= @settings['nomadPass'] %> | sudo -S su
           - sudo su
           - echo "service nessusd stop"
@@ -53,5 +53,5 @@ windows:
   - validateCreds: 
       panes:
         - validateCreds: 
-          - printf '\033]2;%s\033\\' 'validateCreds'
+          - tmux select-pane -T 'validateCreds'
           - <%= @settings['prefill'] %> 'smbclient.py <%= @settings['domain'] %>/<%= @settings['providedUser'] %>:'<%= @settings['providedPass'] %>'@$(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1)'

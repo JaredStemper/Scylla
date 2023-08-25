@@ -26,54 +26,54 @@ windows:
   - masscan: 
       panes:
         - masscan:
-          - printf '\033]2;%s\033\\' 'masscan'
+          - tmux select-pane -T 'masscan'
           - echo <%= @settings["nomadPass"] %> | sudo -S su
           - touch <%= @settings["rootDir"] %>/exclude.txt
           - mkdir <%= @settings["rootDir"] %>/scans; cd <%= @settings["rootDir"] %>/scans
           - wget https://raw.githubusercontent.com/vexance/ShellScripts/main/portsort.sh -P /opt/nomad-tools
           - <%= @settings["prefill"] %> 'sudo masscan -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile <%= @settings["rootDir"] %>/exclude.txt --rate 750 -p 21,22,23,25,80,81,82,88,111,137,161,162,389,443,444,445,623,1433,2222,3306,3389,4443,8000,8080,8081,8082,8443,8888,9080,9443,10080,10443 | tee masscanCommonPorts.txt'
         - portSort:
-          - printf '\033]2;%s\033\\' 'portSort'
+          - tmux select-pane -T 'portSort'
           - <%= @settings["prefill"] %> 'bash /opt/nomad-tools/portsort.sh <%= @settings["rootDir"] %>/scans/masscanCommonPorts.txt'
   - DC: 
       panes:
         - etc/resolv:
-          - printf '\033]2;%s\033\\' 'etc/resolv'
+          - tmux select-pane -T 'etc/resolv'
           - cat /etc/resolv.conf
         - dig:
-          - printf '\033]2;%s\033\\' 'dig'
+          - tmux select-pane -T 'dig'
           - dig any _kerberos._tcp.<%= @settings["domain"] %>
         - set DC:
-          - printf '\033]2;%s\033\\' 'set DC'
+          - tmux select-pane -T 'set DC'
           - <%= @settings["prefill"] %> 'echo "" >> <%= @settings["rootDir"] %>/dcIP.txt'
         - nomad IP:
-          - printf '\033]2;%s\033\\' 'nomad IP'
+          - tmux select-pane -T 'nomad IP'
           - ip a
   - run: 
       panes:
         - unauthd:
-          - printf '\033]2;%s\033\\' 'unauthd'
+          - tmux select-pane -T 'unauthd'
           - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/mux/tmuxinator/internalTemplate-unauthd domain=<%= @settings["domain"] %> workspace=<%= @settings["client"] %> nomadPass=<%= @settings["nomadPass"] %>'; clear
         - misc:
-          - printf '\033]2;%s\033\\' 'misc'
+          - tmux select-pane -T 'misc'
           - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/mux/tmuxinator/internalTemplate-misc domain=<%= @settings["domain"] %> workspace=<%= @settings["client"] %> providedUser=<%= @settings["providedUser"] %> providedPass=<%= @settings["providedPass"] %> nomadPass=<%= @settings["nomadPass"] %> nessusKey=<%= @settings["nessusKey"] %>'; clear
         - authd:
-          - printf '\033]2;%s\033\\' 'authd'
+          - tmux select-pane -T 'authd'
           - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/mux/tmuxinator/internalTemplate-authd domain=<%= @settings["domain"] %> user=<%= @settings["user"] %> pass=<%= @settings["pass"] %> workspace=<%= @settings["client"] %> nomadPass=<%= @settings["nomadPass"] %>'; clear; echo -e "\e[0;31mTRIPLE CHECK THAT USER/PASS IS CORRECT OR THIS WILL LOCKOUT THE ACCOUNT\033[0m"
         - localAdmin:
-          - printf '\033]2;%s\033\\' 'localAdmin'
+          - tmux select-pane -T 'localAdmin'
           - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/mux/tmuxinator/internalTemplate-localAdmin domain=<%= @settings["domain"] %> user=<%= @settings["user"] %> pass=<%= @settings["pass"] %>'; clear
   - install&config:
       panes:
         - tmux source:
-          - printf '\033]2;%s\033\\' 'tmux config'
+          - tmux select-pane -T 'tmux config'
           - tmux source-file <%= @settings["rootDir"] %>/mux/tmux.conf
         - apt installs + docker:
-          - printf '\033]2;%s\033\\' 'apt installs'
+          - tmux select-pane -T 'apt installs'
           - echo <%= @settings["nomadPass"] %> | sudo -S su
           - sudo apt update && sudo apt upgrade -y && sudo apt install -y pipenv dnsrecon smbmap docker.io && sudo systemctl enable docker --now && sudo usermod -aG docker $USER
         - msf init:
-          - printf '\033]2;%s\033\\' 'msf init'
+          - tmux select-pane -T 'msf init'
           - echo <%= @settings["nomadPass"] %> | sudo -S su
           - sudo systemctl start postgresql && sudo msfdb delete && sudo msfdb init && msfconsole
   - initScan:
