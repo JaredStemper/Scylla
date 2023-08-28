@@ -26,23 +26,24 @@ windows:
       layout: tiled
       panes:
         - msf1: 
-          - tmux select-pane -T 'msf1'
+          - tmux select-pane -T 'msf1' -t "misc:msf.0"
           - msfconsole
           - workspace -a <%= @settings['workspace'] %>
         - msf2: 
-          - tmux select-pane -T 'msf2'
+          - tmux select-pane -T 'msf2' -t "misc:msf.1"
           - msfconsole
           - workspace -a <%= @settings['workspace'] %>
   - gowitness: 
       panes: 
         - gowitness:
+          - tmux select-pane -T 'gowitness' -t "misc:gowitness.0"
           - cd <%= @settings["rootDir"] %>/scans/List/ && cat http.lst https.lst p80* p9* > webservices.txt
           - gowitness file -f webservices.txt
           - gowitness server
   - nessus: 
       panes:
         - nessus: 
-          - tmux select-pane -T 'nessus'
+          - tmux select-pane -T 'nessus' -t "misc:nessus.0"
           - echo <%= @settings['nomadPass'] %> | sudo -S su
           - sudo su
           # set up conditional to determine if nessusKey has been supplied. 
@@ -51,5 +52,5 @@ windows:
   - validateCreds: 
       panes:
         - validateCreds: 
-          - tmux select-pane -T 'validateCreds'
+          - tmux select-pane -T 'validateCreds' -t "misc:validateCreds.0"
           - <%= @settings['prefill'] %> 'smbclient.py <%= @settings['domain'] %>/<%= @settings['providedUser'] %>:'<%= @settings['providedPass'] %>'@$(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1)'
