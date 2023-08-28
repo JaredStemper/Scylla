@@ -142,3 +142,4 @@ Pro tips:
 
 * Organizing all port/IP information through the Metasploit DB instead of text files
 * Automated updates to Dojo test cases when commands have successfully ran
+* provide advanced details of how to read/edit configuration files
