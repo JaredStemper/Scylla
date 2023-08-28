@@ -1,4 +1,4 @@
-name: intialize
+name: initialize
 root: /RSM/
 
 #Note:
@@ -9,7 +9,7 @@ root: /RSM/
 # Variables/Defaults are set here
 <%
   @settings["prefill"] ||= "python3 /RSM/prefillTest.py"
-  @settings["client"] ||= "newClient"
+  @settings["workspace"] ||= "newClient"
   @settings["domain"] ||= "domain.local"
   @settings["user"] ||= "user"
   @settings["pass"] ||= "pass"
@@ -26,63 +26,73 @@ windows:
   - masscan: 
       panes:
         - masscan:
-          - tmux select-pane -T 'masscan'
+          # note that syntax for modifying titles of panes goes [session:]window[.pane] 
+          - tmux select-pane -T 'masscan' -t "initialize:masscan.0"
           - echo <%= @settings["nomadPass"] %> | sudo -S su
           - touch <%= @settings["rootDir"] %>/exclude.txt
           - mkdir <%= @settings["rootDir"] %>/scans; cd <%= @settings["rootDir"] %>/scans
           - wget https://raw.githubusercontent.com/vexance/ShellScripts/main/portsort.sh -P /opt/nomad-tools
           - <%= @settings["prefill"] %> 'sudo masscan -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile <%= @settings["rootDir"] %>/exclude.txt --rate 750 -p 21,22,23,25,80,81,82,88,111,137,161,162,389,443,444,445,623,1433,2222,3306,3389,4443,8000,8080,8081,8082,8443,8888,9080,9443,10080,10443 | tee masscanCommonPorts.txt'
         - portSort:
-          - tmux select-pane -T 'portSort'
-          - <%= @settings["prefill"] %> 'bash /opt/nomad-tools/portsort.sh <%= @settings["rootDir"] %>/scans/masscanCommonPorts.txt'
+          - tmux select-pane -T 'portSort' -t "initialize:masscan.1"
+          - <%= @settings["prefill"] %> 'bash /opt/nomad-tools/portsort.sh <%= @settings["rootDir"] %>/scans/masscanCommonPorts.txt'; clear
   - DC: 
       panes:
         - etc/resolv:
-          - tmux select-pane -T 'etc/resolv'
+          - tmux select-pane -T 'etc/resolv' -t "initialize:DC.0"
           - cat /etc/resolv.conf
         - dig:
-          - tmux select-pane -T 'dig'
+          - tmux select-pane -T 'dig' -t "initialize:DC.1"
           - dig any _kerberos._tcp.<%= @settings["domain"] %>
         - set DC:
-          - tmux select-pane -T 'set DC'
+          - tmux select-pane -T 'set DC' -t "initialize:DC.2"
           - <%= @settings["prefill"] %> 'echo "" >> <%= @settings["rootDir"] %>/dcIP.txt'
         - nomad IP:
-          - tmux select-pane -T 'nomad IP'
+          - tmux select-pane -T 'nomad IP' -t "initialize:DC.3"
           - ip a
   - run: 
       panes:
+        # the following prefill command prepares the mux command but also writes a note stating the requirements before running as a reminder to testers
         - unauthd:
-          - tmux select-pane -T 'unauthd'
-          - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/mux/tmuxinator/internalTemplate-unauthd domain=<%= @settings["domain"] %> workspace=<%= @settings["client"] %> nomadPass=<%= @settings["nomadPass"] %>'; clear
+          - tmux select-pane -T 'unauthd' -t "initialize:run.0"
+          - actions="\n\t- a masscan to have been ran and the portsort utility utilized to create a directory under '/RSM/scans/Lists'\n\t- for a DC or multiple DCs to have been set under '/RSM/dcIP.txt' (each dc IP goes on a new line)"
+          - commandOptions="\n\t\e[0;31mnomadPass - Nomad password used to run sudo commands automatically\n\t\tDefault is 'nomadPass'\e[0;33m\n\t\e[0;31mdomain - Local domain being tested against\n\t\tDefault is 'domain.local'\e[0;33m\n\t\e[0;31mworkspace - This sets the Metasploit DC workspace used.\n\t\tIt should be consistent throughout the project and preferably titled to the client being tested\n\t\tDefault is 'newClient'\e[0;33m\n\trootDir - This is the root directory where files are being placed and modified.\n\t\tDefault is the encrypted '/RSM' directory"
+          - <%= @settings["prefill"] %> 'tmuxinator start -p <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-unauthd nomadPass=<%= @settings["nomadPass"] %> domain=<%= @settings["domain"] %> workspace=<%= @settings["workspace"] %> nomadPass=<%= @settings["nomadPass"] %>'; clear; echo -e "\e[0;33mUnauth'd requires the actions before running:${actions}\n\nMisc requires the following options to be set in the command line or config file:${commandOptions}\033[0m"
         - misc:
-          - tmux select-pane -T 'misc'
-          - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/mux/tmuxinator/internalTemplate-misc domain=<%= @settings["domain"] %> workspace=<%= @settings["client"] %> providedUser=<%= @settings["providedUser"] %> providedPass=<%= @settings["providedPass"] %> nomadPass=<%= @settings["nomadPass"] %> nessusKey=<%= @settings["nessusKey"] %>'; clear
+          - tmux select-pane -T 'misc' -t "initialize:run.1"
+          - actions="\n\t- a masscan to have been ran and the portsort utility utilized to create a directory under '/RSM/scans/Lists'\n\t- for a DC or multiple DCs to have been set under '/RSM/dcIP.txt' (each dc IP goes on a new line)"
+          - commandOptions="\n\t\e[0;31mnomadPass - Nomad password used to run sudo commands automatically\n\t\tDefault is 'nomadPass'\e[0;33m\n\tdomain - Local domain being tested against\n\t\tDefault is 'domain.local'\n\tworkspace - This sets the Metasploit DC workspace used.\n\t\tIt should be consistent throughout the project and preferably titled to the client being tested\n\t\tDefault is 'newClient'\n\tprovidedUser - Provided low-priv account username from client\n\t\tDefault is 'user'\n\tprovidedPass - Provided low-priv account passphrase from client\n\t\tDefault is 'pass'\n\t\e[0;31mnessusKey - The Nessus license key to install and run Nessus\n\t\tIf not provided the command will be prefilled\e[0;33m\n\trootDir - This is the root directory where files are being placed and modified.\n\t\tDefault is the encrypted '/RSM' directory"
+          - <%= @settings["prefill"] %> 'tmuxinator start -p <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-misc nomadPass=<%= @settings["nomadPass"] %> domain=<%= @settings["domain"] %> workspace=<%= @settings["workspace"] %> providedUser=<%= @settings["providedUser"] %> providedPass=<%= @settings["providedPass"] %> nessusKey=<%= @settings["nessusKey"] %>'; clear; echo -e "\e[0;33mMisc requires the actions before running:${actions}\n\nMisc requires the following options to be set in the command line or config file:${commandOptions}\e[0;33m"
         - authd:
-          - tmux select-pane -T 'authd'
-          - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/mux/tmuxinator/internalTemplate-authd domain=<%= @settings["domain"] %> user=<%= @settings["user"] %> pass=<%= @settings["pass"] %> workspace=<%= @settings["client"] %> nomadPass=<%= @settings["nomadPass"] %>'; clear; echo -e "\e[0;31mTRIPLE CHECK THAT USER/PASS IS CORRECT OR THIS WILL LOCKOUT THE ACCOUNT\033[0m"
+          - tmux select-pane -T 'authd' -t "initialize:run.2"
+          - actions="\n\t- a masscan to have been ran and the portsort utility utilized to create a directory under '/RSM/scans/Lists'\n\t- for a DC or multiple DCs to have been set under '/RSM/dcIP.txt' (each dc IP goes on a new line)"
+          - commandOptions="\n\t\e[0;31mnomadPass - Nomad password used to run sudo commands automatically\n\t\tDefault is 'nomadPass'\e[0;33m\n\tdomain - Local domain being tested against\n\t\tDefault is 'domain.local'\n\t\tDefault is 'user'\n\tworkspace - This sets the Metasploit DC workspace used.\n\t\tIt should be consistent throughout the project and preferably titled to the client being tested\n\t\tDefault is 'newClient'\n\tuser - This is an account username used for authenticated testing\n\tpass - This is an account passphrase used for authenticated testing\n\t\tDefault is 'pass'\n\t\t\e[0;31mTRIPLE CHECK THAT USER/PASS IS CORRECT OR THIS WILL LOCKOUT THE ACCOUNT (Use the 'ValidateCreds' window in 'Misc' to verify)\e[0;33m\n\trootDir - This is the root directory where files are being placed and modified.\n\t\tDefault is the encrypted '/RSM' directory"
+          - <%= @settings["prefill"] %> 'tmuxinator start -p <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-authd nomadPass=<%= @settings["nomadPass"] %> domain=<%= @settings["domain"] %> workspace=<%= @settings["workspace"] %> user=<%= @settings["user"] %> pass=<%= @settings["pass"] %>'; clear; echo -e "\e[0;33mAuth'd requires the actions before running:${actions}\n\nAuth'd requires the following options to be set in the command line or config file:${commandOptions}\e[0;33m"
         - localAdmin:
-          - tmux select-pane -T 'localAdmin'
-          - <%= @settings["prefill"] %> 'tmuxinator start -p /RSM/mux/tmuxinator/internalTemplate-localAdmin domain=<%= @settings["domain"] %> user=<%= @settings["user"] %> pass=<%= @settings["pass"] %>'; clear
+          - tmux select-pane -T 'localAdmin' -t "initialize:run.3"
+          - actions="\n\t- a masscan to have been ran and the portsort utility utilized to create a directory under '/RSM/scans/Lists'\n\t- for a DC or multiple DCs to have been set under '/RSM/dcIP.txt' (each dc IP goes on a new line)\n\t\e[0;31- validate credentials are for user with local admin privs\e[0;33m"
+          - commandOptions="\n\tdomain - Local domain being tested against\n\t\tDefault is 'domain.local'\n\t\tDefault is 'user'\n\tuser - This is an account username used for authenticated testing\n\tpass - This is an account passphrase used for authenticated testing\n\t\tDefault is 'pass'\n\trootDir - This is the root directory where files are being placed and modified.\n\t\tDefault is the encrypted '/RSM' directory"
+          - <%= @settings["prefill"] %> 'tmuxinator start -p <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-localAdmin domain=<%= @settings["domain"] %> user=<%= @settings["user"] %> pass=<%= @settings["pass"] %>'; clear; echo -e "\e[0;33mlocalAdmin requires the actions before running:${actions}\n\nlocalAdmin requires the following options to be set in the command line or config file:${commandOptions}\e[0;33m"
   - install&config:
       panes:
         - tmux source:
-          - tmux select-pane -T 'tmux config'
+          - tmux select-pane -T 'tmux config' -t "initialize:install&config.0"
           - tmux source-file <%= @settings["rootDir"] %>/mux/tmux.conf
         - apt installs + docker:
-          - tmux select-pane -T 'apt installs'
+          - tmux select-pane -T 'apt installs' -t "initialize:install&config.1"
           - echo <%= @settings["nomadPass"] %> | sudo -S su
           - sudo apt update && sudo apt upgrade -y && sudo apt install -y pipenv dnsrecon smbmap docker.io && sudo systemctl enable docker --now && sudo usermod -aG docker $USER
         - msf init:
-          - tmux select-pane -T 'msf init'
+          - tmux select-pane -T 'msf init' -t "initialize:install&config.2"
           - echo <%= @settings["nomadPass"] %> | sudo -S su
           - sudo systemctl start postgresql && sudo msfdb delete && sudo msfdb init && msfconsole
   - initScan:
-    - vim /RSM/mux/tmuxinator/internalTemplate-initScan.yml
+    - vim <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-initScan.yml
   - unauthd:
-    - vim /RSM/mux/tmuxinator/internalTemplate-unauthd.yml
+    - vim <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-unauthd.yml
   - misc:
-    - vim /RSM/mux/tmuxinator/internalTemplate-misc.yml
+    - vim <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-misc.yml
   - authd:
-    - vim /RSM/mux/tmuxinator/internalTemplate-authd.yml
+    - vim <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-authd.yml
   - localAdmin:
-    - vim /RSM/mux/tmuxinator/internalTemplate-localAdmin.yml
+    - vim <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-localAdmin.yml
