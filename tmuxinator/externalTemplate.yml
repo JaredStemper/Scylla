@@ -10,7 +10,7 @@ root: /mnt/hgfs/projects/work/a-externals/
 # Variables/Defaults are set here
 <%
   @settings["prefill"] ||= "python3.11 /mnt/hgfs/projects/work/tools/tmuxinatorTool/prefill/prefillTest.py"
-  @settings["client"] ||= "newClient"
+  @settings["workspace"] ||= "newClient"
   @settings["domain"] ||= "domain.local"
   ### example of starting project with arguments: tmuxinator start externalTemplate domain=rsmus.local client="buhbuh"
 %>

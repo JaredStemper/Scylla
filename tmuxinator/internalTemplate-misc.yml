@@ -13,7 +13,7 @@ root: /RSM/
   @settings["providedUser"] ||= "user"
   @settings["providedPass"] ||= "pass"
   @settings["nomadPass"] ||= "nomadPass"
-  @settings["workspace"] ||= "default"
+  @settings["workspace"] ||= "newClient"
     #this must be unique to avoid potential conflict with prior testers
   @settings["rootDir"] ||= "/RSM"
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J## nessusKey=NESSUSKEYVALUE"

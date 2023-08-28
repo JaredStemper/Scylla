@@ -11,7 +11,7 @@ root: /RSM/
   @settings["prefill"] ||= "python3 /RSM/prefillTest.py"
   @settings["domain"] ||= "domain.local"
   @settings["nomadPass"] ||= "nomadPass"
-  @settings["workspace"] ||= "default"
+  @settings["workspace"] ||= "newClient"
     #this must be unique to avoid potential conflict with prior testers msf workspaces - typically this uses the same string as the "client" variable set on entry
   @settings["rootDir"] ||= "/RSM"
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J##"
