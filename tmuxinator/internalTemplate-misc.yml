@@ -12,12 +12,11 @@ root: /RSM/
   @settings["domain"] ||= "domain.local"
   @settings["providedUser"] ||= "user"
   @settings["providedPass"] ||= "pass"
-  @settings["nessusKey"] ||= "NESSUSKEYVALUE"
   @settings["nomadPass"] ||= "nomadPass"
   @settings["workspace"] ||= "default"
     #this must be unique to avoid potential conflict with prior testers
   @settings["rootDir"] ||= "/RSM"
-  ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J##"
+  ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J## nessusKey=NESSUSKEYVALUE"
 %>
 
 # create and cd into client/testing folder before running
@@ -46,10 +45,9 @@ windows:
           - tmux select-pane -T 'nessus'
           - echo <%= @settings['nomadPass'] %> | sudo -S su
           - sudo su
-          - echo "service nessusd stop"
-          - echo "/opt/nessus/sbin/nessuscli fetch --register <%= @settings['nessusKey'] %>"
-          - echo "/opt/nessus/sbin/nessuscli update --all"
-          - echo "service nessusd start"
+          # set up conditional to determine if nessusKey has been supplied. 
+          #    if it has: run setup. if it hasn't: prefill the command"
+          - if [ "<%= @settings['nessusKey'] %>" = "" ]; then <%= @settings['prefill'] %> "service nessusd stop && /opt/nessus/sbin/nessuscli fetch --register NESSUSKEYVALUE %> && /opt/nessus/sbin/nessuscli update --all && service nessusd start"; clear; echo -e "\e[0;33mReplace the NESSUSKEYVALUE\033[0m"; else /opt/nessus/sbin/nessuscli fetch --register <%= @settings['nessusKey'] %> && /opt/nessus/sbin/nessuscli update --all && service nessusd start; fi
   - validateCreds: 
       panes:
         - validateCreds: 
