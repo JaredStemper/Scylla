@@ -103,14 +103,15 @@ Pro tips:
   * `prefix + enter`: cycle through all standard pane formatting (useful to quickly resize)
   * `prefix + {` or `prefix + }`: swap pane locations either right or left (useful in changing the pane you're focusing on without hiding the other pane) 
   * `prefix + z`: Zoom! used as a way to "fullscreen" a pane without saving that formatting. The active pane will fill the screen until you shift to another pane or press `prefix + z` again
-  * `prefix + arrow key`: used to resize a pane slightly in the direction of the arrow key
+  * Use the mouse to click to other panes as well as resize any panes
   * `prefix  ctrl+arrow key` (two separate key strokes):  while holding the `ctrl` key, rapidly hitting the arrow key will more rapidly change the size of a pane
+  * `click+drag mouse cursor on the line of a pane`: can be used to manually
   * `:break-pane`: used to "break" a pane out of its current window and become a new window
 * Windows
   * `prefix + c`: new window
   * `prefix + ,`: rename window
   * Use the `shift + arrow key` to move to other windows quickly
-  * Use the mouse to click to other panes/windows and resize any panes
+  * Use the mouse to click to other windows
   * `prefix + windowIndex`: go to specific window. e.g., `prefix + 2` will go straight to the window at index 2 
   * `prefix + b`: go to previously open window (useful when popping between two different windows often)
   * `:swap-window -t targetIndex`: swaps the place of two windows (using the current window as the one being swapped with and the targetIndex as the target)
