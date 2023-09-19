@@ -4,6 +4,7 @@
 sudo chmod -R 777 /RSM
 
 #prepare tmuxinator for usage
+/bin/zsh
 sudo apt update && sudo apt upgrade -y && sudo apt install vim
 sudo gem install tmuxinator
 echo "alias mux=tmuxinator">>~/.zshrc && echo "setopt append_history; setopt hist_ignore_dups" >> ~/.zshrc && source ~/.zshrc
