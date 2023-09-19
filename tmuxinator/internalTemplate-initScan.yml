@@ -37,6 +37,7 @@ windows:
           - wget https://raw.githubusercontent.com/vexance/ShellScripts/main/portsort.sh -P /opt/nomad-tools
           - <%= @settings["prefill"] %> 'bash /opt/nomad-tools/portsort.sh <%= @settings["rootDir"] %>/scans/masscanCommonPorts.txt'; clear
   - DC: 
+      layout: 8081,195x44,0,0[195x21,0,0{97x21,0,0,12,97x21,98,0,21},195x22,0,22{97x22,0,22[97x8,0,22,22,97x13,0,31,35],97x22,98,22,23}]
       panes:
         - etc/resolv:
           - tmux select-pane -T 'etc/resolv' -t "initialize:DC.0"
@@ -50,6 +51,9 @@ windows:
         - set DC (manual):
           - tmux select-pane -T 'set DC (manual)' -t "initialize:DC.2"
           - <%= @settings["prefill"] %> 'echo "" >> <%= @settings["rootDir"] %>/dcIP.txt'; clear
+        - nomad IP:
+          - tmux select-pane -T 'nomad IP' -t "initialize:DC.2"
+          - ip addr
   - run: 
       panes:
         # the following prefill command prepares the mux command but also writes a note stating the requirements before running as a reminder to testers
