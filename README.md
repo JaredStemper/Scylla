@@ -89,7 +89,7 @@ tmuxSessionHistoryCapture.sh - script used to periodically log all data currentl
 
 classic guide is [tmuxcheatsheet.com](tmuxcheatsheet.com).
 
-__Note__: A provided Tmux configuration file is automatically provided for quality of life / ease of access. It is strongly recommended to read through the provided configuration file.
+__Note__: A provided Tmux configuration file is automatically provided for quality of life / ease of access (found [here](./tmux.conf)). It is strongly recommended to read through the provided configuration file.
 
 Pro tips:
 * The prefix key with default config is `Ctrl+b`
