@@ -8,7 +8,7 @@ sudo chmod -R 777 /RSM
 sudo apt update && sudo apt upgrade -y && sudo apt install vim
 sudo gem install tmuxinator
 echo "alias mux=tmuxinator">>~/.zshrc && echo "setopt append_history; setopt hist_ignore_dups" >> ~/.zshrc && source ~/.zshrc
-
+echo "alias mux=tmuxinator">>~/.bash_aliases && echo "setopt append_history; setopt hist_ignore_dups" >> ~/.zshrc && source ~/.bash_aliases
 #grab tmuxinator files
 cd /RSM
 git clone https://github.com/JaredStemper/mux.git
