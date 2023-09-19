@@ -44,12 +44,12 @@ windows:
         - dig:
           - tmux select-pane -T 'dig' -t "initialize:DC.1"
           - dig any _kerberos._tcp.<%= @settings["domain"] %>
-        - set DC:
-          - tmux select-pane -T 'set DC' -t "initialize:DC.2"
-          - <%= @settings["prefill"] %> 'echo "" >> <%= @settings["rootDir"] %>/dcIP.txt'
-        - nomad IP:
-          - tmux select-pane -T 'nomad IP' -t "initialize:DC.3"
-          - ip a
+        - set DC (nslookup):
+          - tmux select-pane -T 'set DC (nslookup)' -t "initialize:DC.2"
+          - <%= @settings["prefill"] %> 'for dcIPNumbers in 1 2 3 4; do nslookup dcNAME-$dcIPNumbers.<%= @settings["domain"] %> | tail -n 2 | grep -oP "[[0-9\.]+"; done > /RSM/dcIP.txt; clear; echo -e "\e[0;33mChange the list of dcIPNumbers as necessary (e.g., 10 20 30 ...)\033[0m"'
+        - set DC (manual):
+          - tmux select-pane -T 'set DC (manual)' -t "initialize:DC.2"
+          - <%= @settings["prefill"] %> 'echo "" >> <%= @settings["rootDir"] %>/dcIP.txt'; clear
   - run: 
       panes:
         # the following prefill command prepares the mux command but also writes a note stating the requirements before running as a reminder to testers
