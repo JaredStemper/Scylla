@@ -85,7 +85,7 @@ windows:
         - msf init:
           - tmux select-pane -T 'msf init' -t "initialize:install&config.2"
           - echo <%= @settings["nomadPass"] %> | sudo -S su
-          - sudo systemctl start postgresql && sudo msfdb delete && sudo msfdb init && msfconsole
+          - sudo systemctl start postgresql && sudo msfdb init && msfconsole
   - initScan:
     - vim <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-initScan.yml
   - unauthd:
