@@ -55,6 +55,7 @@ windows:
           - tmux select-pane -T 'nomad IP' -t "initialize:DC.2"
           - ip addr
   - run: 
+      layout: 8317,195x44,0,0[195x36,0,0{97x36,0,0,13,97x36,98,0,24},195x7,0,37{97x7,0,37,25,97x7,98,37,26}]
       panes:
         # the following prefill command prepares the mux command but also writes a note stating the requirements before running as a reminder to testers
         - unauthd:
