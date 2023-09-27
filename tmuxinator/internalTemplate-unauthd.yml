@@ -25,9 +25,9 @@ windows:
           - tmux select-pane -T 'masscan' -t "unauthd:scanning.0"
           - cd <%= @settings["rootDir"] %>/scans/Lists
         - nmap top5000 tcp:
-          - tmux select-pane -T 'nmap top5000 tcp' -t "unauthd:scanning.1"
+          - tmux select-pane -T 'nmap top4000 tcp' -t "unauthd:scanning.1"
           - echo <%= @settings["nomadPass"] %> | sudo -S su
-          - <%= @settings["prefill"] %> "sudo nmap -sC -sV -T4 -sS -vvv --top-ports 5000 -iL <%= @settings["rootDir"] %>/ipList.txt -oA <%= @settings["rootDir"] %>/scans/top5000-tcp"; clear
+          - <%= @settings["prefill"] %> "sudo nmap -sC -sV -T4 -sS -vvv --top-ports 4000 -iL <%= @settings["rootDir"] %>/ipList.txt -oA <%= @settings["rootDir"] %>/scans/top4000-tcp"; clear
         - nmap top500 udp:
           - tmux select-pane -T 'nmap top500 udp' -t "unauthd:scanning.2"
           - echo <%= @settings["nomadPass"] %> | sudo -S su
