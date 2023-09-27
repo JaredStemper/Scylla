@@ -61,7 +61,7 @@ windows:
       panes:
         - cme:
           - tmux select-pane -T 'cme' -t "unauthd:SMB/nullSesh.0"
-          - mkdir <%= @settings["rootDir"] %>/scans/smb; cd <%= @settings["rootDir"] %>/scans/smb
+          - mkdir -p <%= @settings["rootDir"] %>/scans/smb; cd <%= @settings["rootDir"] %>/scans/smb
           - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && crackmapexec smb <%= @settings["rootDir"] %>/scans/Lists/smb.lst -u '' -p '' | tee ./cme.txt &&  cat cme.txt | grep -ia 'signing:false' | awk '{print $2}' | tee ./smb_signing_not_required.txt && cat cme.txt | grep -ia 'smbv1:true' | awk '{print $2}' | tee ./smbv1_enabled.txt && cat cme.txt | grep -ia 'Windows' | grep -av -E 'Windows 8|Windows 1|Build 9600|Server 201|Server 202' | awk '{print $2 " - " $6 " " $7 " " $8 " " $9}' | tee ./unsupported.txt && cat cme.txt | grep -a '+' | tee ./smb_null_logon.txt && clear && for i in smb_null_logon.txt smb_signing_not_required.txt smbv1_enabled.txt unsupported.txt; do echo $i; cat $i; done && wc -l *
         - enum4linux:
           - tmux select-pane -T 'enum4linux' -t "unauthd:SMB/nullSesh.1"
