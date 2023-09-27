@@ -60,7 +60,7 @@ windows:
         # the following prefill command prepares the mux command but also writes a note stating the requirements before running as a reminder to testers
         - unauthd:
           - tmux select-pane -T 'unauthd' -t "initialize:run.0"
-          - actions="\n\t- a masscan to have been ran and the portsort utility utilized to create a directory under '/RSM/scans/Lists'\n\t- for a DC or multiple DCs to have been set under '/RSM/dcIP.txt' (each dc IP goes on a new line)"
+          - actions="\n\t- a masscan to have been ran ~AND~ the portsort utility utilized to create a directory under '/RSM/scans/Lists'\n\t- for a DC or multiple DCs to have been set under '/RSM/dcIP.txt' (each dc IP goes on a new line)"
           - commandOptions="\n\t\e[0;31mnomadPass - Nomad password used to run sudo commands automatically\n\t\tDefault is 'nomadPass'\e[0;33m\n\t\e[0;31mdomain - Local domain being tested against\n\t\tDefault is 'domain.local'\e[0;33m\n\t\e[0;31mworkspace - This sets the Metasploit DC workspace used.\n\t\tIt should be consistent throughout the project and preferably titled to the client being tested\n\t\tDefault is 'newClient'\e[0;33m\n\trootDir - This is the root directory where files are being placed and modified.\n\t\tDefault is the encrypted '/RSM' directory"
           - <%= @settings["prefill"] %> 'tmuxinator start -p <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-unauthd.yml nomadPass=<%= @settings["nomadPass"] %> domain=<%= @settings["domain"] %> workspace=<%= @settings["workspace"] %>'; clear; echo -e "\e[0;33mUnauth'd requires the actions before running:${actions}\n\nMisc requires the following options to be set in the command line or config file:${commandOptions}\033[0m"
         - misc:
