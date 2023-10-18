@@ -59,18 +59,18 @@ windows:
           - msfconsole -q -x "workspace -a <%= @settings['workspace'] %>; services -u -S 'print'"
   - SMB/nullSesh:
       layout: 1eb3,115x27,0,0[115x13,0,0,0,115x13,0,14{57x13,0,14,1,57x13,58,14,2}]
+      pre: mkdir -p <%= @settings["rootDir"] %>/scans/smb; cd <%= @settings["rootDir"] %>/scans/smb
       panes:
         - cme:
           - tmux select-pane -T 'cme' -t "unauthd:SMB/nullSesh.0"
-          - mkdir -p <%= @settings["rootDir"] %>/scans/smb; cd <%= @settings["rootDir"] %>/scans/smb
           - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && crackmapexec smb <%= @settings["rootDir"] %>/scans/Lists/smb.lst -u '' -p '' | tee ./cme.txt &&  cat cme.txt | grep -ia 'signing:false' | awk '{print $2}' | tee ./smb_signing_not_required.txt && cat cme.txt | grep -ia 'smbv1:true' | awk '{print $2}' | tee ./smbv1_enabled.txt && cat cme.txt | grep -ia 'Windows' | grep -av -E 'Windows 8|Windows 1|Build 9600|Server 201|Server 202' | awk '{print $2 " - " $6 " " $7 " " $8 " " $9}' | tee ./unsupported.txt && cat cme.txt | grep -a '+' | tee ./smb_null_logon.txt && clear && for i in smb_null_logon.txt smb_signing_not_required.txt smbv1_enabled.txt unsupported.txt; do echo $i; cat $i; done && wc -l *
         - enum4linux (DCs only):
           - tmux select-pane -T 'enum4linux (DCs only)' -t "unauthd:SMB/nullSesh.1"
-          - for i in $(cat <%= @settings["rootDir"] %>/dcIP.txt); do enum4linux $i; done | tee enum4linux-DC.txt
+          - for i in $(cat <%= @settings["rootDir"] %>/dcIP.txt); do enum4linux $i; done | tee /RSM/scans/smb/enum4linux-DC.txt
         - enum4linux (all null sessions):
           - tmux select-pane -T 'enum4linux (all null sessions)' -t "unauthd:SMB/nullSesh.2"
           # alternatively could wait and run against smb_null_logon file from cme
-          - for i in $(cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst); do echo ""; echo "Testing:$i"; enum4linux -a $i | tee enum4linux-$i.txt; done
+          - for i in $(cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst); do echo ""; echo "Testing:$i"; enum4linux -a $i | tee /RSM/scans/smb/enum4linux-$i.txt; done
   - ASREProast: 
       panes:
         - ASREP roast:
