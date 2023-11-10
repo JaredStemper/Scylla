@@ -46,4 +46,4 @@ windows:
           - cd /opt/nomad-tools
           - git clone https://github.com/login-securite/DonPAPI.git
           - cd DonPAPI && pipenv install
-          - <%= @settings["prefill"] %> pipenv run python3 DonPAPI.py DC-NetBIOS.'<%= @settings["domain"] %>/<%= @settings["pass"] %>:<%= @settings["pass"] %>'@`cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1`; clear
+          - <%= @settings["prefill"] %> pipenv run python3 DonPAPI.py DC-NetBIOS.'<%= @settings["domain"] %>/<%= @settings["pass"] %>:<%= @settings["pass"] %>'@$(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1); clear
