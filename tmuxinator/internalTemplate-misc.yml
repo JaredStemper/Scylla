@@ -52,7 +52,7 @@ windows:
           - sudo su
           # set up conditional to determine if nessusKey has been supplied. 
           #    if it has: run setup. if it hasn't: prefill the command"
-          - if [ "<%= @settings['nessusKey'] %>" = "nessusKey" ]; then <%= @settings['prefill'] %> "service nessusd stop && /opt/nessus/sbin/nessuscli fetch --register NESSUSKEYVALUE %> && /opt/nessus/sbin/nessuscli update --all && service nessusd start"; clear; echo -e "\e[0;33mReplace the NESSUSKEYVALUE\033[0m"; else /opt/nessus/sbin/nessuscli fetch --register <%= @settings['nessusKey'] %> && /opt/nessus/sbin/nessuscli update --all && service nessusd start; fi
+          - if [ "<%= @settings['nessusKey'] %>" = "NESSUSKEY" ]; then <%= @settings['prefill'] %> "service nessusd stop && /opt/nessus/sbin/nessuscli fetch --register NESSUSKEYVALUE %> && /opt/nessus/sbin/nessuscli update --all && service nessusd start"; clear; echo -e "\e[0;33mReplace the NESSUSKEYVALUE\033[0m"; else /opt/nessus/sbin/nessuscli fetch --register <%= @settings['nessusKey'] %> && /opt/nessus/sbin/nessuscli update --all && service nessusd start; fi
   - validateCreds: 
       panes:
         - validateCreds: 
