@@ -26,7 +26,7 @@ windows:
       panes:
         - masscan:
           - tmux select-pane -T 'masscan' -t "unauthd:scanning.0"
-          - cd <%= @settings["rootDir"] %>/scans/Lists && ls
+          - cd <%= @settings["rootDir"] %>/scans/masscanPortList && ls
         - nmap top5000 tcp:
           - tmux select-pane -T 'nmap top4000 tcp' -t "unauthd:scanning.1"
           - echo <%= @settings["nomadPass"] %> | sudo -S su
@@ -47,16 +47,16 @@ windows:
           - dnsrecon -d <%= @settings["domain"] %> -t axfr
         - ftp:
           - tmux select-pane -T 'ftp' -t "unauthd:services.1"
-          - cat <%= @settings["rootDir"] %>/scans/Lists/ftp.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/ftp/anonymous; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/p21.lst; spool <%= @settings["rootDir"] %>/scans/ftpAnon.txt; run; spool off; exit"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ftp.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/ftp/anonymous; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/p21.lst; spool <%= @settings["rootDir"] %>/scans/ftpAnon.txt; run; spool off; exit"
         - snmp:
           - tmux select-pane -T 'snmp' -t "unauthd:services.2"
-          - cat <%= @settings["rootDir"] %>/scans/Lists/snmp.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/snmp/snmp_login; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/snmp.lst; spool <%= @settings["rootDir"] %>/scans/snmpLogin.txt; run; spool off; exit"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/snmp.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/snmp/snmp_login; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/snmp.lst; spool <%= @settings["rootDir"] %>/scans/snmpLogin.txt; run; spool off; exit"
         - IPMI Cipher Zero:
           - tmux select-pane -T 'IPMI Cipher Zero' -t "unauthd:services.3"
           - mkdir -p <%= @settings["rootDir"] %>/loot/ipmi <%= @settings["nomadPass"] %>/scans/ipmi
-          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_version; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi/ipmi_version.txt; run; spool off; exit'
-          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set OUTPUT_HASHCAT_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.hashcat; set OUTPUT_JOHN_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.john; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt; run; spool off; exit'
-          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_cipher_zero; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi/ipmi_cipher_zero.txt; run; spool off; exit'
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_version; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi/ipmi_version.txt; run; spool off; exit'
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set OUTPUT_HASHCAT_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.hashcat; set OUTPUT_JOHN_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.john; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt; run; spool off; exit'
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_cipher_zero; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi/ipmi_cipher_zero.txt; run; spool off; exit'
           - wc -l <%= @settings["rootDir"] %>/scans/ipmi/*
         - printers:
           - tmux select-pane -T 'printers' -t "unauthd:services.4"
@@ -67,7 +67,7 @@ windows:
       panes:
         - cme:
           - tmux select-pane -T 'cme' -t "unauthd:SMB/nullSesh.0"
-          - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && crackmapexec smb <%= @settings["rootDir"] %>/scans/Lists/smb.lst -u '' -p '' | tee ./cme.txt &&  cat cme.txt | grep -ia 'signing:false' | awk '{print $2}' | tee ./smb_signing_not_required.txt && cat cme.txt | grep -ia 'smbv1:true' | awk '{print $2}' | tee ./smbv1_enabled.txt && cat cme.txt | grep -ia 'Windows' | grep -av -E 'Windows 8|Windows 1|Build 9600|Server 201|Server 202' | awk '{print $2 " - " $6 " " $7 " " $8 " " $9}' | tee ./unsupported.txt && cat cme.txt | grep -a '+' | tee ./smb_null_logon.txt && clear && for i in smb_null_logon.txt smb_signing_not_required.txt smbv1_enabled.txt unsupported.txt; do echo $i; cat $i; done && wc -l *
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst && crackmapexec smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst -u '' -p '' | tee ./cme.txt &&  cat cme.txt | grep -ia 'signing:false' | awk '{print $2}' | tee ./smb_signing_not_required.txt && cat cme.txt | grep -ia 'smbv1:true' | awk '{print $2}' | tee ./smbv1_enabled.txt && cat cme.txt | grep -ia 'Windows' | grep -av -E 'Windows 8|Windows 1|Build 9600|Server 201|Server 202' | awk '{print $2 " - " $6 " " $7 " " $8 " " $9}' | tee ./unsupported.txt && cat cme.txt | grep -a '+' | tee ./smb_null_logon.txt && clear && for i in smb_null_logon.txt smb_signing_not_required.txt smbv1_enabled.txt unsupported.txt; do echo $i; cat $i; done && wc -l *
         - enum4linux (DCs only):
           - tmux select-pane -T 'enum4linux (DCs only)' -t "unauthd:SMB/nullSesh.1"
           - cd <%= @settings["rootDir"] %>/scans/smb/enum4linux
@@ -76,7 +76,7 @@ windows:
           - tmux select-pane -T 'enum4linux (all null sessions)' -t "unauthd:SMB/nullSesh.2"
           - cd <%= @settings["rootDir"] %>/scans/smb/enum4linux
           # alternatively could wait and run against smb_null_logon file from cme
-          - for i in $(cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst); do echo ""; echo "Testing:$i"; enum4linux -a $i | tee /RSM/scans/smb/enum4linux/enum4linux-$i.txt; done
+          - for i in $(cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst); do echo ""; echo "Testing:$i"; enum4linux -a $i | tee /RSM/scans/smb/enum4linux/enum4linux-$i.txt; done
   - ASREProast: 
       panes:
         - ASREP roast:
@@ -86,7 +86,7 @@ windows:
       panes:
         - coercAuth:
           - tmux select-pane -T 'coercAuth' -t "unauthd:coercAuth.0"
-          - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use scanner/dcerpc/petitpotam; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/smb.lst; spool <%= @settings["rootDir"] %>/scans/petitPotam-unauthd.txt; run; spool off; exit"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use scanner/dcerpc/petitpotam; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst; spool <%= @settings["rootDir"] %>/scans/petitPotam-unauthd.txt; run; spool off; exit"
   - bigName: 
       panes:
         - zerologon:
@@ -96,10 +96,10 @@ windows:
           - <%= @settings["prefill"] %> 'pipenv run zerologon_tester.py $DC-netbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/zerologon.txt'; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
         - blueKeep:
           - tmux select-pane -T 'eternalBlue' -t "unauthd:bigName.1"
-          - cat <%= @settings["rootDir"] %>/scans/Lists/kerberos.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use scanner/rdp/cve_2019_0708_bluekeep; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/kerberos.lst; spool <%= @settings["rootDir"] %>/scans/blueKeep.txt; run; spool off; exit"; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/kerberos.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use scanner/rdp/cve_2019_0708_bluekeep; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/kerberos.lst; spool <%= @settings["rootDir"] %>/scans/blueKeep.txt; run; spool off; exit"; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
         - eternalBlue:
           - tmux select-pane -T 'eternalBlue' -t "unauthd:bigName.2"
-          - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use scanner/smb/smb_ms17_010; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/smb.lst; spool <%= @settings["rootDir"] %>/scans/eternalBlue.txt; run; spool off; exit"; echo -e "\e[0;31mAVOID RUNNING ON CRITICAL SYSTEMS\033[0m"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use scanner/smb/smb_ms17_010; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst; spool <%= @settings["rootDir"] %>/scans/eternalBlue.txt; run; spool off; exit"; echo -e "\e[0;31mAVOID RUNNING ON CRITICAL SYSTEMS\033[0m"
   - ldapSigning: 
       panes:
         - ldapSigning:
