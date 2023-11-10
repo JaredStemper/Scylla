@@ -1,19 +1,22 @@
 name: localAdmin
 root: /RSM/
 
-
-
 # Variables/Defaults are set here
 <%
   @settings["prefill"] ||= "python3 /RSM/prefillTest.py"
   @settings["domain"] ||= "domain.local"
   @settings["user"] ||= "user"
-  @settings["pass"] ||= "pass"
+    #modify this value before running config
+  @settings["pass"] ||= "thisisatestdefaultpasswordCHECK"
+    #modify this value before running config
   @settings["msfWorkspace"] ||= "newClient"
     #this must be unique to avoid potential conflict with prior testers
   @settings["rootDir"] ||= "/RSM"
-  ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J##"
+  ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local"
 %>
+
+on_project_start: if [ "<%= @settings['pass'] %>" = "thisisatestdefaultpasswordCHECK" ]; then echo 'Default password is still set in config file.\nEnsure your username and password are written (and saved) to the config file!\n'; fi
+pre_window: if [ "<%= @settings['pass'] %>" = "thisisatestdefaultpasswordCHECK" ]; then tmux kill-session; fi
 
 # create and cd into client/testing folder before running
 windows:
