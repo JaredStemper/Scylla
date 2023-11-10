@@ -33,7 +33,7 @@ windows:
           - crackmapexec smb <%= @settings["rootDir"] %>/scans/Lists/smb.lst --shares -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee /RSM/scans/Lists/smb/cme-<%= @settings["user"] %>-shares.txt
         - smbmap:
           - tmux select-pane -T 'smbmap' -t "authd:SMB.1"
-          - <%= @settings["prefill"] %> "smbmap -H smbIP -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -R"; clear
+          - <%= @settings["prefill"] %> "smbmap -H smbIP -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -r"; clear
         - dumpsterdiver:
           - tmux select-pane -T 'dumpsterdiver' -t "authd:SMB.2"
           - cd /opt/nomad-tools && git clone https://github.com/securing/DumpsterDiver.git && cd DumpsterDiver && pipenv install
@@ -74,10 +74,8 @@ windows:
         - check:
           - tmux select-pane -T 'check' -t "authd:samTheAdmin.0"
           - cd /opt/nomad-tools && git clone https://github.com/ly4k/Pachine.git; cd Pachine && pipenv install
-          - pipenv shell
-          - echo "test"
-          - python3 -m pip install ldap3 impacket
-          - python3 pachine.py -dc-host <%= @settings["domain"] %> -scan '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'
+          - pipenv run python3 -m pip install ldap3 impacket
+          - pipenv run python3 pachine.py -dc-host <%= @settings["domain"] %> -scan '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'
         - exploit:
           - tmux select-pane -T 'exploit' -t "authd:samTheAdmin.1"
           - cd /opt/nomad-tools/
