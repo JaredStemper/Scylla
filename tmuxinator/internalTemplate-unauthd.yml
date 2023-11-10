@@ -17,28 +17,29 @@ root: /RSM/
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J##"
 %>
 
-on_project_start: mkdir -p /opt/nomad-tools
+on_project_start: mkdir -p /opt/nomad-tools <%= @settings["rootDir"] %>/scans <%= @settings["nomadPass"] %>/loot
 
 # create and cd into client/testing folder before running
 windows:
-  - scanning: 
+  - pre: mkdir -p <%= @settings["rootDir"] %>/scans/nmap
+    scanning: 
       panes:
         - masscan:
           - tmux select-pane -T 'masscan' -t "unauthd:scanning.0"
-          - cd <%= @settings["rootDir"] %>/scans/Lists
+          - cd <%= @settings["rootDir"] %>/scans/Lists && ls
         - nmap top5000 tcp:
           - tmux select-pane -T 'nmap top4000 tcp' -t "unauthd:scanning.1"
           - echo <%= @settings["nomadPass"] %> | sudo -S su
-          - <%= @settings["prefill"] %> "sudo nmap -sC -sV -T4 -sS -vvv --top-ports 4000 -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile /RSM/exclude.txt -oA <%= @settings["rootDir"] %>/scans/top4000-tcp"; clear
+          - <%= @settings["prefill"] %> "sudo nmap -sC -sV -T4 -sS -vvv --top-ports 4000 -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile /RSM/exclude.txt -oA <%= @settings["rootDir"] %>/scans/nmap/top4000-tcp"; clear
         - nmap top500 udp:
           - tmux select-pane -T 'nmap top500 udp' -t "unauthd:scanning.2"
           - echo <%= @settings["nomadPass"] %> | sudo -S su
-          - <%= @settings["prefill"] %> "sudo nmap -sC sV -T4 -sU -vvv --top-ports 500 -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile /RSM/exclude.txt -oA <%= @settings["rootDir"] %>/scans/top500-udp"; clear
+          - <%= @settings["prefill"] %> "sudo nmap -sC sV -T4 -sU -vvv --top-ports 500 -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile /RSM/exclude.txt -oA <%= @settings["rootDir"] %>/scans/nmap/top500-udp"; clear
         - nmap all tcp ports after 4000:
           - tmux select-pane -T 'nmap all tcp ports after 4000' -t "unauthd:scanning.3"
           - nmap -oG - -v --top-ports 4000 | awk -F'[);]' '/Ports/{print $2}' > <%= @settings["rootDir"] %>/top-4000-ports.txt
           - echo <%= @settings["nomadPass"] %> | sudo -S su
-          - <%= @settings["prefill"] %> 'sudo nmap -sC -sV -T4 -O -sS -vvv -p- -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile /RSM/exclude.txt --exclude-ports $(cat <%= @settings["rootDir"] %>/top-4000-ports.txt) -oA <%= @settings["rootDir"] %>/scans/all-tcp-after-4000'; clear
+          - <%= @settings["prefill"] %> 'sudo nmap -sC -sV -T4 -O -sS -vvv -p- -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile /RSM/exclude.txt --exclude-ports $(cat <%= @settings["rootDir"] %>/scans/nmap/top-4000-ports.txt) -oA <%= @settings["rootDir"] %>/scans/all-tcp-after-4000'; clear
   - services: 
       panes:
         - dns:
@@ -52,10 +53,11 @@ windows:
           - cat <%= @settings["rootDir"] %>/scans/Lists/snmp.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/snmp/snmp_login; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/snmp.lst; spool <%= @settings["rootDir"] %>/scans/snmpLogin.txt; run; spool off; exit"
         - IPMI Cipher Zero:
           - tmux select-pane -T 'IPMI Cipher Zero' -t "unauthd:services.3"
-          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_version; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_version.txt; run; spool off; exit'
-          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set OUTPUT_HASHCAT_FILE /<%= @settings["rootDir"] %>/scans/Lists/ipmiHashes.hashcat; set OUTPUT_JOHN_FILE /<%= @settings["rootDir"] %>/scans/Lists/ipmiHashes.john; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt; run; spool off; exit'
-          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_cipher_zero; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_cipher_zero.txt; run; spool off; exit'
-          - wc -l <%= @settings["rootDir"] %>/scans/ipmi*
+          - mkdir -p <%= @settings["rootDir"] %>/loot/ipmi <%= @settings["nomadPass"] %>/scans/ipmi
+          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_version; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi/ipmi_version.txt; run; spool off; exit'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set OUTPUT_HASHCAT_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.hashcat; set OUTPUT_JOHN_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.john; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt; run; spool off; exit'
+          - cat <%= @settings["rootDir"] %>/scans/Lists/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_cipher_zero; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/Lists/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi/ipmi_cipher_zero.txt; run; spool off; exit'
+          - wc -l <%= @settings["rootDir"] %>/scans/ipmi/*
         - printers:
           - tmux select-pane -T 'printers' -t "unauthd:services.4"
           - msfconsole -q -x "msfWorkspace -a <%= @settings['msfWorkspace'] %>; services -u -S 'print'"
