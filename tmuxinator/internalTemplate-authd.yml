@@ -12,7 +12,7 @@ root: /RSM/
   @settings["user"] ||= "user"
   @settings["pass"] ||= "pass"
   @settings["nomadPass"] ||= "nomadPass"
-  @settings["workspace"] ||= "newClient"
+  @settings["msfWorkspace"] ||= "newClient"
     #this must be unique to avoid potential conflict with prior testers
   @settings["rootDir"] ||= "/RSM"
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J##"
@@ -107,7 +107,7 @@ windows:
           - echo <%= @settings['nomadPass'] %> | sudo -S su 
           - cd /opt/nomad-tools/; git clone https://github.com/eversinc34/ItWasAllADream.git && cd ItWasAllADream && docker build -t itwasalladream .
           # grab hosts with open RPC ports (often more are found through additional nmap scans, but this can also be modified to use results from masscan)
-          - msfconsole -q -x 'workspace -a <%= @settings["workspace"]  %>; services -u -O 6 -p 111,135,593,2049 -o <%= @settings["rootDir"] %>/scans/Lists/rpcHosts.txt -c name; exit' && cat <%= @settings["rootDir"] %>/scans/Lists/rpcHosts.txt | sed '1d' | cut -d "," -f 1 | tr -d '"' > <%= @settings["rootDir"] %>/scans/Lists/rpcHosts-cleaned.txt
+          - msfconsole -q -x 'msfWorkspace -a <%= @settings["msfWorkspace"]  %>; services -u -O 6 -p 111,135,593,2049 -o <%= @settings["rootDir"] %>/scans/Lists/rpcHosts.txt -c name; exit' && cat <%= @settings["rootDir"] %>/scans/Lists/rpcHosts.txt | sed '1d' | cut -d "," -f 1 | tr -d '"' > <%= @settings["rootDir"] %>/scans/Lists/rpcHosts-cleaned.txt
           # create docker container to test printerNightmare
           - for i in `cat <%= @settings["rootDir"] %>/scans/Lists/rpcHosts-cleaned.txt`; do echo testing:$i; sudo docker run -it itwasalladream -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> $i; echo ""; done
         - GPP password:

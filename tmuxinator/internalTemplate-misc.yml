@@ -13,7 +13,7 @@ root: /RSM/
   @settings["providedUser"] ||= "user"
   @settings["providedPass"] ||= "pass"
   @settings["nomadPass"] ||= "nomadPass"
-  @settings["workspace"] ||= "newClient"
+  @settings["msfWorkspace"] ||= "newClient"
     #this must be unique to avoid potential conflict with prior testers
   @settings["rootDir"] ||= "/RSM"
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J## nessusKey=NESSUSKEYVALUE"
@@ -28,11 +28,11 @@ windows:
         - msf1: 
           - tmux select-pane -T 'msf1' -t "misc:msf.0"
           - msfconsole
-          - workspace -a <%= @settings['workspace'] %>
+          - msfWorkspace -a <%= @settings['msfWorkspace'] %>
         - msf2: 
           - tmux select-pane -T 'msf2' -t "misc:msf.1"
           - msfconsole
-          - workspace -a <%= @settings['workspace'] %>
+          - msfWorkspace -a <%= @settings['msfWorkspace'] %>
   - gowitness: 
       panes: 
         - gowitness:
