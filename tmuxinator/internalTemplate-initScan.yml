@@ -86,7 +86,7 @@ windows:
         - apt installs + docker:
           - tmux select-pane -T 'apt installs' -t "initialize:install&config.1"
           - echo <%= @settings["nomadPass"] %> | sudo -S su
-          - sudo apt update && sudo apt upgrade -y && sudo apt install -y pipenv dnsrecon smbmap docker.io && sudo systemctl enable docker --now && sudo usermod -aG docker $USER
+          - sudo apt update && sudo apt upgrade -y && sudo apt install -y pipenv dnsrecon smbmap bc docker.io && sudo systemctl enable docker --now && sudo usermod -aG docker $USER
         - msf init:
           - tmux select-pane -T 'msf init' -t "initialize:install&config.2"
           - echo <%= @settings["nomadPass"] %> | sudo -S su
