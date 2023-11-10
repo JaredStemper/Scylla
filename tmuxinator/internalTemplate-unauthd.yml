@@ -17,6 +17,8 @@ root: /RSM/
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J##"
 %>
 
+on_project_start: mkdir -p /opt/nomad-tools
+
 # create and cd into client/testing folder before running
 windows:
   - scanning: 

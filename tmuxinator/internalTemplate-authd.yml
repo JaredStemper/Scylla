@@ -20,7 +20,7 @@ root: /RSM/
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J##"
 %>
 
-on_project_start: if [ "<%= @settings['pass'] %>" = "thisisatestdefaultpasswordCHECK" ]; then echo 'Default password is still set in config file.\nEnsure your username and password are written (and saved) to the config file!\n'; fi
+on_project_start: if [ "<%= @settings['pass'] %>" = "thisisatestdefaultpasswordCHECK" ]; then echo 'Default password is still set in config file.\nEnsure your username and password are written (and saved) to the config file!\n'; fi; mkdir -p /opt/nomad-tools
 pre_window: if [ "<%= @settings['pass'] %>" = "thisisatestdefaultpasswordCHECK" ]; then tmux kill-session; fi
 
 # create and cd into client/testing folder before running
