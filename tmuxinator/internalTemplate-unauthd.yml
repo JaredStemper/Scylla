@@ -63,18 +63,20 @@ windows:
           - msfconsole -q -x "msfWorkspace -a <%= @settings['msfWorkspace'] %>; services -u -S 'print'"
   - SMB/nullSesh:
       layout: 1eb3,115x27,0,0[115x13,0,0,0,115x13,0,14{57x13,0,14,1,57x13,58,14,2}]
-      pre: mkdir -p <%= @settings["rootDir"] %>/scans/smb; cd <%= @settings["rootDir"] %>/scans/smb
+      pre: mkdir -p <%= @settings["rootDir"] %>/scans/smb/enum4linux; cd <%= @settings["rootDir"] %>/scans/smb
       panes:
         - cme:
           - tmux select-pane -T 'cme' -t "unauthd:SMB/nullSesh.0"
           - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && crackmapexec smb <%= @settings["rootDir"] %>/scans/Lists/smb.lst -u '' -p '' | tee ./cme.txt &&  cat cme.txt | grep -ia 'signing:false' | awk '{print $2}' | tee ./smb_signing_not_required.txt && cat cme.txt | grep -ia 'smbv1:true' | awk '{print $2}' | tee ./smbv1_enabled.txt && cat cme.txt | grep -ia 'Windows' | grep -av -E 'Windows 8|Windows 1|Build 9600|Server 201|Server 202' | awk '{print $2 " - " $6 " " $7 " " $8 " " $9}' | tee ./unsupported.txt && cat cme.txt | grep -a '+' | tee ./smb_null_logon.txt && clear && for i in smb_null_logon.txt smb_signing_not_required.txt smbv1_enabled.txt unsupported.txt; do echo $i; cat $i; done && wc -l *
         - enum4linux (DCs only):
           - tmux select-pane -T 'enum4linux (DCs only)' -t "unauthd:SMB/nullSesh.1"
-          - for i in $(cat <%= @settings["rootDir"] %>/dcIP.txt); do enum4linux $i; done | tee /RSM/scans/smb/enum4linux-DC.txt
+          - cd <%= @settings["rootDir"] %>/scans/smb/enum4linux
+          - for i in $(cat <%= @settings["rootDir"] %>/dcIP.txt); do enum4linux $i; done | tee /RSM/scans/smb/enum4linux/enum4linux-DC.txt
         - enum4linux (all null sessions):
           - tmux select-pane -T 'enum4linux (all null sessions)' -t "unauthd:SMB/nullSesh.2"
+          - cd <%= @settings["rootDir"] %>/scans/smb/enum4linux
           # alternatively could wait and run against smb_null_logon file from cme
-          - for i in $(cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst); do echo ""; echo "Testing:$i"; enum4linux -a $i | tee /RSM/scans/smb/enum4linux-$i.txt; done
+          - for i in $(cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst); do echo ""; echo "Testing:$i"; enum4linux -a $i | tee /RSM/scans/smb/enum4linux/enum4linux-$i.txt; done
   - ASREProast: 
       panes:
         - ASREP roast:
@@ -84,12 +86,14 @@ windows:
       panes:
         - coercAuth:
           - tmux select-pane -T 'coercAuth' -t "unauthd:coercAuth.0"
-          - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use scanner/dcerpc/petitpotam; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/smb.lst; spool <%= @settings["rootDir"] %>/scans/petitPotam.txt; run; spool off; exit"
+          - cat <%= @settings["rootDir"] %>/scans/Lists/smb.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use scanner/dcerpc/petitpotam; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/smb.lst; spool <%= @settings["rootDir"] %>/scans/petitPotam-unauthd.txt; run; spool off; exit"
   - bigName: 
       panes:
         - zerologon:
           - tmux select-pane -T 'zerologon' -t "unauthd:bigName.0"
-          - <%= @settings["prefill"] %> 'zerologon_tester.py $DC-netbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1)'; clear; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
+          - git clone https://github.com/SecuraBV/CVE-2020-1472.git /opt/nomad-tools && cd /opt/nomad-tools/CVE-2020-1472/ && pipenv install 
+          - dig any _kerberos._tcp.<%= @settings["domain"] %>
+          - <%= @settings["prefill"] %> 'pipenv run zerologon_tester.py $DC-netbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/zerologon.txt'; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
         - blueKeep:
           - tmux select-pane -T 'eternalBlue' -t "unauthd:bigName.1"
           - cat <%= @settings["rootDir"] %>/scans/Lists/kerberos.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use scanner/rdp/cve_2019_0708_bluekeep; set rhosts file:<%= @settings["rootDir"] %>/scans/Lists/kerberos.lst; spool <%= @settings["rootDir"] %>/scans/blueKeep.txt; run; spool off; exit"; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
@@ -100,15 +104,14 @@ windows:
       panes:
         - ldapSigning:
           - tmux select-pane -T 'ldapSigning' -t "unauthd:ldapSigning.0"
-          - cd /opt/nomad-tools && git clone https://github.com/zyn3rgy/LdapRelayScan.git 
-          - cd LdapRelayScan && pipenv install && mkdir -p <%= @settings["rootDir"] %>/ldap; clear
-          - pipenv run python3 LdapRelayScan.py -method LDAPS -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/ldap/ldapSigning.txt
+          - git clone https://github.com/zyn3rgy/LdapRelayScan.git /opt/nomad-tools/LdapRelayScan
+          - mkdir -p <%= @settings["rootDir"] %>/scans/ldap && cd /opt/nomad-tools/LdapRelayScan && pipenv install; clear
+          - pipenv run python3 LdapRelayScan.py -method LDAPS -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/ldap/ldapSigning-unauthd.txt
   - timeroast: 
       panes:
         - timeroast:
           - tmux select-pane -T 'timeroast' -t "unauthd:timeroast.0"
-          - cd /opt/nomad-tools 
-          - git clone https://github.com/SecuraBV/Timeroast.git 
-          - cd /opt/nomad-tools/Timeroast && mkdir -p <%= @settings["rootDir"] %>/ldap
+          - git clone https://github.com/SecuraBV/Timeroast.git /opt/nomad-tools/Timeroast
+          - cd /opt/nomad-tools/Timeroast && mkdir -p <%= @settings["rootDir"] %>/loot/timeroast
           - echo <%= @settings["nomadPass"] %> | sudo -S su; clear
-          - sudo python3 timeroast.py $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/ldap/ntp-hashes.txt
+          - sudo python3 timeroast.py $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/loot/timeroast/timeroast-ntp-hashes.txt
