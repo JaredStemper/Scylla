@@ -3,6 +3,7 @@ root: /RSM/
 
 #Note:
 #   - create new authd testing for new user/pass; can just run tmuxinator copy internalTemplate-authd internalTemplate-authd-2
+###   - alternatively, user can just rename auth'd session and re-run the mux auth'd config
 #   - 
 #   - 
 
