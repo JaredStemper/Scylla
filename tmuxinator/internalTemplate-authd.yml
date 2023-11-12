@@ -32,7 +32,7 @@ windows:
           - crackmapexec smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst --shares -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee <%= @settings["rootDir"] %>/scans/masscanPortList/smb/cme-<%= @settings["user"] %>-shares.txt
         - smbmap:
           - tmux select-pane -T 'smbmap' -t "authd:SMB.1"
-          - <%= @settings["prefill"] %> "smbmap -H smbIP -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -r"; clear
+          - <%= @settings["prefill"] %> "smbmap -H smbIP -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -R"; clear
         - dumpsterdiver:
           - tmux select-pane -T 'dumpsterdiver' -t "authd:SMB.2"
           - cd /opt/nomad-tools && git clone https://github.com/securing/DumpsterDiver.git && cd DumpsterDiver && pipenv install
