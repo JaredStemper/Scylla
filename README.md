@@ -93,6 +93,7 @@ __Note__: A provided Tmux configuration file is automatically provided for quali
 
 Pro tips:
 * The prefix key with default config is `Ctrl+b`
+  * For example: `prefix :` would be pressing `Ctrl` and `b`, then once you see the `prefix` indicator in the bottom left you can let go and press `:` to activate the keybind.
 * Any command listed below starting with `:` is typed through the `prefix :` command prompt
   * tab completion can be used if you don't recall the exact name of a command (e.g., `":kill-server"` can be found from tabbing `":kill"`) 
 * `prefix w`: view all panes, windows, and sessions. Use vim bindings or mouse to quickly switch (h j k l `+ enter`)
