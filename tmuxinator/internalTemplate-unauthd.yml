@@ -12,7 +12,7 @@ root: /RSM/
   @settings["domain"] ||= "domain.local"
   @settings["nomadPass"] ||= "nomadPass"
   @settings["msfWorkspace"] ||= "newClient"
-    #this must be unique to avoid potential conflict with prior testers msf msfWorkspaces - typically this uses the same string as the "client" variable set on entry
+    #this must be unique to avoid potential conflict with prior testers msf workspaces - typically this uses the same string as the "client" variable set on entry
   @settings["rootDir"] ||= "/RSM"
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local ##"
 %>
@@ -47,10 +47,10 @@ windows:
           - dnsrecon -d <%= @settings["domain"] %> -t axfr
         - ftp:
           - tmux select-pane -T 'ftp' -t "unauthd:services.1"
-          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ftp.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/ftp/anonymous; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/ftp.lst; spool <%= @settings["rootDir"] %>/scans/ftpAnon.txt; run; spool off; exit"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ftp.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/ftp/anonymous; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/ftp.lst; spool <%= @settings["rootDir"] %>/scans/ftpAnon.txt; run; spool off; exit"
         - snmp:
           - tmux select-pane -T 'snmp' -t "unauthd:services.2"
-          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/snmp.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/snmp/snmp_login; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/snmp.lst; spool <%= @settings["rootDir"] %>/scans/snmpLogin.txt; run; spool off; exit"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/snmp.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/snmp/snmp_login; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/snmp.lst; spool <%= @settings["rootDir"] %>/scans/snmpLogin.txt; run; spool off; exit"
         - IPMI Cipher Zero:
           - tmux select-pane -T 'IPMI Cipher Zero' -t "unauthd:services.3"
           - mkdir -p <%= @settings["rootDir"] %>/loot/ipmi <%= @settings["nomadPass"] %>/scans/ipmi
@@ -60,7 +60,7 @@ windows:
           - wc -l <%= @settings["rootDir"] %>/scans/ipmi/*
         - printers:
           - tmux select-pane -T 'printers' -t "unauthd:services.4"
-          - msfconsole -q -x "msfWorkspace -a <%= @settings['msfWorkspace'] %>; services -u -S 'print'"
+          - msfconsole -q -x "workspace -a <%= @settings['msfWorkspace'] %>; services -u -S 'print'"
   - SMB/nullSesh:
       layout: 1eb3,115x27,0,0[115x13,0,0,0,115x13,0,14{57x13,0,14,1,57x13,58,14,2}]
       pre: mkdir -p <%= @settings["rootDir"] %>/scans/smb/enum4linux; cd <%= @settings["rootDir"] %>/scans/smb
@@ -86,7 +86,7 @@ windows:
       panes:
         - coercAuth:
           - tmux select-pane -T 'coercAuth' -t "unauthd:coercAuth.0"
-          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use scanner/dcerpc/petitpotam; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst; spool <%= @settings["rootDir"] %>/scans/petitPotam-unauthd.txt; run; spool off; exit"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use scanner/dcerpc/petitpotam; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst; spool <%= @settings["rootDir"] %>/scans/petitPotam-unauthd.txt; run; spool off; exit"
   - bigName: 
       panes:
         - zerologon:
@@ -96,10 +96,10 @@ windows:
           - <%= @settings["prefill"] %> 'pipenv run zerologon_tester.py $DC-netbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/zerologon.txt'; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
         - blueKeep:
           - tmux select-pane -T 'eternalBlue' -t "unauthd:bigName.1"
-          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/kerberos.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use scanner/rdp/cve_2019_0708_bluekeep; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/kerberos.lst; spool <%= @settings["rootDir"] %>/scans/blueKeep.txt; run; spool off; exit"; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/kerberos.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use scanner/rdp/cve_2019_0708_bluekeep; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/kerberos.lst; spool <%= @settings["rootDir"] %>/scans/blueKeep.txt; run; spool off; exit"; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
         - eternalBlue:
           - tmux select-pane -T 'eternalBlue' -t "unauthd:bigName.2"
-          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst && msfconsole -q -x "msfWorkspace -a <%= @settings["msfWorkspace"] %>; use scanner/smb/smb_ms17_010; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst; spool <%= @settings["rootDir"] %>/scans/eternalBlue.txt; run; spool off; exit"; echo -e "\e[0;31mAVOID RUNNING ON CRITICAL SYSTEMS\033[0m"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use scanner/smb/smb_ms17_010; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst; spool <%= @settings["rootDir"] %>/scans/eternalBlue.txt; run; spool off; exit"; echo -e "\e[0;31mAVOID RUNNING ON CRITICAL SYSTEMS\033[0m"
   - ldapSigning: 
       panes:
         - ldapSigning:
