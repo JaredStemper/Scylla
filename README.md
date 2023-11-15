@@ -93,34 +93,34 @@ __Note__: A provided Tmux configuration file is automatically provided for quali
 
 Pro tips:
 * The prefix key with default config is `Ctrl+b`
-* Any command listed below starting with `:` is typed through the `prefix + :` command prompt
+* Any command listed below starting with `:` is typed through the `prefix :` command prompt
   * tab completion can be used if you don't recall the exact name of a command (e.g., `":kill-server"` can be found from tabbing `":kill"`) 
-* `prefix + w`: view all panes, windows, and sessions. Use vim bindings or mouse to quickly switch (h j k l `+ enter`)
+* `prefix w`: view all panes, windows, and sessions. Use vim bindings or mouse to quickly switch (h j k l `+ enter`)
 * Panes
-  * `prefix + v`: split pane vertically
-  * `prefix + s`: split pane horizontally
+  * `prefix v`: split pane vertically
+  * `prefix s`: split pane horizontally
   * `alt + r newName` or `select-pane -T "newName"`: rename current pane
-  * `prefix + enter`: cycle through all standard pane formatting (useful to quickly resize)
-  * `prefix + {` or `prefix + }`: swap pane locations either right or left (useful in changing the pane you're focusing on without hiding the other pane) 
-  * `prefix + z`: Zoom! used as a way to "fullscreen" a pane without saving that formatting. The active pane will fill the screen until you shift to another pane or press `prefix + z` again
+  * `prefix enter`: cycle through all standard pane formatting (useful to quickly resize)
+  * `prefix {` or `prefix }`: swap pane locations either right or left (useful in changing the pane you're focusing on without hiding the other pane) 
+  * `prefix z`: Zoom! used as a way to "fullscreen" a pane without saving that formatting. The active pane will fill the screen until you shift to another pane or press `prefix z` again
   * Use the mouse to click to other panes as well as resize any panes
   * `prefix  ctrl+arrow key` (two separate key strokes):  while holding the `ctrl` key, rapidly hitting the arrow key will more rapidly change the size of a pane
   * `click+drag mouse cursor on the line of a pane`: can be used to manually
   * `:break-pane`: used to "break" a pane out of its current window and become a new window
 * Windows
-  * `prefix + c`: new window
-  * `prefix + ,`: rename window
+  * `prefix c`: new window
+  * `prefix ,`: rename window
   * Use the `shift + arrow key` to move to other windows quickly
   * Use the mouse to click to other windows
-  * `prefix + windowIndex`: go to specific window. e.g., `prefix + 2` will go straight to the window at index 2 
-  * `prefix + b`: go to previously open window (useful when popping between two different windows often)
+  * `prefix windowIndex`: go to specific window. e.g., `prefix 2` will go straight to the window at index 2 
+  * `prefix b`: go to previously open window (useful when popping between two different windows often)
   * `:swap-window -t targetIndex`: swaps the place of two windows (using the current window as the one being swapped with and the targetIndex as the target)
     * e.g., `:swap-window -t 3` will swap the place of the current window, such as a window with index 1, with the window at index 3
 * Sessions
-  * `prefix + (`: shift to next session (e.g., from initScan to unauth)
-  * `prefix + )`: shift to prior session
-  * `prefix + e`: set current session path to current pane path (useful if constantly in a different directory and wanting to open up new windows/panes in that new directory)
-  * `prefix + d`: detach from current session. Now you will be back directly on the terminal and tmux will be running in the background
+  * `prefix (`: shift to next session (e.g., from initScan to unauth)
+  * `prefix )`: shift to prior session
+  * `prefix e`: set current session path to current pane path (useful if constantly in a different directory and wanting to open up new windows/panes in that new directory)
+  * `prefix d`: detach from current session. Now you will be back directly on the terminal and tmux will be running in the background
   * `tmux attach`: if a tmux sesison is running in the background and you wan to re-attach to it, type this into the command line
   * `:kill-session`: ran on command line to kill the current session
 * `:kill-server`: ran on command line to kill all tmux sessions (useful at end of assessment)
@@ -129,15 +129,15 @@ Pro tips:
     * `shift + mouse` will highlight things you can use the classic ctrl+shift+c to copy/paste
   * Tmux Clipboard
     * Using your mouse to highlight text automatically copies whatever is highlighted to your Tmux clipboard
-    * `prefix + [`: enter copy mode to more carefully copy items
+    * `prefix [`: enter copy mode to more carefully copy items
       * Use vim key bindings to move cursor; use spacebar to start selection;
       * Use either `y` to copy and stay in copy mode (useful if in large text files) or `enter` to copy and exit copy mode
-    * `prefix + ]`: paste the last item copied from copy mode
-    * `prefix + =`: view all items copied in copy mode (useful to quickly paste various IPs/passphrases)
+    * `prefix ]`: paste the last item copied from copy mode
+    * `prefix =`: view all items copied in copy mode (useful to quickly paste various IPs/passphrases)
 * Misc
-  * `prefix + r` or `:source-file ~/.tmux.conf`: to reload the tmux configuration file automatically
+  * `prefix r` or `:source-file ~/.tmux.conf`: to reload the tmux configuration file automatically
     * The only other way to reload the tmux configuration would be to `:kill-server` and then restart it, which forces tmux to source the configuration file at `~/.tmux.conf`
-  * `ctrl + s`: synchronize panes so that any key typed will type on all panes in the current pane. This is most often useful when running multiple commands that expect the sudo password or when closing multiple panes at once with `exit`
+  * `prefix ctrl+s`: synchronize panes so that any key typed will type on all panes in the current pane. This is most often useful when running multiple commands that expect the sudo password or when closing multiple panes at once with `exit`
 
 ## Later TODO:
 
