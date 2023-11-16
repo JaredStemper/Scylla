@@ -106,8 +106,9 @@ windows:
           - tmux select-pane -T 'ldapSigning' -t "unauthd:ldapSigning.0"
           - git clone https://github.com/zyn3rgy/LdapRelayScan.git /opt/nomad-tools/LdapRelayScan
           # have to modify the requirements.txt due to issue tracked in ldaprelayscan with libcrypto here: https://github.com/zyn3rgy/LdapRelayScan/issues/21
-          - cd /opt/nomad-tools/LdapRelayScan && sed -i "s~oscrypto==1.2.1~git+https://github.com/wbond/oscrypto.git@d5f3437~ requirements_exact.txt && cp requirements_exact.txt requirements.txt
-          - mkdir -p <%= @settings["rootDir"] %>/scans/ldap && cd /opt/nomad-tools/LdapRelayScan && pipenv install; clear
+          - cd /opt/nomad-tools/LdapRelayScan && sed -i "s~oscrypto==1.3.0~git+https://github.com/wbond/oscrypto.git@d5f3437#egg=oscrypto~" requirements_exact.txt && cp requirements_exact.txt requirements.txt
+          # have to set pipenv install to --skip-lock due to dependency issue
+          - mkdir -p <%= @settings["rootDir"] %>/scans/ldap && cd /opt/nomad-tools/LdapRelayScan && pipenv install --skip-lock; clear
           - pipenv run python3 LdapRelayScan.py -method LDAPS -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/ldap/ldapSigning-unauthd.txt
   - timeroast: 
       panes:
