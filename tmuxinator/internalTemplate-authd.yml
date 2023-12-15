@@ -42,7 +42,7 @@ windows:
       panes:
         - ldapdomaindump:
           - tmux select-pane -T 'ldapdomaindump' -t "authd:LDAP.0"
-          - mkdir <%= @settings["rootDir"] %>/loot/ldap-domaindump && cd <%= @settings["rootDir"] %>/loot/ldap-domaindump
+          - mkdir -p <%= @settings["rootDir"] %>/loot/ldap-domaindump && cd <%= @settings["rootDir"] %>/loot/ldap-domaindump
           - ldapdomaindump -u '<%= @settings["domain"] %>\<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1)
         - getADusers:
           - tmux select-pane -T 'getADusers' -t "authd:LDAP.1"
