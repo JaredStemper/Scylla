@@ -17,7 +17,7 @@ root: /RSM/
 %>
 
 on_project_start: if [ "<%= @settings['pass'] %>" = "thisisatestdefaultpasswordCHECK" ]; then echo 'Default password is still set in config file.\nEnsure your username and password are written (and saved) to the config file!\n'; fi; mkdir -p /opt/nomad-tools <%= @settings["rootDir"] %>/loot
-pre_window: if [ "<%= @settings['pass'] %>" = "thisisatestdefaultpasswordCHECK" ]; then tmux kill-session; fi
+pre_window: if [ "<%= @settings['pass'] %>" = "thisisatestdefaultpasswordCHECK" ]; then tmux kill-session -t authd; fi
 
 # create and cd into client/testing folder before running
 windows:
