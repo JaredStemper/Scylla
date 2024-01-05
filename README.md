@@ -69,7 +69,7 @@ To help avoid surprises - below is a comprehensive list of what is ran automatic
 
 MAKE SURE TO RUN THIS **_ONLY_** AFTER MOUNTING NOMAD.
 ```bash
-curl https://raw.githubusercontent.com/JaredStemper/mux/main/nomadConfig.sh --clobber -o /RSM/nomadConfig.sh --no-check-certificate && /bin/bash /RSM/nomadConfig.sh
+curl https://raw.githubusercontent.com/JaredStemper/mux/main/nomadConfig.sh --clobber -o /RSM/nomadConfig.sh --insecure && /bin/bash /RSM/nomadConfig.sh
 ```
 
 ## Overview of files
