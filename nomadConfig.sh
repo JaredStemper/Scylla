@@ -6,7 +6,7 @@ if [ "$answer" == "yes" ] || [ "$answer" == "y" ]; then
     echo "Continuing setup script."
 elif [ "$answer" == "no" ] || [ "$answer" == "n" ]; then
     echo "Please run nomad-mount before running config script."
-    exit 0
+    exit 1
 else
     echo "Invalid choice. Please enter 'yes'/'y' or 'no'/'n'."
 fi
