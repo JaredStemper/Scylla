@@ -1,4 +1,5 @@
 #to be ran after `nomad-mount` inside of /RSM
+echo ""
 echo "\e[0;31mHas nomad-mount been ran?\e[0;33m "
 read -r answer
 
