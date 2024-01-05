@@ -27,7 +27,7 @@ To help avoid surprises - below is a comprehensive list of what is ran automatic
 * Manual:
   * masscan, portsort, setting DC
 * Automatic:
-  * locating DC (/etc/resolv, dig)
+  * locating DC (/etc/resolv, dig, nmap)
   * validate nomad IP
   * preparing all other mux commands
   * install and configuring tmux, pipenv, dnsrecon, smbmap, docker, and msf db
