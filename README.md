@@ -67,7 +67,7 @@ To help avoid surprises - below is a comprehensive list of what is ran automatic
 
 ## Get started / Installation
 
-MAKE SURE TO RUN THIS **_ONLY_** AFTER MOUNTING NOMAD.
+MAKE SURE TO RUN THIS **_ONLY_** AFTER MOUNTING NOMAD. Input the sudo password afterwards, not prepended to avoid permissions issues.
 ```bash
 curl https://raw.githubusercontent.com/JaredStemper/mux/main/nomadConfig.sh --clobber -o /RSM/nomadConfig.sh --insecure && /bin/bash /RSM/nomadConfig.sh
 ```
