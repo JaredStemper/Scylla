@@ -1,7 +1,7 @@
 #to be ran after `nomad-mount` inside of /RSM
 echo ""
 echo ""
-echo -e "\e[0;31mHas nomad-mount been ran?\e[0;37m "
+echo -e "\e[0;31mHas nomad-mount been ran?\e[0;32m "
 read -r answer
 
 if [ "$answer" == "yes" ] || [ "$answer" == "y" ]; then
