@@ -48,15 +48,15 @@ windows:
         - dig:
           - tmux select-pane -T 'dig' -t "initialize:DC.1"
           - dig any _kerberos._tcp.<%= @settings["domain"] %>
-        - set DC (nslookup):
-          - tmux select-pane -T 'set DC (nslookup)' -t "initialize:DC.2"
-          - python3 /RSM/prefillTest.py 'for dcIPNumbers in 1 2 3 4; do nslookup dcNAME-$dcIPNumbers.domain.local | tail -n 2 | grep -oP "[0-9\.]+"; done > /RSM/dcIP.txt'; clear; echo -e "\e[0;33mNote that this will append the results to the dcIP.txt file\n\nChange dcNAME and domain to the format expected (e.g. domaincontroller-\$dcIPNumbers.rsmus.com\nChange the list of dcIPNumbers as necessary (e.g., 10 20 30 ...)\033[0m"
         - set DC (manual):
           - tmux select-pane -T 'set DC (manual)' -t "initialize:DC.2"
           - <%= @settings["prefill"] %> 'echo "" >> <%= @settings["rootDir"] %>/dcIP.txt'; clear
-        - nomad IP:
+        - DNS nmap port 53:
           - tmux select-pane -T 'nomad IP' -t "initialize:DC.2"
-          - ip addr
+          - nmap -p 53 --open -iL ipList.txt --excludefile exclude.txt | tee initnmap-dnsFull.txt | grep -B 4 "tcp open" | grep -oP "[0-9\.]+\.[0-9\.]+\.[0-9\.]+\.[0-9\.]+" | tee initnmap-dnsIPs.txt
+        - DC nmap port 389:
+          - tmux select-pane -T 'nomad IP' -t "initialize:DC.2"
+          - nmap -p 389 --open -iL ipList.txt --excludefile exclude.txt | tee initnmap-dcFull.txt | grep -B 4 "tcp open" | grep -oP "[0-9\.]+\.[0-9\.]+\.[0-9\.]+\.[0-9\.]+" | tee initnmap-dcIPs.txt
   - run: 
       layout: 8317,195x44,0,0[195x36,0,0{97x36,0,0,13,97x36,98,0,24},195x7,0,37{97x7,0,37,25,97x7,98,37,26}]
       panes:
