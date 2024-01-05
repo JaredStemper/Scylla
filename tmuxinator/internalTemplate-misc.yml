@@ -31,11 +31,11 @@ windows:
         - msf1: 
           - tmux select-pane -T 'msf1' -t "misc:msf.0"
           - msfconsole
-          - workspace-a <%= @settings['msfWorkspace'] %>
+          - workspace -a <%= @settings['msfWorkspace'] %>
         - msf2: 
           - tmux select-pane -T 'msf2' -t "misc:msf.1"
           - msfconsole
-          - workspace-a <%= @settings['msfWorkspace'] %>
+          - workspace -a <%= @settings['msfWorkspace'] %>
   - gowitness: 
       panes: 
         - gowitness:
