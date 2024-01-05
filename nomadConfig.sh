@@ -1,16 +1,16 @@
 #to be ran after `nomad-mount` inside of /RSM
 echo ""
 echo ""
-echo -e "\e[0;31mHas nomad-mount been ran?\e[0;33m "
+echo -e "\e[0;31mHas nomad-mount been ran?\e[0;37m "
 read -r answer
 
 if [ "$answer" == "yes" ] || [ "$answer" == "y" ]; then
-    echo "Continuing setup script."
+    echo "\e[0;31mContinuing setup script."
 elif [ "$answer" == "no" ] || [ "$answer" == "n" ]; then
-    echo "Please run nomad-mount before running config script."
+    echo "\e[0;31mPlease run nomad-mount before running config script."
     exit 1
 else
-    echo "Invalid choice. Please enter 'yes'/'y' or 'no'/'n'."
+    echo "\e[0;31mInvalid choice. Please enter 'yes'/'y' or 'no'/'n'."
 fi
 
 #fix permissions error
