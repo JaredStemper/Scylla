@@ -24,4 +24,3 @@ sudo sysctl -w dev.tty.legacy_tiocsti=1
 cd /RSM; clear
 
 python3 /RSM/prefillTest.py "mux start -p /RSM/mux/tmuxinator/internalTemplate-initScan.yml workspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY nomadPass='nomadPass'"
-# mux start -p ./internalTemplate-initScan.yml workspace=myclient domain=domain.local nessusKey=NESSUSKEY nomadPass='nomadPass' prefill="python3 /mnt/c/Users/Jared/Documents/projects/work/tools/mux/prefillTest.py"
