@@ -1,7 +1,7 @@
 #to be ran after `nomad-mount` inside of /RSM
 
 #fix permissions error
-sudo chmod -R 777 /RSM
+sudo chown -R nomad /RSM
 
 #prepare tmuxinator for usage
 sudo apt update && sudo apt upgrade -y && sudo apt install vim
