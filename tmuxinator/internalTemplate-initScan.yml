@@ -46,7 +46,7 @@ windows:
           - tmux select-pane -T 'set DC (manual)' -t "initialize:DC.0"
           - nano <%= @settings["rootDir"] %>/dcIP.txt
         - etc/resolv:
-          - tmux select-pane -T 'etc/resolv' -t "initialize:DC.1"
+          - tmux select-pane -T 'etc/resolv' -t "initialize:DC.1"; clear
           - cat /etc/resolv.conf
         - dig:
           - tmux select-pane -T 'dig' -t "initialize:DC.2"
