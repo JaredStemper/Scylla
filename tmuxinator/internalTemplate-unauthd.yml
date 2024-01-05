@@ -17,12 +17,11 @@ root: /RSM/
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local ##"
 %>
 
-on_project_start: mkdir -p /opt/nomad-tools <%= @settings["rootDir"] %>/scans <%= @settings["nomadPass"] %>/loot
+on_project_start: mkdir -p /opt/nomad-tools <%= @settings["rootDir"] %>/scans/nmap <%= @settings["nomadPass"] %>/loot
 
 # create and cd into client/testing folder before running
 windows:
-  - pre: mkdir -p <%= @settings["rootDir"] %>/scans/nmap
-    scanning: 
+  - scanning: 
       panes:
         - masscan:
           - tmux select-pane -T 'masscan' -t "unauthd:scanning.0"
