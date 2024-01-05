@@ -44,7 +44,7 @@ windows:
       panes:
         - set DC (manual):
           - tmux select-pane -T 'set DC (manual)' -t "initialize:DC.0"
-          - nano <%= @settings["rootDir"] %>/dcIP.txt'
+          - nano <%= @settings["rootDir"] %>/dcIP.txt
         - etc/resolv:
           - tmux select-pane -T 'etc/resolv' -t "initialize:DC.1"
           - cat /etc/resolv.conf
@@ -53,10 +53,10 @@ windows:
           - dig any _kerberos._tcp.<%= @settings["domain"] %>
         - DNS nmap port 53:
           - tmux select-pane -T 'DNS nmap port 53' -t "initialize:DC.3"
-          - nmap -p 53 --open -iL ipList.txt --excludefile exclude.txt | tee <%= @settings["rootDir"] %>/scans/initnmap-dnsFull.txt | grep -B 4 "tcp open" | grep -oP "[0-9\.]+\.[0-9\.]+\.[0-9\.]+\.[0-9\.]+" | tee <%= @settings["rootDir"] %>/scans/initnmap-dnsIPs.txt
+          - nmap -p 53 --open -iL ipList.txt --excludefile exclude.txt | tee <%= @settings["rootDir"] %>/scans/initnmap-dnsFull.txt; echo -e "\n\n\033[1;32mPort 53 is open on: \033[1;0m"; grep -B 4 "tcp open" <%= @settings["rootDir"] %>/scans/initnmap-dnsFull.txt | grep -oP "[0-9\.]+\.[0-9\.]+\.[0-9\.]+\.[0-9\.]+" | tee <%= @settings["rootDir"] %>/scans/initnmap-dnsIPs.txt
         - DC nmap port 389:
           - tmux select-pane -T 'DC nmap port 389' -t "initialize:DC.4"
-          - nmap -p 389 --open -iL ipList.txt --excludefile exclude.txt | tee <%= @settings["rootDir"] %>/scans/initnmap-dcFull.txt | grep -B 4 "tcp open" | grep -oP "[0-9\.]+\.[0-9\.]+\.[0-9\.]+\.[0-9\.]+" | tee <%= @settings["rootDir"] %>/scans/initnmap-dcIPs.txt
+          - nmap -p 389 --open -iL ipList.txt --excludefile exclude.txt | tee <%= @settings["rootDir"] %>/scans/initnmap-dcFull.txt; echo -e "\n\n\033[1;32mPort 389 is open on: \033[1;0m"; grep -B 4 "tcp open" <%= @settings["rootDir"] %>/scans/initnmap-dcFull.txt | grep -oP "[0-9\.]+\.[0-9\.]+\.[0-9\.]+\.[0-9\.]+" | tee <%= @settings["rootDir"] %>/scans/initnmap-dcIPs.txt
   - run: 
       layout: 8317,195x44,0,0[195x36,0,0{97x36,0,0,13,97x36,98,0,24},195x7,0,37{97x7,0,37,25,97x7,98,37,26}]
       panes:
