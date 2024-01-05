@@ -23,7 +23,7 @@ echo "alias mux=tmuxinator; alias j='cd ..'>>~/.zshrc && echo "setopt append_his
 echo "alias mux=tmuxinator; alias j='cd ..'>>~/.bash_aliases && echo "setopt append_history; setopt hist_ignore_dups" >> ~/.zshrc && source ~/.bash_aliases
 #grab tmuxinator files
 cd /RSM
-git clone https://github.com/JaredStemper/mux.git
+rm -rf /RSM/mux && git clone https://github.com/JaredStemper/mux.git
 cp /RSM/mux/tmux.conf ~/.tmux.conf
 
 #enable usage of TIOCSTI for prefill tool to work (more details https://bugs.archlinux.org/task/77745 and https://lore.kernel.org/linux-hardening/20221015041626.1467372-2-keescook@chromium.org/

