@@ -5,12 +5,12 @@ echo -e "\e[0;31mHas nomad-mount been ran?\e[0;37m "
 read -r answer
 
 if [ "$answer" == "yes" ] || [ "$answer" == "y" ]; then
-    echo "\e[0;31mContinuing setup script."
+    echo -e "\e[0;31mContinuing setup script."
 elif [ "$answer" == "no" ] || [ "$answer" == "n" ]; then
-    echo "\e[0;31mPlease run nomad-mount before running config script."
+    echo -e "\e[0;31mPlease run nomad-mount before running config script."
     exit 1
 else
-    echo "\e[0;31mInvalid choice. Please enter 'yes'/'y' or 'no'/'n'."
+    echo -e "\e[0;31mInvalid choice. Please enter 'yes'/'y' or 'no'/'n'."
 fi
 
 #fix permissions error
