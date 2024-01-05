@@ -40,22 +40,22 @@ windows:
           - wget https://raw.githubusercontent.com/vexance/ShellScripts/main/portsort.sh -P /opt/nomad-tools --no-check-certificate
           - <%= @settings["prefill"] %> 'bash /opt/nomad-tools/portsort.sh <%= @settings["rootDir"] %>/scans/masscanCommonPorts.txt /RSM/scans/masscanPortList && cd /RSM/scans/masscanPortList && ls'; clear
   - DC: 
-      layout: 8081,195x44,0,0[195x21,0,0{97x21,0,0,12,97x21,98,0,21},195x22,0,22{97x22,0,22[97x8,0,22,22,97x13,0,31,35],97x22,98,22,23}]
+      layout: af62,113x25,0,0[113x15,0,0{56x15,0,0,12,56x15,57,0,1},113x9,0,16{38x9,0,16,13,36x9,39,16,20,37x9,76,16,21}]
       panes:
+        - set DC (manual):
+          - tmux select-pane -T 'set DC (manual)' -t "initialize:DC.0"
+          - nano <%= @settings["rootDir"] %>/dcIP.txt'
         - etc/resolv:
-          - tmux select-pane -T 'etc/resolv' -t "initialize:DC.0"
+          - tmux select-pane -T 'etc/resolv' -t "initialize:DC.1"
           - cat /etc/resolv.conf
         - dig:
-          - tmux select-pane -T 'dig' -t "initialize:DC.1"
+          - tmux select-pane -T 'dig' -t "initialize:DC.2"
           - dig any _kerberos._tcp.<%= @settings["domain"] %>
-        - set DC (manual):
-          - tmux select-pane -T 'set DC (manual)' -t "initialize:DC.2"
-          - <%= @settings["prefill"] %> 'echo "" >> <%= @settings["rootDir"] %>/dcIP.txt'; clear
         - DNS nmap port 53:
-          - tmux select-pane -T 'nomad IP' -t "initialize:DC.2"
+          - tmux select-pane -T 'DNS nmap port 53' -t "initialize:DC.3"
           - nmap -p 53 --open -iL ipList.txt --excludefile exclude.txt | tee initnmap-dnsFull.txt | grep -B 4 "tcp open" | grep -oP "[0-9\.]+\.[0-9\.]+\.[0-9\.]+\.[0-9\.]+" | tee initnmap-dnsIPs.txt
         - DC nmap port 389:
-          - tmux select-pane -T 'nomad IP' -t "initialize:DC.2"
+          - tmux select-pane -T 'DC nmap port 389' -t "initialize:DC.4"
           - nmap -p 389 --open -iL ipList.txt --excludefile exclude.txt | tee initnmap-dcFull.txt | grep -B 4 "tcp open" | grep -oP "[0-9\.]+\.[0-9\.]+\.[0-9\.]+\.[0-9\.]+" | tee initnmap-dcIPs.txt
   - run: 
       layout: 8317,195x44,0,0[195x36,0,0{97x36,0,0,13,97x36,98,0,24},195x7,0,37{97x7,0,37,25,97x7,98,37,26}]
