@@ -1,4 +1,14 @@
 #to be ran after `nomad-mount` inside of /RSM
+echo "Has nomad-mount been ran?"
+read -r answer
+
+if [ "$answer" == "yes" ] || [ "$answer" == "y" ]; then
+    echo "Continuing setup script."
+elif [ "$answer" == "no" ] || [ "$answer" == "n" ]; then
+    echo "Please run nomad-mount before running config script."
+else
+    echo "Invalid choice. Please enter 'yes'/'y' or 'no'/'n'."
+fi
 
 #fix permissions error
 sudo chown -R nomad /RSM
