@@ -50,13 +50,13 @@ windows:
           - pipenv run python3 LdapRelayScan.py -method BOTH -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee <%= @settings["rootDir"] %>/scans/ldap/ldapSigning.txt
         - get user descriptions:
           - tmux select-pane -T 'get user descriptions' -t "authd:LDAP.3"
-          - crackmapexec ldap $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M get-desc-users | tee <%= @settings["rootDir"] %>/scans/ldap/userDescriptions.txt
+          - crackmapexec ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M get-desc-users | tee <%= @settings["rootDir"] %>/scans/ldap/userDescriptions.txt
         - MAQ:
           - tmux select-pane -T 'MAQ' -t "authd:LDAP.4"
           - crackmapexec ldap $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M MAQ | tee <%= @settings["rootDir"] %>/scans/ldap/MAQ.txt
         - ldap-checker:
           - tmux select-pane -T 'ldap-checker' -t "authd:LDAP.5"
-          - crackmapexec ldap $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M ldap-checker | tee <%= @settings["rootDir"] %>/scans/ldap/ldap-checker-cme.txt
+          - crackmapexec ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M ldap-checker | tee <%= @settings["rootDir"] %>/scans/ldap/ldap-checker-cme.txt
   - kerberoasting: 
       pre: mkdir -p <%= @settings["rootDir"] %>/loot/kerberoast
       panes:
