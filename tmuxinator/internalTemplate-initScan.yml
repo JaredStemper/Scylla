@@ -52,10 +52,12 @@ windows:
           - tmux select-pane -T 'dig' -t "initialize:DC.2"
           - dig any _kerberos._tcp.<%= @settings["domain"] %>
         - DNS nmap port 53:
-          - tmux select-pane -T 'DNS nmap port 53' -t "initialize:DC.3"; clear
+          - tmux select-pane -T 'DNS nmap port 53' -t "initialize:DC.3"; 
+          - cd <%= @settings["rootDir"] %>/scans && clear
           - nmap -p 53 --open -iL ipList.txt --excludefile exclude.txt | tee <%= @settings["rootDir"] %>/scans/initnmap-dnsFull.txt; echo -e "\033[1;32mPort 53 is open on:\033[1;0m"; grep -B 4 "tcp open" <%= @settings["rootDir"] %>/scans/initnmap-dnsFull.txt | grep -oP "[0-9\.]+\.[0-9\.]+\.[0-9\.]+\.[0-9\.]+" | tee <%= @settings["rootDir"] %>/scans/initnmap-dnsIPs.txt
         - DC nmap port 389:
           - tmux select-pane -T 'DC nmap port 389' -t "initialize:DC.4"; clear
+          - cd <%= @settings["rootDir"] %>/scans && clear
           - nmap -p 389 --open -iL ipList.txt --excludefile exclude.txt | tee <%= @settings["rootDir"] %>/scans/initnmap-dcFull.txt; echo -e "\n\n\033[1;32mPort 389 is open on:\033[1;0m"; grep -B 4 "tcp open" <%= @settings["rootDir"] %>/scans/initnmap-dcFull.txt | grep -oP "[0-9\.]+\.[0-9\.]+\.[0-9\.]+\.[0-9\.]+" | tee <%= @settings["rootDir"] %>/scans/initnmap-dcIPs.txt
   - run: 
       layout: 8317,195x44,0,0[195x36,0,0{97x36,0,0,13,97x36,98,0,24},195x7,0,37{97x7,0,37,25,97x7,98,37,26}]
