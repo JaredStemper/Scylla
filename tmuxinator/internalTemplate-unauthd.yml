@@ -111,7 +111,7 @@ windows:
           - <%= @settings["prefill"] %> 'pipenv run zerologon_tester.py $DC-netbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/zerologon.txt'; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
         - blueKeep:
           - tmux select-pane -T 'eternalBlue' -t "unauthd:bigName.1"
-          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/kerberos.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use scanner/rdp/cve_2019_0708_bluekeep; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/kerberos.lst; spool <%= @settings["rootDir"] %>/scans/blueKeep.txt; run; spool off; exit"; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/rdp.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use scanner/rdp/cve_2019_0708_bluekeep; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/rdp.lst; spool <%= @settings["rootDir"] %>/scans/blueKeep.txt; run; spool off; exit"; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
         - eternalBlue:
           - tmux select-pane -T 'eternalBlue' -t "unauthd:bigName.2"
           - cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use scanner/smb/smb_ms17_010; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst; spool <%= @settings["rootDir"] %>/scans/eternalBlue.txt; run; spool off; exit"; echo -e "\e[0;31mAVOID RUNNING ON CRITICAL SYSTEMS\033[0m"
