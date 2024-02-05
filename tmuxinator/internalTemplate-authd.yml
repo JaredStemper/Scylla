@@ -83,9 +83,9 @@ windows:
       panes:
         - bloodhound:
           - tmux select-pane -T 'bloodhound' -t "authd:bloodhound.0"
-          - cd /opt/nomad-tools/BloodHound.py || git clone https://github.com/fox-it/BloodHound.py.git /opt/nomad-tools/Bloodhound.py
+          - cd /opt/nomad-tools/BloodHound.py || git clone https://github.com/fox-it/BloodHound.py.git /opt/nomad-tools/BloodHound.py
           - cd <%= @settings["rootDir"] %>/loot/bloodhound
-          - python3 /opt/nomad-tools/Bloodhound.py/bloodhound.py -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -c all -d <%= @settings["domain"] %>
+          - python3 /opt/nomad-tools/BloodHound.py/bloodhound.py -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -c all -d <%= @settings["domain"] %>
   - ADCS: 
       pre: mkdir -p <%= @settings["rootDir"] %>/loot/ADCS && cd <%= @settings["rootDir"] %>/loot/ADCS
       panes:
