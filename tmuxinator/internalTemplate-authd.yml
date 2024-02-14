@@ -54,7 +54,7 @@ windows:
         - MAQ:
           - tmux select-pane -T 'MAQ' -t "authd:LDAP.4"
           - crackmapexec ldap $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M MAQ | tee <%= @settings["rootDir"] %>/scans/ldap/MAQ.txt
-        MAQ (costa tool check):
+        - MAQ (costa tool check):
           - tmux select-pane -T 'MAQ (costa tool check)' -t "authd:LDAP.5"
           - cd /opt/nomad-tools/MAQCheck || (git clone https://github.com/sn8k3sec/MAQCheck.git /opt/nomad-tools/MAQCheck && cd /opt/nomad-tools/MAQCheck && pipenv install
           - pipenv run maqcheck.py --username '<%= @settings["user"] %>' --password '<%= @settings["pass"] %>' --domain <%= @settings["domain"] %> | tee <%= @settings["rootDir"] %>/scans/ldap/MAQ-costaCheck.txt
