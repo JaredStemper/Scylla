@@ -67,11 +67,11 @@ windows:
         - cme:
           - tmux select-pane -T 'cme' -t "unauthd:SMB/nullSesh.0"
           - cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst && crackmapexec smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst -u '' -p '' | tee ./cme.txt &&  cat cme.txt | grep -ia 'signing:false' | awk '{print $2}' | tee ./smb_signing_not_required.txt && cat cme.txt | grep -ia 'smbv1:true' | awk '{print $2}' | tee ./smbv1_enabled.txt && cat cme.txt | grep -ia 'Windows' | grep -av -E 'Windows 8|Windows 1|Build 9600|Server 201|Server 202' | awk '{print $2 " - " $6 " " $7 " " $8 " " $9}' | tee ./unsupported.txt && cat cme.txt | grep -a '+' | tee ./smb_null_logon.txt && clear && for i in smb_null_logon.txt smb_signing_not_required.txt smbv1_enabled.txt unsupported.txt; do echo $i; cat $i; done && wc -l *
-        - enum4linux (DCs only):
+        - enum4linux ~ DCs only:
           - tmux select-pane -T 'enum4linux (DCs only)' -t "unauthd:SMB/nullSesh.1"
           - cd <%= @settings["rootDir"] %>/scans/smb/enum4linux
           - for i in $(cat <%= @settings["rootDir"] %>/dcIP.txt); do enum4linux $i; done | tee /RSM/scans/smb/enum4linux/enum4linux-DC.txt
-        - enum4linux (all null sessions):
+        - enum4linux ~ all null sessions:
           - tmux select-pane -T 'enum4linux (all null sessions)' -t "unauthd:SMB/nullSesh.2"
           - cd <%= @settings["rootDir"] %>/scans/smb/enum4linux
           # alternatively could wait and run against smb_null_logon file from cme

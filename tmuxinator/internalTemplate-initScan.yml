@@ -42,7 +42,7 @@ windows:
   - DC: 
       layout: af62,113x25,0,0[113x15,0,0{56x15,0,0,12,56x15,57,0,1},113x9,0,16{38x9,0,16,13,36x9,39,16,20,37x9,76,16,21}]
       panes:
-        - set DC (manual):
+        - set DC ~ manual:
           - tmux select-pane -T 'set DC (manual)' -t "initialize:DC.0"
           - nano <%= @settings["rootDir"] %>/dcIP.txt
         - etc/resolv:
