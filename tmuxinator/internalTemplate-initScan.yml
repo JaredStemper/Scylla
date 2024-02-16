@@ -52,7 +52,7 @@ windows:
           - tmux select-pane -T 'dig' -t "initialize:DC.2"
           - dig any _kerberos._tcp.<%= @settings["domain"] %>
         - DNS nmap port 53:
-          - tmux select-pane -T 'DNS nmap port 53' -t "initialize:DC.3"; 
+          - tmux select-pane -T 'DNS nmap port 53' -t "initialize:DC.3"; clear
           - cd <%= @settings["rootDir"] %>/scans && clear
           - nmap -p 53 --open -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile <%= @settings["rootDir"] %>/exclude.txt | tee <%= @settings["rootDir"] %>/scans/initnmap-dnsFull.txt; echo -e "\033[1;32mPort 53 is open on:\033[1;0m"; grep -B 4 "tcp open" <%= @settings["rootDir"] %>/scans/initnmap-dnsFull.txt | grep -oP "[0-9\.]+\.[0-9\.]+\.[0-9\.]+\.[0-9\.]+" | tee <%= @settings["rootDir"] %>/scans/initnmap-dnsIPs.txt
         - DC nmap port 389:
