@@ -22,23 +22,23 @@ on_project_start: mkdir -p /opt/nomad-tools <%= @settings["rootDir"] %>/scans/nm
 # create and cd into client/testing folder before running
 windows:
   - scanning: 
-    panes:
-      - masscan:
-        - tmux select-pane -T 'masscan' -t "unauthd:scanning.0"
-        - cd <%= @settings["rootDir"] %>/scans/masscanPortList && ls
-      - nmap top5000 tcp:
-        - tmux select-pane -T 'nmap top4000 tcp' -t "unauthd:scanning.1"
-        - echo <%= @settings["nomadPass"] %> | sudo -S su
-        - <%= @settings["prefill"] %> "sudo nmap -sC -sV -T4 -sS -vvv --top-ports 4000 -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile /RSM/exclude.txt -oA <%= @settings["rootDir"] %>/scans/nmap/top4000-tcp"; clear
-      - nmap top500 udp:
-        - tmux select-pane -T 'nmap top500 udp' -t "unauthd:scanning.2"
-        - echo <%= @settings["nomadPass"] %> | sudo -S su
-        - <%= @settings["prefill"] %> "sudo nmap -sC sV -T4 -sU -vvv --top-ports 500 -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile /RSM/exclude.txt -oA <%= @settings["rootDir"] %>/scans/nmap/top500-udp"; clear
-      - nmap all tcp ports after 4000:
-        - tmux select-pane -T 'nmap all tcp ports after 4000' -t "unauthd:scanning.3"
-        - nmap -oG - -v --top-ports 4000 | awk -F'[);]' '/Ports/{print $2}' > <%= @settings["rootDir"] %>/scans/nmap/LIST-top-4000-ports.txt
-        - echo <%= @settings["nomadPass"] %> | sudo -S su
-        - <%= @settings["prefill"] %> 'sudo nmap -sC -sV -T4 -O -sS -vvv -p- -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile /RSM/exclude.txt --exclude-ports $(cat <%= @settings["rootDir"] %>scans/nmap/LIST-top-4000-ports.txt) -oA <%= @settings["rootDir"] %>/scans/all-tcp-after-4000'; clear
+      panes:
+        - masscan:
+          - tmux select-pane -T 'masscan' -t "unauthd:scanning.0"
+          - cd <%= @settings["rootDir"] %>/scans/masscanPortList && ls
+        - nmap top5000 tcp:
+          - tmux select-pane -T 'nmap top4000 tcp' -t "unauthd:scanning.1"
+          - echo <%= @settings["nomadPass"] %> | sudo -S su
+          - <%= @settings["prefill"] %> "sudo nmap -sC -sV -T4 -sS -vvv --top-ports 4000 -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile /RSM/exclude.txt -oA <%= @settings["rootDir"] %>/scans/nmap/top4000-tcp"; clear
+        - nmap top500 udp:
+          - tmux select-pane -T 'nmap top500 udp' -t "unauthd:scanning.2"
+          - echo <%= @settings["nomadPass"] %> | sudo -S su
+          - <%= @settings["prefill"] %> "sudo nmap -sC sV -T4 -sU -vvv --top-ports 500 -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile /RSM/exclude.txt -oA <%= @settings["rootDir"] %>/scans/nmap/top500-udp"; clear
+        - nmap all tcp ports after 4000:
+          - tmux select-pane -T 'nmap all tcp ports after 4000' -t "unauthd:scanning.3"
+          - nmap -oG - -v --top-ports 4000 | awk -F'[);]' '/Ports/{print $2}' > <%= @settings["rootDir"] %>/scans/nmap/LIST-top-4000-ports.txt
+          - echo <%= @settings["nomadPass"] %> | sudo -S su
+          - <%= @settings["prefill"] %> 'sudo nmap -sC -sV -T4 -O -sS -vvv -p- -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile /RSM/exclude.txt --exclude-ports $(cat <%= @settings["rootDir"] %>scans/nmap/LIST-top-4000-ports.txt) -oA <%= @settings["rootDir"] %>/scans/all-tcp-after-4000'; clear
   - services: 
       panes:
         - dns:
