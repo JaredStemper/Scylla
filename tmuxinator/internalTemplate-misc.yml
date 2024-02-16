@@ -26,35 +26,35 @@ on_project_start: mkdir -p /opt/nomad-tools
 windows:
   - tools: cd /opt/nomad-tools
   - msf: 
-    layout: tiled
-    panes:
-      - msf1: 
-        - tmux select-pane -T 'msf1' -t "misc:msf.0"
-        - msfconsole
-        - workspace -a <%= @settings['msfWorkspace'] %>
-      - msf2: 
-        - tmux select-pane -T 'msf2' -t "misc:msf.1"
-        - msfconsole
-        - workspace -a <%= @settings['msfWorkspace'] %>
+      layout: tiled
+      panes:
+        - msf1: 
+          - tmux select-pane -T 'msf1' -t "misc:msf.0"
+          - msfconsole
+          - workspace -a <%= @settings['msfWorkspace'] %>
+        - msf2: 
+          - tmux select-pane -T 'msf2' -t "misc:msf.1"
+          - msfconsole
+          - workspace -a <%= @settings['msfWorkspace'] %>
   - gowitness: 
-    panes: 
-      - gowitness:
-        - tmux select-pane -T 'gowitness' -t "misc:gowitness.0"
-        - cd <%= @settings["rootDir"] %>/scans/masscanPortList/ && cat http.lst https.lst p80* p9* > webservices.txt
-        - go install github.com/sensepost/gowitness@latest
-        - gowitness file -f webservices.txt
-        - gowitness server
+      panes: 
+        - gowitness:
+          - tmux select-pane -T 'gowitness' -t "misc:gowitness.0"
+          - cd <%= @settings["rootDir"] %>/scans/masscanPortList/ && cat http.lst https.lst p80* p9* > webservices.txt
+          - go install github.com/sensepost/gowitness@latest
+          - gowitness file -f webservices.txt
+          - gowitness server
   - nessus: 
-    panes:
-      - nessus: 
-        - tmux select-pane -T 'nessus' -t "misc:nessus.0"
-        - echo <%= @settings['nomadPass'] %> | sudo -S su
-        - sudo su
-        # set up conditional to determine if nessusKey has been supplied. 
-        #    if it has: run setup. if it hasn't: prefill the command"
-        - if [ "<%= @settings['nessusKey'] %>" = "NESSUSKEY" ]; then <%= @settings['prefill'] %> "service nessusd stop && /opt/nessus/sbin/nessuscli fetch --register NESSUSKEYVALUE %> && /opt/nessus/sbin/nessuscli update --all && service nessusd start"; clear; echo -e "\e[0;33mReplace the NESSUSKEYVALUE\033[0m"; else /opt/nessus/sbin/nessuscli fetch --register <%= @settings['nessusKey'] %> && /opt/nessus/sbin/nessuscli update --all && service nessusd start; fi
+      panes:
+        - nessus: 
+          - tmux select-pane -T 'nessus' -t "misc:nessus.0"
+          - echo <%= @settings['nomadPass'] %> | sudo -S su
+          - sudo su
+          # set up conditional to determine if nessusKey has been supplied. 
+          #    if it has: run setup. if it hasn't: prefill the command"
+          - if [ "<%= @settings['nessusKey'] %>" = "NESSUSKEY" ]; then <%= @settings['prefill'] %> "service nessusd stop && /opt/nessus/sbin/nessuscli fetch --register NESSUSKEYVALUE %> && /opt/nessus/sbin/nessuscli update --all && service nessusd start"; clear; echo -e "\e[0;33mReplace the NESSUSKEYVALUE\033[0m"; else /opt/nessus/sbin/nessuscli fetch --register <%= @settings['nessusKey'] %> && /opt/nessus/sbin/nessuscli update --all && service nessusd start; fi
   - validateCreds: 
-    panes:
-      - validateCreds: 
-        - tmux select-pane -T 'validateCreds' -t "misc:validateCreds.0"
-        - <%= @settings['prefill'] %> 'smbclient.py <%= @settings['domain'] %>/<%= @settings['providedUser'] %>:'<%= @settings['providedPass'] %>'@$(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1)'
+      panes:
+        - validateCreds: 
+          - tmux select-pane -T 'validateCreds' -t "misc:validateCreds.0"
+          - <%= @settings['prefill'] %> 'smbclient.py <%= @settings['domain'] %>/<%= @settings['providedUser'] %>:'<%= @settings['providedPass'] %>'@$(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1)'
