@@ -23,7 +23,7 @@ Additionally, as a large history can be kept when organizing testing through Tmu
 To help avoid surprises - below is a comprehensive list of what is ran automatically vs manually at various stages, and what steps need to happen before the start of each stage.
 
 ### InitScan:
-* Note - this scan expects only two files: `/RSM/ipList.txt` and `/RSM/exclude.txt`. Both can be formatted as any typical nmap/masscan input file.
+* Note - this scan expects only two files: `/<rootDir>/ipList.txt` and `/<rootDir>/exclude.txt`. Both can be formatted as any typical nmap/masscan input file.
 * Manual:
   * masscan, portsort, setting DC
 * Automatic:
@@ -33,7 +33,7 @@ To help avoid surprises - below is a comprehensive list of what is ran automatic
   * install and configuring tmux, pipenv, dnsrecon, smbmap, docker, and msf db
 
 ### Unauthenticated:
-* Note - this stage expects a masscan to have been ran and then the portsort utility having created a directory under `/RSM/scans/Lists` __AND__ for a DC or multiple DCs to have been set under `/RSM/dcIP.txt`.
+* Note - this stage expects a masscan to have been ran and then the portsort utility having created a directory under `/<rootDir>/scans/Lists` __AND__ for a DC or multiple DCs to have been set under `/<rootDir>/dcIP.txt`.
 * Manual:
   * nmap, asreproast, zerologon
 * Automatic:
