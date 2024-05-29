@@ -1,14 +1,14 @@
-# mux
+# Scylla
 
 ## What is it?
 
-mux is a tool built on Tmux and Tmuxinator to orchestrate and automate testing of internal networks. 
+Scylla is a tool built on Tmux and Tmuxinator to orchestrate and automate testing of internal networks. 
 
 Tmux can be used to run simultaneous terminal commands and organize testing under a single SSH session; Tmuxinator is a tool that lets you automatically set up those windows and commands. 
 
 Through an advanced configuration, it is possible to prepare and execute tools and commands in an exact manner- which would allow testers to focus on the interesting portions of their work and spend less time manually enumerating.
 
-For testing sensitive systems or utilizing potentially dangerous tools (common examples are zerologon, Eternal Blue, and BlueKeep), we instead use mux to help organize and prepare the commands ahead of time. The tester remains in control the whole time!
+For testing sensitive systems or utilizing potentially dangerous tools (common examples are zerologon, Eternal Blue, and BlueKeep), we instead use Scylla to help organize and prepare the commands ahead of time. The tester remains in control the whole time!
 
 Additionally, as a large history can be kept when organizing testing through Tmux, we have established automatic logging in order to avoid any potential loss of data. This is also highly beneficial in the instance that a client wishes to understand exactly what commands were ran, or in the occasion that a tester's access to a nomad will be cut off but they wish to review the exact steps of testing for reporting purposes.
 
@@ -29,7 +29,7 @@ To help avoid surprises - below is a comprehensive list of what is ran automatic
 * Automatic:
   * locating DC (/etc/resolv, dig, nmap)
   * validate nomad IP
-  * preparing all other mux commands
+  * preparing all other Scylla commands
   * install and configuring tmux, pipenv, dnsrecon, smbmap, docker, and msf db
 
 ### Unauthenticated:
