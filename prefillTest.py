@@ -14,21 +14,6 @@ class App:
 		args = parser.parse_args()
 
 		combined_args = ' '.join(args.cmd)
-		
-		#parser = argparse.ArgumentParser(
-		#	prog="arsenal",
-		#	description='alfred v1 - Pentest command launcher',
-		#	epilog=examples,
-		#	formatter_class=argparse.RawTextHelpFormatter
-		#)
-		#
-		#group_out = parser.add_argument_group('output [default = prefill]')
-		#group_out.add_argument('-p', '--print', action='store_true', help='Print the result')
-		#group_out.add_argument('-o', '--outfile', action='store', help='Output to file')
-		#group_out.add_argument('-x', '--copy', action='store_true', help='Output to clipboard')
-		#group_out.add_argument('-e', '--exec', action='store_true', help='Execute cmd')
-		#group_out.add_argument('-t', '--tmux', action='store_true', help='Send command to tmux panel')
-		#group_out.add_argument('-c', '--check', action='store_true', help='Check the existing commands')
 
 		return combined_args
 
