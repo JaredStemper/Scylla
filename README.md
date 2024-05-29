@@ -66,10 +66,8 @@ To help avoid surprises - below is a comprehensive list of what is ran automatic
   * secretsdump, passTheHash, lsassy, DonPAPI
 
 ## Get started / Installation
-
-MAKE SURE TO RUN THIS **_ONLY_** AFTER MOUNTING NOMAD. Input the sudo password afterwards, not prepended to avoid permissions issues.
 ```bash
-curl https://raw.githubusercontent.com/JaredStemper/mux/main/nomadConfig.sh --clobber -o /RSM/nomadConfig.sh --insecure && /bin/bash /RSM/nomadConfig.sh
+curl https://raw.githubusercontent.com/JaredStemper/mux/main/nomadConfig.sh --clobber -o /<rootDir>/nomadConfig.sh --insecure && /bin/bash /<rootDir>/nomadConfig.sh
 ```
 
 ## Overview of files
@@ -143,5 +141,4 @@ Pro tips:
 
 * Add instructions for envs that can't hit internet
 * Organizing all port/IP information through the Metasploit DB instead of text files
-* Automated updates to Dojo test cases when commands have successfully ran
 * provide advanced details of how to read/edit configuration files
