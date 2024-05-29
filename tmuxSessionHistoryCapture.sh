@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOG_DIR="/RSM/tmuxLogs"
+LOG_DIR="./tmuxLogs"
 #LOG_DIR="/tmp/tmuxLogs"
 
 # Create log directory if it doesn't exist
