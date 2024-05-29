@@ -1,5 +1,5 @@
 name: misc
-root: /RSM/
+root: <%= @settings["rootDir"] %>/
 
 #Notes:
 #   - test setting default for variable at top vs passing it in 
@@ -8,23 +8,24 @@ root: /RSM/
 
 # Variables/Defaults are set here
 <%
-  @settings["prefill"] ||= "python3 /RSM/mux/prefillTest.py"
+  @settings["prefill"] ||= "python3 /tmp/Scylla/prefillTest.py"
   @settings["domain"] ||= "domain.local"
   @settings["providedUser"] ||= "user"
   @settings["providedPass"] ||= "pass"
-  @settings["nomadPass"] ||= "nomadPass"
+  @settings["sudoPass"] ||= "sudoPass"
   @settings["nessusKey"] ||= "NESSUSKEY"
   @settings["msfWorkspace"] ||= "newClient"
     #this must be unique to avoid potential conflict with prior testers
   @settings["rootDir"] ||= "/RSM"
-  ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local user=Sally pass="s8g9h3J## nessusKey=NESSUSKEYVALUE"
+  @settings["toolDir"] ||= "/tmp"
+  ### example of starting project with arguments: tmuxinator start internalTemplate domain=targetDomain.local user=Sally pass="s8g9h3J## nessusKey=NESSUSKEYVALUE"
 %>
 
-on_project_start: mkdir -p /opt/nomad-tools
+on_project_start: mkdir -p <%= @settings["toolDir"] %>
 
 # create and cd into client/testing folder before running
 windows:
-  - tools: cd /opt/nomad-tools
+  - tools: cd <%= @settings["toolDir"] %>
   - msf: 
       layout: tiled
       panes:
@@ -48,7 +49,7 @@ windows:
       panes:
         - nessus: 
           - tmux select-pane -T 'nessus' -t "misc:nessus.0"
-          - echo <%= @settings['nomadPass'] %> | sudo -S su
+          - echo <%= @settings['sudoPass'] %> | sudo -S su
           - sudo su
           # set up conditional to determine if nessusKey has been supplied. 
           #    if it has: run setup. if it hasn't: prefill the command"

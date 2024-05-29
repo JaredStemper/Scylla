@@ -1,9 +1,9 @@
 name: localAdmin
-root: /RSM/
+root: <%= @settings["rootDir"] %>/
 
 # Variables/Defaults are set here
 <%
-  @settings["prefill"] ||= "python3 /RSM/mux/prefillTest.py"
+  @settings["prefill"] ||= "python3 /tmp/Scylla/prefillTest.py"
   @settings["domain"] ||= "domain.local"
   @settings["user"] ||= "user"
     #modify this value before running config
@@ -12,7 +12,8 @@ root: /RSM/
   @settings["msfWorkspace"] ||= "newClient"
     #this must be unique to avoid potential conflict with prior testers
   @settings["rootDir"] ||= "/RSM"
-  ### example of starting project with arguments: tmuxinator start internalTemplate domain=rsmus.local"
+  @settings["toolDir"] ||= "/tmp"
+  ### example of starting project with arguments: tmuxinator start internalTemplate domain=targetDomain.local"
 %>
 
 # create and cd into client/testing folder before running
@@ -40,5 +41,5 @@ windows:
       panes:
         - DonPAPI:
           - tmux select-pane -T 'DonPAPI' -t "localAdmin:DonPAPI.0"
-          - cd /opt/nomad-tools/DonPAPI || (git clone https://github.com/login-securite/DonPAPI.git /opt/nomad-tools/DonPAPI && cd /opt/nomad-tools/DonPAPI && pipenv install)
+          - cd <%= @settings["toolDir"] %>/DonPAPI || (git clone https://github.com/login-securite/DonPAPI.git <%= @settings["toolDir"] %>/DonPAPI && cd <%= @settings["toolDir"] %>/DonPAPI && pipenv install)
           - <%= @settings["prefill"] %> pipenv run python3 DonPAPI.py DC-NetBIOS.'<%= @settings["domain"] %>/<%= @settings["pass"] %>:<%= @settings["pass"] %>'@$(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1); clear

@@ -1,7 +1,7 @@
 # /home/kali/.config/tmuxinator/externalTemplate.yml
 
 name: externalTemplate
-root: /mnt/hgfs/projects/work/a-externals/
+root: <%= @settings["rootDir"] %>/
 
 #Note:
 #   -
@@ -9,18 +9,20 @@ root: /mnt/hgfs/projects/work/a-externals/
 
 # Variables/Defaults are set here
 <%
-  @settings["prefill"] ||= "python3.11 /mnt/hgfs/projects/work/tools/tmuxinatorTool/prefill/prefillTest.py"
+  @settings["prefill"] ||= "python3.11 /tmp/Scylla/prefillTest.py"
   @settings["workspace"] ||= "newClient"
   @settings["domain"] ||= "domain.local"
-  ### example of starting project with arguments: tmuxinator start externalTemplate domain=rsmus.local client="buhbuh"
+  @settings["rootDir"] ||= "/tmp"
+  @settings["toolDir"] ||= "/tmp"
+  ### example of starting project with arguments: tmuxinator start externalTemplate domain=targetDomain.local workspace="buhbuh"
 %>
 
-on_project_start: mkdir -p <%= @settings["client"] %>
+on_project_start: mkdir -p <%= @settings["workspace"] %>
 
-# create and cd into client/testing folder before running
+# create and cd into workspace/testing folder before running
 windows:
   - auto:
-      root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
+      root: <%= @settings["rootDir"] %>/<%= @settings["workspace"] %>
       panes:
         - reconFTW:
           - tmux select-pane -T 'reconFTW' -t "externalTemplate:auto.0"
@@ -29,33 +31,33 @@ windows:
           - tmux select-pane -T 'amass' -t "externalTemplate:auto.1"
           - <%= @settings["prefill"] %> 'amass --help'; clear
   - enum:
-      root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
+      root: <%= @settings["rootDir"] %>/<%= @settings["workspace"] %>
       panes:
         # additional warning text added for user when pre-populating potentially dangerous commands
         - gobuster:
           - tmux select-pane -T 'gobuster'; clear -t "externalTemplate:enum.0"
-          - gobuster dir -u http://<%= @settings["domain"] %> -w /opt/SecLists/Discovery/Web-Content/common.txt
+          - <%= @settings["prefill"] %> gobuster dir -u http://<%= @settings["domain"] %> -w <%= @settings["toolDir"] %>/SecLists/Discovery/Web-Content/common.txt
         - subfinder:
           - tmux select-pane -T 'subfinder'; clear -t "externalTemplate:enum.1"
           - subfinder -d <%= @settings["domain"] %>
   - DNSSEC:
-      root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
+      root: <%= @settings["rootDir"] %>/<%= @settings["workspace"] %>
       panes:
         - dnsrecon:
           - tmux select-pane -T 'dnsrecon'; clear -t "externalTemplate:DNSSEC.0"
-          - dnsrecond -d <%= @settings["domain"] %>
+          - dnsrecon -d <%= @settings["domain"] %>
         - testssl:
           - tmux select-pane -T 'testssl'; clear -t "externalTemplate:DNSSEC.1"
           - testssl <%= @settings["domain"] %>
   - cloud:
-      root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
+      root: <%= @settings["rootDir"] %>/<%= @settings["workspace"] %>
       panes:
         - cloud_enum:
           - tmux select-pane -T 'cloud_enum'; clear -t "externalTemplate:cloud.0"
-          - cd /mnt/hgfs/projects/work/tools/cloud_enum/
-          - <%= @settings["prefill"] %> python3.11 ./cloud_enum.py -l /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>/cloud_enum.txt -k <%= @settings["domain"] %> --disable-gcp | tee /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>/cloud_enum-doubleCheck.txt; clear
-  - scanning:
-      root: /mnt/hgfs/projects/work/a-externals/<%= @settings["client"] %>
+          - cd <%= @settings["toolDir"] %>/cloud_enum/
+          - <%= @settings["prefill"] %> python3.11 ./cloud_enum.py -l <%= @settings["rootDir"] %>/<%= @settings["workspace"] %>/cloud_enum.txt -k <%= @settings["domain"] %> --disable-gcp | tee <%= @settings["rootDir"] %>/<%= @settings["workspace"] %>/cloud_enum-doubleCheck.txt; clear
+  - portScanning:
+      root: <%= @settings["rootDir"] %>/<%= @settings["workspace"] %>
       panes:
         - masscan:
           - tmux select-pane -T 'masscan' -t "externalTemplate:scanning.0"

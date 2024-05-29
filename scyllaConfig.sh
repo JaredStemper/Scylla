@@ -18,13 +18,13 @@ sudo gem install tmuxinator
 echo "alias mux=tmuxinator; alias j='cd ..'">>~/.zshrc && echo "setopt append_history; setopt hist_ignore_dups" >> ~/.zshrc && source ~/.zshrc
 echo "alias mux=tmuxinator; alias j='cd ..'">>~/.bash_aliases && echo "setopt append_history; setopt hist_ignore_dups" >> ~/.zshrc && source ~/.bash_aliases
 #grab tmuxinator files
-git clone https://github.com/JaredStemper/Scylla.git
-cp ./Scylla/tmux.conf ~/.tmux.conf
+git clone https://github.com/JaredStemper/Scylla.git /tmp/Scylla
+cp /tmp/Scylla/tmux.conf ~/.tmux.conf
 
 #enable usage of TIOCSTI for prefill tool to work (more details https://bugs.archlinux.org/task/77745 and https://lore.kernel.org/linux-hardening/20221015041626.1467372-2-keescook@chromium.org/
 sudo sysctl -w dev.tty.legacy_tiocsti=1
 
-#create crontab to log all data captured in tmux currently on nomad every 15 minutes
-(crontab -l ; echo "0,15,30,45 * * * * /bin/bash /RSM/mux/tmuxSessionHistoryCapture.sh") | crontab -
+#create crontab to log all data captured in tmux currently on testing device every 15 minutes
+(crontab -l ; echo "0,15,30,45 * * * * /bin/bash /tmp/mux/tmuxSessionHistoryCapture.sh") | crontab -
 
-python3 ./Scylla/prefillTest.py "mux start -p ./Scylla/tmuxinator/internalTemplate-initScan.yml msfWorkspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY nomadPass='nomadPass'"
+python3 /tmp/Scylla/prefillTest.py "mux start -p /tmp/Scylla/tmuxinator/internalTemplate-initScan.yml msfWorkspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY sudoPass='sudoPass'"
