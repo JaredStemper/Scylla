@@ -10,7 +10,7 @@ Through an advanced configuration, it is possible to prepare and execute tools a
 
 For testing sensitive systems or utilizing potentially dangerous tools (common examples are zerologon, Eternal Blue, and BlueKeep), we instead use Scylla to help organize and prepare the commands ahead of time. The tester remains in control the whole time!
 
-Additionally, as a large history can be kept when organizing testing through Tmux, we have established automatic logging in order to avoid any potential loss of data. This is also highly beneficial in the instance that a client wishes to understand exactly what commands were ran, or in the occasion that a tester's access to a nomad will be cut off but they wish to review the exact steps of testing for reporting purposes.
+Additionally, as a large history can be kept when organizing testing through Tmux, we have established automatic logging in order to avoid any potential loss of data. This is also highly beneficial in the instance that a client wishes to understand exactly what commands were ran, or in the occasion that a tester's access to the testing device will be cut off but they wish to review the exact steps of testing for reporting purposes.
 
 [Tmux](https://github.com/tmux/tmux/wiki): A terminal tool used to concurrently run and switch between several programs in one terminal.
 * Here is a cheatsheet for [Tmux commands](https://tmuxcheatsheet.com/)
@@ -28,7 +28,7 @@ To help avoid surprises - below is a comprehensive list of what is ran automatic
   * masscan, portsort, setting DC
 * Automatic:
   * locating DC (/etc/resolv, dig, nmap)
-  * validate nomad IP
+  * validate device IP
   * preparing all other Scylla commands
   * install and configuring tmux, pipenv, dnsrecon, smbmap, docker, and msf db
 
@@ -66,23 +66,21 @@ To help avoid surprises - below is a comprehensive list of what is ran automatic
   * secretsdump, passTheHash, lsassy, DonPAPI
 
 ## Get started / Installation
-
-MAKE SURE TO RUN THIS **_ONLY_** AFTER MOUNTING NOMAD. Input the sudo password afterwards, not prepended to avoid permissions issues.
 ```bash
-curl https://raw.githubusercontent.com/JaredStemper/mux/main/nomadConfig.sh --clobber -o /RSM/nomadConfig.sh --insecure && /bin/bash /RSM/nomadConfig.sh
+curl https://raw.githubusercontent.com/JaredStemper/mux/main/scyllaConfig.sh --clobber -o /<rootDir>/scyllaConfig.sh --insecure && /bin/bash /<rootDir>/scyllaConfig.sh
 ```
 
 ## Overview of files
 
 tmuxinator - where the magic happens. Full guide will be included in separate word doc. main thing to remember is order (init-scan, unauthd, misc, authd, local-admin)
 
-nomadConfig.sh - script to pull and organize all the files for this project into the nomad automatically (intended to be ran after ensuring nomad mounting is complete).
+scyllaConfig.sh - script to pull and organize all the files for this project into the testing device automatically.
 
 prefillTest.py - python script that grabs text and places it onto the command line so that the user can choose to modify it or more carefully track it's runtime.
 
 tmux.conf - the default tmux configurations are somewhat lacking. This helps bridge the gap and adds a lot of power to tmux usage. (highly recommended to read through and understand all capabilities).
 
-tmuxSessionHistoryCapture.sh - script used to periodically log all data currently found in the tmux server. This is especially useful when finishing a project and needing the ability to review every command that was ran once a nomad is disconnected from the client network.
+tmuxSessionHistoryCapture.sh - script used to periodically log all data currently found in the tmux server. This is especially useful when finishing a project and needing the ability to review every command that was ran once a testing device is disconnected from the client network.
 
 ## Learning Tmux
 
@@ -143,5 +141,4 @@ Pro tips:
 
 * Add instructions for envs that can't hit internet
 * Organizing all port/IP information through the Metasploit DB instead of text files
-* Automated updates to Dojo test cases when commands have successfully ran
 * provide advanced details of how to read/edit configuration files
