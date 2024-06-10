@@ -109,7 +109,7 @@ windows:
           - tmux select-pane -T 'zerologon' -t "unauthd:bigName.0"
           - cd <%= @settings["toolDir"] %>/CVE-2020-1472 || git clone https://github.com/SecuraBV/CVE-2020-1472.git <%= @settings["toolDir"] %>/CVE-2020-1472 && cd <%= @settings["toolDir"] %>/CVE-2020-1472/ && pipenv install
           - dig any _kerberos._tcp.<%= @settings["domain"] %>
-          - <%= @settings["prefill"] %> 'pipenv run zerologon_tester.py $DC-netbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/zerologon.txt'; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
+          - <%= @settings["prefill"] %> 'pipenv run zerologon_tester.py $DCnetbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/zerologon.txt'; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
         - blueKeep:
           - tmux select-pane -T 'blueKeep' -t "unauthd:bigName.1"
           - cat <%= @settings["rootDir"] %>/scans/masscanPortList/rdp.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use scanner/rdp/cve_2019_0708_bluekeep; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/rdp.lst; spool <%= @settings["rootDir"] %>/scans/blueKeep.txt; run; spool off; exit"; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
