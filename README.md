@@ -67,7 +67,7 @@ To help avoid surprises - below is a comprehensive list of what is ran automatic
 
 ## Get started / Installation
 ```bash
-curl https://raw.githubusercontent.com/JaredStemper/mux/main/scyllaConfig.sh --clobber -o /<rootDir>/scyllaConfig.sh --insecure && /bin/bash /<rootDir>/scyllaConfig.sh
+curl https://raw.githubusercontent.com/JaredStemper/Scylla/main/scyllaConfig.sh --clobber -o /<rootDir>/scyllaConfig.sh --insecure && /bin/bash /<rootDir>/scyllaConfig.sh
 ```
 
 ## Overview of files
