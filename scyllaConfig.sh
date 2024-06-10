@@ -27,4 +27,4 @@ sudo sysctl -w dev.tty.legacy_tiocsti=1
 #create crontab to log all data captured in tmux currently on testing device every 15 minutes
 (crontab -l ; echo "0,15,30,45 * * * * /bin/bash /tmp/mux/tmuxSessionHistoryCapture.sh") | crontab -
 
-python3 /tmp/Scylla/prefillTest.py "mux start -p /tmp/Scylla/tmuxinator/internalTemplate-initScan.yml msfWorkspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY sudoPass='sudoPass'"
+python3 /tmp/Scylla/prefillTest.py "tmuxinator start -p /tmp/Scylla/tmuxinator/internalTemplate-initScan.yml msfWorkspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY sudoPass='sudoPass'"
