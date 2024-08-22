@@ -57,7 +57,7 @@ To help avoid surprises - below is a comprehensive list of what is ran automatic
   * kerberoasting, findDelegations
   * samTheAdmin check
   * bloodhoud
-  * ADCS (crackmapexec, certipy)
+  * ADCS (crackmapexec/netexec, certipy)
   * PetitPotam, PrintNightmare, GPP passwords
 
 ### LocalAdmin:
