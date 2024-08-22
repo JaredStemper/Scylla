@@ -78,8 +78,18 @@ fi
 # prepare tmuxinator for usage
 sudo apt update && sudo apt install vim
 sudo gem install tmuxinator
-echo "alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dups" >> ~/.zshrc && source ~/.zshrc
-echo "alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dups" >> ~/.bash_aliases && source ~/.bash_aliases
+
+# add shell-specific config
+local user_shell=$(echo $SHELL)
+if [ "$user_shell" == "/bin/bash" ]; then
+    echo "alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dups" >> ~/.bash_aliases && source ~/.bash_aliases 2>/dev/null
+    # Add your bash-specific actions here
+elif [ "$user_shell" == "/bin/zsh" ]; then
+    echo "alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dups" >> ~/.zshrc && source ~/.zshrc 2>/dev/null
+else
+    echo "if not using /bin/bash or /bin/zsh you will need to add the following to your shell profile for ease of use in tmux"
+    echo "      alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dup"
+fi
 
 #enable usage of TIOCSTI for prefill tool to work (more details https://bugs.archlinux.org/task/77745 and https://lore.kernel.org/linux-hardening/20221015041626.1467372-2-keescook@chromium.org/
 sudo sysctl -w dev.tty.legacy_tiocsti=1
