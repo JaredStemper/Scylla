@@ -68,7 +68,7 @@ windows:
       panes:
         - cme:
           - tmux select-pane -T 'cme' -t "unauthd:SMB/nullSesh.0"
-          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst && crackmapexec smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst -u '' -p '' | tee ./cme.txt &&  cat cme.txt | grep -ia 'signing:false' | awk '{print $2}' | tee ./smb_signing_not_required.txt && cat cme.txt | grep -ia 'smbv1:true' | awk '{print $2}' | tee ./smbv1_enabled.txt && cat cme.txt | grep -ia 'Windows' | grep -av -E 'Windows 8|Windows 1|Build 9600|Server 201|Server 202' | awk '{print $2 " - " $6 " " $7 " " $8 " " $9}' | tee ./unsupported.txt && cat cme.txt | grep -a '+' | tee ./smb_null_logon.txt && clear && for i in smb_null_logon.txt smb_signing_not_required.txt smbv1_enabled.txt unsupported.txt; do echo $i; cat $i; done && wc -l *
+          - cat <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst && nxc smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst -u '' -p '' | tee ./cme.txt &&  cat cme.txt | grep -ia 'signing:false' | awk '{print $2}' | tee ./smb_signing_not_required.txt && cat cme.txt | grep -ia 'smbv1:true' | awk '{print $2}' | tee ./smbv1_enabled.txt && cat cme.txt | grep -ia 'Windows' | grep -av -E 'Windows 8|Windows 1|Build 9600|Server 201|Server 202' | awk '{print $2 " - " $6 " " $7 " " $8 " " $9}' | tee ./unsupported.txt && cat cme.txt | grep -a '+' | tee ./smb_null_logon.txt && clear && for i in smb_null_logon.txt smb_signing_not_required.txt smbv1_enabled.txt unsupported.txt; do echo $i; cat $i; done && wc -l *
         - enum4linux ~ DCs only:
           - tmux select-pane -T 'enum4linux (DCs only)' -t "unauthd:SMB/nullSesh.1"
           - cd <%= @settings["rootDir"] %>/scans/smb/enum4linux
@@ -91,7 +91,7 @@ windows:
       panes:
         - cme petit:
           - tmux select-pane -T 'cme petit' -t "unauthd:coercAuth.0"
-          - crackmapexec smb <%= @settings["rootDir"] %>/dcIP.txt -u '' -p '' -d <%= @settings["domain"] %> -M petitpotam | tee <%= @settings["rootDir"] %>/scans/petitpotam-unauthd.txt
+          - nxc smb <%= @settings["rootDir"] %>/dcIP.txt -u '' -p '' -d <%= @settings["domain"] %> -M petitpotam | tee <%= @settings["rootDir"] %>/scans/petitpotam-unauthd.txt
         - PetitPotam.py:
           - tmux select-pane -T 'PetitPotam.py' -t "unauthd:coercAuth.1"
           - cd <%= @settings["toolDir"] %>/PetitPotam || git clone https://github.com/topotam/PetitPotam.git <%= @settings["toolDir"] %>/PetitPotam && cd <%= @settings["toolDir"] %>/PetitPotam

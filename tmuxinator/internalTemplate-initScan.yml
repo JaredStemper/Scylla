@@ -93,7 +93,7 @@ windows:
         - apt installs + docker:
           - tmux select-pane -T 'apt installs' -t "initialize:install&config.1"
           - echo <%= @settings["sudoPass"] %> | sudo -S su
-          - sudo apt update && sudo apt install -y pipenv dnsrecon smbmap bc tldr docker.io && sudo systemctl enable docker --now && sudo usermod -aG docker $USER && tldr -u && sudo apt install -y docker-compose
+          - sudo apt update && sudo apt install -y pipenv netexec dnsrecon smbmap bc tldr docker.io && sudo systemctl enable docker --now && sudo usermod -aG docker $USER && tldr -u && sudo apt install -y docker-compose
         - msf init:
           - tmux select-pane -T 'msf init' -t "initialize:install&config.2"
           - echo <%= @settings["sudoPass"] %> | sudo -S su
