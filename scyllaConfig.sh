@@ -81,14 +81,14 @@ sudo gem install tmuxinator
 
 # add shell-specific config
 local user_shell=$(echo $SHELL)
-if [ "$user_shell" == "/bin/bash" ]; then
+if [ "$user_shell" == "/bin/bash" ] || [ "$user_shell" == "/usr/bin/bash" ]; then
     echo "alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dups" >> ~/.bash_aliases && source ~/.bash_aliases 2>/dev/null
     # Add your bash-specific actions here
-elif [ "$user_shell" == "/bin/zsh" ]; then
+elif [ "$user_shell" == "/bin/zsh" ] || [ "$user_shell" == "/usr/bin/zsh" ]; then
     echo "alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dups" >> ~/.zshrc && source ~/.zshrc 2>/dev/null
 else
-    echo "if not using /bin/bash or /bin/zsh you will need to add the following to your shell profile for ease of use in tmux"
-    echo "      alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dup"
+    echo "if not using /bin/bash or /bin/zsh you will need to add the following to your shell profile for ease of use in tmux:"
+    echo "      echo \"alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dups\" >> ~/.zshrc && source ~/.zshrc"
 fi
 
 #enable usage of TIOCSTI for prefill tool to work (more details https://bugs.archlinux.org/task/77745 and https://lore.kernel.org/linux-hardening/20221015041626.1467372-2-keescook@chromium.org/
