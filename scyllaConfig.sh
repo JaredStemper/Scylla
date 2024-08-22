@@ -69,7 +69,6 @@ fi
 if [ "$tmuxConf" == "yes" ] || [ "$tmuxConf" == "y" ]; then
     cp ~/.tmux.conf ~/.tmux.conf.archive
     cp "$rootDir/Scylla/tmux.conf" ~/.tmux.conf
-    ;
 fi
 # if logging, create a crontab to log all data captured in tmux currently on testing device every 15 minutes
 if [ "$logging" == "yes" ] || [ "$logging" == "y" ]; then
