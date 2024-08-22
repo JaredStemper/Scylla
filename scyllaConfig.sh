@@ -15,10 +15,10 @@ ask_question_y_n() {
         read -p "$question (yes/no): " user_input
 
         if [ "$user_input" == "yes" ] || [ "$user_input" == "y" ]; then
-            eval $answer_var="yes"
+            eval $answer_var="$user_input"
             break
         elif [ "$user_input" == "no" ] || [ "$user_input" == "n" ]; then
-            eval $answer_var="yes"
+            eval $answer_var="$user_input"
             break
         else
             echo -e "\e[0;31mInvalid choice. Enter 'yes'/'y' or 'no'/'n'... pls"
@@ -34,7 +34,7 @@ ask_question_gen_response() {
         read -p "$question (yes/no): " user_input
 
         if [ -n "$user_input" ]; then
-            eval $answer_var="yes"
+            eval $answer_var="$user_input"
             if [ ! -d "$user_input" ]; then
                 echo "Path does not exist. Creating path: $user_input"
                 mkdir -p "$user_input"
@@ -48,7 +48,7 @@ ask_question_gen_response() {
 
 # Ask questions
 ask_question_gen_response "What directory are you testing in (e.g., /encryptedPartition/clientFolder)?" rootDir
-ask_question_y_n "Are you testing as the root user (yes/no)?" rootUser
+ask_question_y_n "Are you testing as the root user?" rootUser
 ask_question_y_n "Do you want to use the optimized Scylla tmux.conf or the current/default tmux.conf (note: will cp old one to ~/.tmux.conf.archive for posterity)?" tmuxConf
 ask_question_y_n "Do you want automated logging performed to capture all commands/output ran in Scylla?" logging
 
