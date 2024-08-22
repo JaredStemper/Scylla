@@ -35,7 +35,6 @@ ask_question_gen_response() {
 
         if [ -n "$user_input" ]; then
             eval $answer_var="$user_input"
-            mkdir -p "$user_input" #make if doesn't exist
             break
         else
             echo -e "\e[0;31mPlease provide a valid path... pls"
@@ -56,7 +55,8 @@ echo "Answer to question 3: $tmuxConf"
 echo "Answer to question 4: $logging"
 
 if [ -n "$rootDir" ]; then
-    cd $rootDir
+    mkdir -p "$rootDir"
+    cd "$rootDir"
     #grab tmuxinator files
     git clone https://github.com/JaredStemper/Scylla.git "$rootDir/Scylla"
 fi
