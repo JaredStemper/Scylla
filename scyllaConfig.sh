@@ -59,6 +59,9 @@ if [ -n "$rootDir" ]; then
     cd "$rootDir"
     #grab tmuxinator files
     git clone https://github.com/JaredStemper/Scylla.git "$rootDir/Scylla"
+    # replace default variable configs in files to save space on initial command string
+    for template in $(ls $rootDir/Scylla/tmuxinator/*.yml); do sed -i "s=python3 /opt/tools/Scylla=python3 $rootDir/Scylla=" "$template"; done
+    for template in $(ls $rootDir/Scylla/tmuxinator/*.yml); do sed -i "s=/opt/tools/Scylla=$rootDir=" "$template"; done
 fi
 # if root user, remove sudoPass from templates/prefills to avoid errors
 if [ "$rootUser" == "yes" ] || [ "$rootUser" == "y" ]; then
