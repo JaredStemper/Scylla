@@ -52,12 +52,12 @@ To help avoid surprises - below is a comprehensive list of what is ran automatic
   * samTheAdmin exploit
   * auth'd ASREProast
 * Automatic:
-  * enumerate SMB shares (crackampexec, smbmap, dumpsterdiver)
+  * enumerate SMB shares (netexec/crackmapexec, smbmap, dumpsterdiver)
   * enumerate LDAP (ldapdomaindump, getADUsers, ldap signing, get user desc, check MAQs, ldap-checker)
   * kerberoasting, findDelegations
   * samTheAdmin check
   * bloodhoud
-  * ADCS (crackmapexec/netexec, certipy)
+  * ADCS (netexec/crackmapexec, certipy)
   * PetitPotam, PrintNightmare, GPP passwords
 
 ### LocalAdmin:
