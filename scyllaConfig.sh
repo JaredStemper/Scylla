@@ -15,11 +15,11 @@ fi
 #prepare tmuxinator for usage
 sudo apt update && sudo apt install vim
 sudo gem install tmuxinator
-echo "alias mux=tmuxinator; alias j='cd ..'">>~/.zshrc && echo "setopt append_history; setopt hist_ignore_dups" >> ~/.zshrc && source ~/.zshrc
-echo "alias mux=tmuxinator; alias j='cd ..'">>~/.bash_aliases && echo "setopt append_history; setopt hist_ignore_dups" >> ~/.zshrc && source ~/.bash_aliases
+echo "alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dups" >>~/.zshrc && source ~/.zshrc
+echo "alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dups" >> ~/.bash_aliases && source ~/.bash_aliases
 #grab tmuxinator files
-git clone https://github.com/JaredStemper/Scylla.git /tmp/Scylla
-cp /tmp/Scylla/tmux.conf ~/.tmux.conf
+git clone https://github.com/JaredStemper/Scylla.git $($rooDir)/Scylla
+cp $($rooDir)/Scylla/tmux.conf ~/.tmux.conf
 
 #enable usage of TIOCSTI for prefill tool to work (more details https://bugs.archlinux.org/task/77745 and https://lore.kernel.org/linux-hardening/20221015041626.1467372-2-keescook@chromium.org/
 sudo sysctl -w dev.tty.legacy_tiocsti=1
@@ -27,4 +27,4 @@ sudo sysctl -w dev.tty.legacy_tiocsti=1
 #create crontab to log all data captured in tmux currently on testing device every 15 minutes
 (crontab -l ; echo "0,15,30,45 * * * * /bin/bash /tmp/mux/tmuxSessionHistoryCapture.sh") | crontab -
 
-python3 /tmp/Scylla/prefillTest.py "tmuxinator start -p /tmp/Scylla/tmuxinator/internalTemplate-initScan.yml msfWorkspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY sudoPass='sudoPass'"
+python3 $($rooDir)/Scylla/prefillTest.py "tmuxinator start -p $($rooDir)/Scylla/tmuxinator/internalTemplate-initScan.yml msfWorkspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY sudoPass='sudoPass'"
