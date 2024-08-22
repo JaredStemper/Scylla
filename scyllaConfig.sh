@@ -62,7 +62,7 @@ if [ -n "$rootDir" ]; then
 fi
 # if root user, remove sudoPass from templates/prefills to avoid errors
 if [ "$rootUser" == "yes" ] || [ "$rootUser" == "y" ]; then
-    for template in $(ls $rootDir/Scylla/tmuxinator/*.yml); do echo $template; sed -i '/sudo -S su/d' "$template"; done
+    for template in $(ls $rootDir/Scylla/tmuxinator/*.yml); do sed -i '/sudo -S su/d' "$template"; done
     sed -i "s/sudoPass=<%= @settings\[\"sudoPass\"\] %> //" $rootDir/Scylla/tmuxinator/internalTemplate-initScan.yml
 fi
 # if using Scylla config, set new defaul and keeping an archive of old conf
