@@ -1,5 +1,5 @@
 name: misc
-root: <%= @settings["rootDir"] %>/
+root: /
 
 #Notes:
 #   - test setting default for variable at top vs passing it in 
@@ -22,6 +22,7 @@ root: <%= @settings["rootDir"] %>/
 %>
 
 on_project_start: mkdir -p <%= @settings["toolDir"] %>
+pre_window: cd <%= @settings["rootDir"] %>
 
 # create and cd into client/testing folder before running
 windows:

@@ -1,5 +1,5 @@
 name: unauthd
-root: <%= @settings["rootDir"] %>/
+root: /
 
 # Note:
 #   - add printnightmare
@@ -19,6 +19,7 @@ root: <%= @settings["rootDir"] %>/
 %>
 
 on_project_start: mkdir -p <%= @settings["toolDir"] %> <%= @settings["rootDir"] %>/scans/nmap <%= @settings["rootDir"] %>/loot
+pre_window: cd <%= @settings["rootDir"] %>
 
 # create and cd into client/testing folder before running
 windows:

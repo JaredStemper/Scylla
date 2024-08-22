@@ -1,5 +1,5 @@
 name: localAdmin
-root: <%= @settings["rootDir"] %>/
+root: /
 
 # Variables/Defaults are set here
 <%
@@ -15,6 +15,8 @@ root: <%= @settings["rootDir"] %>/
   @settings["toolDir"] ||= "/tmp"
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=targetDomain.local"
 %>
+
+pre_window: cd <%= @settings["rootDir"] %>
 
 # create and cd into client/testing folder before running
 windows:

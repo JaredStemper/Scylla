@@ -1,5 +1,5 @@
 name: initialize
-root: <%= @settings["rootDir"] %>/
+root: /
 
 #Note:
 #   - create new authd testing for new user/pass; can just run tmuxinator copy internalTemplate-authd internalTemplate-authd-2
@@ -18,12 +18,13 @@ root: <%= @settings["rootDir"] %>/
   @settings["providedPass"] ||= "providedPass"
   @settings["nessusKey"] ||= "NESSUSKEYVALUE"
   @settings["sudoPass"] ||= "sudoPass"
-  @settings["rootDir"] ||= "/RSM"
-  @settings["toolDir"] ||= "/tmp"
+  @settings["rootDir"] ||= "/tmp"
+  @settings["toolDir"] ||= "/opt/tools"
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=targetDomain.local user=Sally pass="s8g9h3J##"
 %>
 
 on_project_start: mkdir -p <%= @settings["toolDir"] %> <%= @settings["rootDir"] %>/scans
+pre_window: cd <%= @settings["rootDir"] %>
 
 # create and cd into client/testing folder before running
 windows:
@@ -68,42 +69,42 @@ windows:
           - tmux select-pane -T 'unauthd' -t "initialize:run.0"
           - actions="\n\t- a masscan to have been ran ~AND~ the portsort utility utilized to create a directory under '<%= @settings["rootDir"] %>/scans/masscanPortList'\n\t- for a DC or multiple DCs to have been set under '<%= @settings["rootDir"] %>/dcIP.txt' (each dc IP goes on a new line)"
           - commandOptions="\n\t\e[0;31msudoPass - Device password used to run sudo commands automatically\n\t\tDefault is 'sudoPass'\e[0;33m\n\t\e[0;31mdomain - Local domain being tested against\n\t\tDefault is 'domain.local'\e[0;33m\n\t\e[0;31mmsfWorkspace - This sets the Metasploit DC workspace used.\n\t\tIt should be consistent throughout the project and preferably titled to the client being tested\n\t\tDefault is 'newClient'\e[0;33m\n\trootDir - This is the root directory where files are being placed and modified.\n\t\tDefault is the encrypted '<%= @settings["rootDir"] %>' directory"
-          - <%= @settings["prefill"] %> 'tmuxinator start -p <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-unauthd.yml sudoPass=<%= @settings["sudoPass"] %> domain=<%= @settings["domain"] %> msfWorkspace=<%= @settings["msfWorkspace"] %>'; clear; echo -e "\e[0;33mUnauth'd requires the actions before running:${actions}\n\nMisc requires the following options to be set in the command line or config file:${commandOptions}\033[0m"
+          - <%= @settings["prefill"] %> 'tmuxinator start -p <%= @settings["rootDir"] %>/Scylla/tmuxinator/internalTemplate-unauthd.yml sudoPass=<%= @settings["sudoPass"] %> domain=<%= @settings["domain"] %> msfWorkspace=<%= @settings["msfWorkspace"] %>'; clear; echo -e "\e[0;33mUnauth'd requires the actions before running:${actions}\n\nMisc requires the following options to be set in the command line or config file:${commandOptions}\033[0m"
         - misc:
           - tmux select-pane -T 'misc' -t "initialize:run.1"
           - actions="\n\t- a masscan to have been ran and the portsort utility utilized to create a directory under '<%= @settings["rootDir"] %>/scans/masscanPortList'\n\t- for a DC or multiple DCs to have been set under '<%= @settings["rootDir"] %>/dcIP.txt' (each dc IP goes on a new line)"
           - commandOptions="\n\t\e[0;31msudoPass - Device password used to run sudo commands automatically\n\t\tDefault is 'sudoPass'\e[0;33m\n\tdomain - Local domain being tested against\n\t\tDefault is 'domain.local'\n\tmsfWorkspace - This sets the Metasploit DC workspace used.\n\t\tIt should be consistent throughout the project and preferably titled to the client being tested\n\t\tDefault is 'newClient'\n\tprovidedUser - Provided low-priv account username from client\n\t\tDefault is 'user'\n\tprovidedPass - Provided low-priv account passphrase from client\n\t\tDefault is 'pass'\n\t\e[0;31mnessusKey - The Nessus license key to install and run Nessus\n\t\tIf not provided the command will be prefilled\e[0;33m\n\trootDir - This is the root directory where files are being placed and modified.\n\t\tDefault is the encrypted '<%= @settings["rootDir"] %>' directory"
-          - <%= @settings["prefill"] %> 'tmuxinator start -p <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-misc.yml sudoPass=<%= @settings["sudoPass"] %> domain=<%= @settings["domain"] %> msfWorkspace=<%= @settings["msfWorkspace"] %> nessusKey=<%= @settings["nessusKey"] %>'; clear; echo -e "\e[0;33mMisc requires the actions before running:${actions}\n\nMisc requires the following options to be set in the command line or config file:${commandOptions}\e[0;33m"
+          - <%= @settings["prefill"] %> 'tmuxinator start -p <%= @settings["rootDir"] %>/Scylla/tmuxinator/internalTemplate-misc.yml sudoPass=<%= @settings["sudoPass"] %> domain=<%= @settings["domain"] %> msfWorkspace=<%= @settings["msfWorkspace"] %> nessusKey=<%= @settings["nessusKey"] %>'; clear; echo -e "\e[0;33mMisc requires the actions before running:${actions}\n\nMisc requires the following options to be set in the command line or config file:${commandOptions}\e[0;33m"
         - authd:
           - tmux select-pane -T 'authd' -t "initialize:run.2"
           - actions="\n\t- a masscan to have been ran and the portsort utility utilized to create a directory under '<%= @settings["rootDir"] %>/scans/masscanPortList'\n\t- for a DC or multiple DCs to have been set under '<%= @settings["rootDir"] %>/dcIP.txt' (each dc IP goes on a new line)"
           - commandOptions="\n\t\e[0;31msudoPass - Device password used to run sudo commands automatically\n\t\tDefault is 'sudoPass'\e[0;33m\n\tdomain - Local domain being tested against\n\t\tDefault is 'domain.local'\n\tmsfWorkspace - This sets the Metasploit DC workspace used.\n\t\tIt should be consistent throughout the project and preferably titled to the client being tested\n\t\tDefault is 'newClient'\n\t\e[0;31muser - This is an account username used for authenticated testing\n\t\t\e[0;31mSET THIS IN THE CONFIG FILE TO AVOID TYPOS/PARSING ERRORS\n\tpass - This is an account passphrase used for authenticated testing\n\t\t\e[0;31mSET THIS IN THE CONFIG FILE TO AVOID TYPOS/PARSING ERRORS\n\t\t\e[0;31mTRIPLE CHECK THAT USER/PASS IS CORRECT OR THIS WILL LOCKOUT THE ACCOUNT (Use the 'ValidateCreds' window in 'Misc' to verify)\n\t\e[0;33mrootDir - This is the root directory where files are being placed and modified.\n\t\tDefault is the encrypted '<%= @settings["rootDir"] %>' directory"
-          - <%= @settings["prefill"] %> 'tmuxinator start -p <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-authd.yml sudoPass=<%= @settings["sudoPass"] %> domain=<%= @settings["domain"] %> msfWorkspace=<%= @settings["msfWorkspace"] %>'; clear; echo -e "\e[0;33mAuth'd requires the actions before running:${actions}\n\nAuth'd requires the following options to be set in the command line or config file:${commandOptions}\e[0;33m"
+          - <%= @settings["prefill"] %> 'tmuxinator start -p <%= @settings["rootDir"] %>/Scylla/tmuxinator/internalTemplate-authd.yml sudoPass=<%= @settings["sudoPass"] %> domain=<%= @settings["domain"] %> msfWorkspace=<%= @settings["msfWorkspace"] %>'; clear; echo -e "\e[0;33mAuth'd requires the actions before running:${actions}\n\nAuth'd requires the following options to be set in the command line or config file:${commandOptions}\e[0;33m"
         - localAdmin:
           - tmux select-pane -T 'localAdmin' -t "initialize:run.3"
           - actions="\n\t- a masscan to have been ran and the portsort utility utilized to create a directory under '<%= @settings["rootDir"] %>/scans/masscanPortList'\n\t- for a DC or multiple DCs to have been set under '<%= @settings["rootDir"] %>/dcIP.txt' (each dc IP goes on a new line)\n\t\e[0;31m- validate credentials are for user with local admin privs\e[0;33m"
           - commandOptions="\n\tdomain - Local domain being tested against\n\t\tDefault is 'domain.local'\n\t\e[0;31muser - This is an account username used for authenticated testing\n\t\tSET THIS IN THE CONFIG FILE TO AVOID TYPOS/PARSING ERRORS\n\tpass - This is an account passphrase used for authenticated testing\n\t\t\e[0;31mSET THIS IN THE CONFIG FILE TO AVOID TYPOS/PARSING ERRORS\n\t\e[0;33mrootDir - This is the root directory where files are being placed and modified.\n\t\tDefault is the encrypted '<%= @settings["rootDir"] %>' directory"
-          - <%= @settings["prefill"] %> 'tmuxinator start -p <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-localAdmin.yml domain=<%= @settings["domain"] %>'; clear; echo -e "\e[0;33mlocalAdmin requires the actions before running:${actions}\n\nlocalAdmin requires the following options to be set in the command line or config file:${commandOptions}\e[0;33m"
+          - <%= @settings["prefill"] %> 'tmuxinator start -p <%= @settings["rootDir"] %>/Scylla/tmuxinator/internalTemplate-localAdmin.yml domain=<%= @settings["domain"] %>'; clear; echo -e "\e[0;33mlocalAdmin requires the actions before running:${actions}\n\nlocalAdmin requires the following options to be set in the command line or config file:${commandOptions}\e[0;33m"
   - install&config:
       panes:
         - tmux source:
           - tmux select-pane -T 'tmux config' -t "initialize:install&config.0"
-          - tmux source-file <%= @settings["rootDir"] %>/mux/tmux.conf
+          - tmux source-file <%= @settings["rootDir"] %>/Scylla/tmux.conf
         - apt installs + docker:
           - tmux select-pane -T 'apt installs' -t "initialize:install&config.1"
           - echo <%= @settings["sudoPass"] %> | sudo -S su
-          - sudo apt update && sudo apt upgrade -y && sudo apt install -y pipenv dnsrecon smbmap bc tldr docker.io && sudo systemctl enable docker --now && sudo usermod -aG docker $USER && tldr -u
+          - sudo apt update && sudo apt install -y pipenv dnsrecon smbmap bc tldr docker.io && sudo systemctl enable docker --now && sudo usermod -aG docker $USER && tldr -u && sudo apt install -y docker-compose
         - msf init:
           - tmux select-pane -T 'msf init' -t "initialize:install&config.2"
           - echo <%= @settings["sudoPass"] %> | sudo -S su
           - sudo systemctl start postgresql && sudo msfdb init && msfconsole -q -x "workspace -a <%= @settings["msfWorkspace"] %>"
   - initScan:
-    - vim <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-initScan.yml
+    - vim <%= @settings["rootDir"] %>/Scylla/tmuxinator/internalTemplate-initScan.yml
   - unauthd:
-    - vim <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-unauthd.yml
+    - vim <%= @settings["rootDir"] %>/Scylla/tmuxinator/internalTemplate-unauthd.yml
   - misc:
-    - vim <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-misc.yml
+    - vim <%= @settings["rootDir"] %>/Scylla/tmuxinator/internalTemplate-misc.yml
   - authd:
-    - vim <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-authd.yml
+    - vim <%= @settings["rootDir"] %>/Scylla/tmuxinator/internalTemplate-authd.yml
   - localAdmin:
-    - vim <%= @settings["rootDir"] %>/mux/tmuxinator/internalTemplate-localAdmin.yml
+    - vim <%= @settings["rootDir"] %>/Scylla/tmuxinator/internalTemplate-localAdmin.yml
