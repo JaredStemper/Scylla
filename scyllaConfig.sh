@@ -38,6 +38,7 @@ ask_question_gen_response() {
             if [ ! -d "$user_input" ]; then
                 echo "Path does not exist. Creating path: $user_input"
                 mkdir -p "$user_input"
+            fi
             break
         else
             echo -e "\e[0;31mPlease provide a valid path... pls"
@@ -52,9 +53,10 @@ ask_question_y_n "Do you want to use the optimized Scylla tmux.conf or the curre
 ask_question_y_n "Do you want automated logging performed to capture all commands/output ran in Scylla?" logging
 
 # Print the answers
-echo "Answer to question 2: $rootDir"
-echo "Answer to question 1: $rootUser"
-echo "Answer to question 3: $logging"
+echo "Answer to question 1: $rootDir"
+echo "Answer to question 2: $rootUser"
+echo "Answer to question 3: $tmuxConf"
+echo "Answer to question 4: $logging"
 
 if [ -n "$rootDir" ]; then
     cd $rootDir
