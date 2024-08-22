@@ -8,13 +8,13 @@ root: /
 
 # Variables/Defaults are set here
 <%
-  @settings["prefill"] ||= "python3 /tmp/Scylla/prefillTest.py"
+  @settings["prefill"] ||= "python3 /opt/tools/Scylla/prefillTest.py"
   @settings["domain"] ||= "domain.local"
   @settings["sudoPass"] ||= "sudoPass"
   @settings["msfWorkspace"] ||= "newClient"
     #this must be unique to avoid potential conflict with prior testers msf workspaces - typically this uses the same string as the "client" variable set on entry
-  @settings["rootDir"] ||= "/RSM"
-  @settings["toolDir"] ||= "/tmp"
+  @settings["rootDir"] ||= "/opt/tools/Scylla"
+  @settings["toolDir"] ||= "/opt/tools"
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=targetDomain.local ##"
 %>
 

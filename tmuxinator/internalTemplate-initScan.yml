@@ -9,7 +9,7 @@ root: /
 
 # Variables/Defaults are set here
 <%
-  @settings["prefill"] ||= "python3 /tmp/Scylla/prefillTest.py"
+  @settings["prefill"] ||= "python3 /opt/tools/Scylla/prefillTest.py"
   @settings["msfWorkspace"] ||= "newClient"
   @settings["domain"] ||= "domain.local"
   @settings["user"] ||= "user"
@@ -18,7 +18,7 @@ root: /
   @settings["providedPass"] ||= "providedPass"
   @settings["nessusKey"] ||= "NESSUSKEYVALUE"
   @settings["sudoPass"] ||= "sudoPass"
-  @settings["rootDir"] ||= "/tmp"
+  @settings["rootDir"] ||= "/opt/tools/Scylla"
   @settings["toolDir"] ||= "/opt/tools"
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=targetDomain.local user=Sally pass="s8g9h3J##"
 %>

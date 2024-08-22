@@ -8,7 +8,7 @@ root: /
 
 # Variables/Defaults are set here
 <%
-  @settings["prefill"] ||= "python3 /tmp/Scylla/prefillTest.py"
+  @settings["prefill"] ||= "python3 /opt/tools/Scylla/prefillTest.py"
   @settings["domain"] ||= "domain.local"
   @settings["providedUser"] ||= "user"
   @settings["providedPass"] ||= "pass"
@@ -16,8 +16,8 @@ root: /
   @settings["nessusKey"] ||= "NESSUSKEY"
   @settings["msfWorkspace"] ||= "newClient"
     #this must be unique to avoid potential conflict with prior testers
-  @settings["rootDir"] ||= "/RSM"
-  @settings["toolDir"] ||= "/tmp"
+  @settings["rootDir"] ||= "/opt/tools/Scylla"
+  @settings["toolDir"] ||= "/opt/tools"
   ### example of starting project with arguments: tmuxinator start internalTemplate domain=targetDomain.local user=Sally pass="s8g9h3J## nessusKey=NESSUSKEYVALUE"
 %>
 

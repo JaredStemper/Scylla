@@ -6,14 +6,14 @@ root: /
 
 # Variables/Defaults are set here
 <%
-  @settings["prefill"] ||= "python3 /tmp/Scylla/prefillTest.py"
+  @settings["prefill"] ||= "python3 /opt/tools/Scylla/prefillTest.py"
   @settings["domain"] ||= "domain.local"
   @settings["user"] ||= "user" #modify this value before running config
   @settings["pass"] ||= "thisisatestdefaultpasswordCHECK" #modify this value before running config
   @settings["sudoPass"] ||= "sudoPass"
   @settings["msfWorkspace"] ||= "newClient" #this must be unique to avoid potential conflict with prior testers
-  @settings["rootDir"] ||= "/tmp"
-  @settings["toolDir"] ||= "/tmp"
+  @settings["rootDir"] ||= "/opt/tools/Scylla"
+  @settings["toolDir"] ||= "/opt/tools"
   ### example of starting project with arguments: mux start internalTemplate domain=domain.local user=Sally pass="s8g9h3J##"
 %>
 
