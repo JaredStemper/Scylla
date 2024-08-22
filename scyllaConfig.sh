@@ -1,30 +1,93 @@
-echo ""
-echo ""
-echo -e "\e[0;31mInstall tools and update configs?\e[0;32m "
-read -r answer
+#!/bin/bash
 
-if [ "$answer" == "yes" ] || [ "$answer" == "y" ]; then
-    echo -e "\e[0;31mContinuing setup script."
-elif [ "$answer" == "no" ] || [ "$answer" == "n" ]; then
-    echo -e "\e[0;31mTake your time."
-    exit 1
-else
-    echo -e "\e[0;31mInvalid choice. Please enter 'yes'/'y' or 'no'/'n'."
+# Initialize vars
+rootDir=""
+rootUser=""
+tmuxConf=""
+logging=""
+
+# Function to prompt the user until they answer 'yes'
+ask_question_y_n() {
+    local question=$1
+    local answer_var=$2
+
+    while true; do
+        read -p "$question (yes/no): " user_input
+
+        if [ "$user_input" == "yes" ] || [ "$user_input" == "y" ]; then
+            eval $answer_var="yes"
+            break
+        elif [ "$user_input" == "no" ] || [ "$user_input" == "n" ]; then
+            eval $answer_var="yes"
+            break
+        else
+            echo -e "\e[0;31mInvalid choice. Enter 'yes'/'y' or 'no'/'n'... pls"
+        fi
+    done
+}
+
+ask_question_gen_response() {
+    local question=$1
+    local answer_var=$2
+
+    while true; do
+        read -p "$question (yes/no): " user_input
+
+        if [ -n "$user_input" ]; then
+            eval $answer_var="yes"
+            if [ ! -d "$user_input" ]; then
+                echo "Path does not exist. Creating path: $user_input"
+                mkdir -p "$user_input"
+            break
+        else
+            echo -e "\e[0;31mPlease provide a valid path... pls"
+        fi
+    done
+}
+
+# Ask questions
+ask_question_gen_response "What directory are you testing in (e.g., /encryptedPartition/clientFolder)?" rootDir
+ask_question_y_n "Are you testing as the root user (yes/no)?" rootUser
+ask_question_y_n "Do you want to use the optimized Scylla tmux.conf or the current/default tmux.conf (note: will cp old one to ~/.tmux.conf.archive for posterity)?" tmuxConf
+ask_question_y_n "Do you want automated logging performed to capture all commands/output ran in Scylla?" logging
+
+# Print the answers
+echo "Answer to question 2: $rootDir"
+echo "Answer to question 1: $rootUser"
+echo "Answer to question 3: $logging"
+
+if [ -n "$rootDir" ]; then
+    cd $rootDir
+    #grab tmuxinator files
+    git clone https://github.com/JaredStemper/Scylla.git "$rootDir/Scylla"
+fi
+# if root user, remove sudoPass from templates/prefills to avoid errors
+if [ "$rootUser" == "yes" ] || [ "$rootUser" == "y" ]; then
+    for template in $(ls $rootDir/Scylla/tmuxinator/*.yml); do echo $template; sed -i '/sudo -S su/d' "$template"; done
+    sed "s/sudoPass=<%= @settings\[\"sudoPass\"\] %> //" $rootDir/Scylla/tmuxinator/internalTemplate-initScan.yml
+fi
+# if using Scylla config, set new defaul and keeping an archive of old conf
+if [ "$tmuxConf" == "yes" ] || [ "$tmuxConf" == "y" ]; then
+    cp ~/.tmux.conf ~/.tmux.conf.archive
+    cp "$rootDir/Scylla/tmux.conf" ~/.tmux.conf
+    ;
+fi
+# if logging, create a crontab to log all data captured in tmux currently on testing device every 15 minutes
+if [ "$logging" == "yes" ] || [ "$logging" == "y" ]; then
+    (crontab -l ; echo "0,15,30,45 * * * * /bin/bash \"$rootDir/Scylla/tmuxSessionHistoryCapture.sh\"") | crontab -
 fi
 
-#prepare tmuxinator for usage
+# prepare tmuxinator for usage
 sudo apt update && sudo apt install vim
 sudo gem install tmuxinator
-echo "alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dups" >>~/.zshrc && source ~/.zshrc
+echo "alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dups" >> ~/.zshrc && source ~/.zshrc
 echo "alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_ignore_dups" >> ~/.bash_aliases && source ~/.bash_aliases
-#grab tmuxinator files
-git clone https://github.com/JaredStemper/Scylla.git $($rooDir)/Scylla
-cp $($rooDir)/Scylla/tmux.conf ~/.tmux.conf
 
 #enable usage of TIOCSTI for prefill tool to work (more details https://bugs.archlinux.org/task/77745 and https://lore.kernel.org/linux-hardening/20221015041626.1467372-2-keescook@chromium.org/
 sudo sysctl -w dev.tty.legacy_tiocsti=1
 
-#create crontab to log all data captured in tmux currently on testing device every 15 minutes
-(crontab -l ; echo "0,15,30,45 * * * * /bin/bash /tmp/mux/tmuxSessionHistoryCapture.sh") | crontab -
-
-python3 $($rooDir)/Scylla/prefillTest.py "tmuxinator start -p $($rooDir)/Scylla/tmuxinator/internalTemplate-initScan.yml msfWorkspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY sudoPass='sudoPass'"
+if [ "$rootUser" == "yes" ] || [ "$rootUser" == "y" ]; then
+    python3 $($rootDir)/Scylla/prefillTest.py "tmuxinator start -p $($rootDir)/Scylla/tmuxinator/internalTemplate-initScan.yml msfWorkspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY"
+else
+    python3 $($rootDir)/Scylla/prefillTest.py "tmuxinator start -p $($rootDir)/Scylla/tmuxinator/internalTemplate-initScan.yml msfWorkspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY sudoPass='sudoPass'"
+fi
