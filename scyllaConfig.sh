@@ -31,14 +31,11 @@ ask_question_gen_response() {
     local answer_var=$2
 
     while true; do
-        read -p "$question (yes/no): " user_input
+        read -p "$question: " user_input
 
         if [ -n "$user_input" ]; then
             eval $answer_var="$user_input"
-            if [ ! -d "$user_input" ]; then
-                echo "Path does not exist. Creating path: $user_input"
-                mkdir -p "$user_input"
-            fi
+            mkdir -p "$user_input" #make if doesn't exist
             break
         else
             echo -e "\e[0;31mPlease provide a valid path... pls"
@@ -47,7 +44,7 @@ ask_question_gen_response() {
 }
 
 # Ask questions
-ask_question_gen_response "What directory are you testing in (e.g., /encryptedPartition/clientFolder)?" rootDir
+ask_question_gen_response "What directory are you testing in (e.g., /encryptedPartition/clientFolder) (creates automatically if it doesn't exist)?" rootDir
 ask_question_y_n "Are you testing as the root user?" rootUser
 ask_question_y_n "Do you want to use the optimized Scylla tmux.conf or the current/default tmux.conf (note: will cp old one to ~/.tmux.conf.archive for posterity)?" tmuxConf
 ask_question_y_n "Do you want automated logging performed to capture all commands/output ran in Scylla?" logging
@@ -66,7 +63,7 @@ fi
 # if root user, remove sudoPass from templates/prefills to avoid errors
 if [ "$rootUser" == "yes" ] || [ "$rootUser" == "y" ]; then
     for template in $(ls $rootDir/Scylla/tmuxinator/*.yml); do echo $template; sed -i '/sudo -S su/d' "$template"; done
-    sed "s/sudoPass=<%= @settings\[\"sudoPass\"\] %> //" $rootDir/Scylla/tmuxinator/internalTemplate-initScan.yml
+    sed -i "s/sudoPass=<%= @settings\[\"sudoPass\"\] %> //" $rootDir/Scylla/tmuxinator/internalTemplate-initScan.yml
 fi
 # if using Scylla config, set new defaul and keeping an archive of old conf
 if [ "$tmuxConf" == "yes" ] || [ "$tmuxConf" == "y" ]; then
