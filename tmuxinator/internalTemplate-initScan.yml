@@ -89,7 +89,7 @@ windows:
       panes:
         - tmux source:
           - tmux select-pane -T 'tmux config' -t "initialize:install&config.0"
-          - tmux source-file <%= @settings["rootDir"] %>/Scylla/tmux.conf
+          - tmux source-file ~/.tmux.conf
         - apt installs + docker:
           - tmux select-pane -T 'apt installs' -t "initialize:install&config.1"
           - echo <%= @settings["sudoPass"] %> | sudo -S su
