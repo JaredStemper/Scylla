@@ -86,7 +86,7 @@ echo "alias mux=tmuxinator; alias j='cd ..'; setopt append_history; setopt hist_
 sudo sysctl -w dev.tty.legacy_tiocsti=1
 
 if [ "$rootUser" == "yes" ] || [ "$rootUser" == "y" ]; then
-    python3 $($rootDir)/Scylla/prefillTest.py "tmuxinator start -p $($rootDir)/Scylla/tmuxinator/internalTemplate-initScan.yml msfWorkspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY"
+    python3 $rootDir/Scylla/prefillTest.py "tmuxinator start -p $rootDir/Scylla/tmuxinator/internalTemplate-initScan.yml msfWorkspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY"
 else
-    python3 $($rootDir)/Scylla/prefillTest.py "tmuxinator start -p $($rootDir)/Scylla/tmuxinator/internalTemplate-initScan.yml msfWorkspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY sudoPass='sudoPass'"
+    python3 $rootDir/Scylla/prefillTest.py "tmuxinator start -p $rootDir/Scylla/tmuxinator/internalTemplate-initScan.yml msfWorkspace=CLIENTNAME domain=domain.local nessusKey=NESSUSKEY sudoPass='sudoPass'"
 fi
