@@ -38,6 +38,7 @@ windows:
           - tmux select-pane -T 'msf2' -t "misc:msf.1"
           - msfconsole
           - workspace -a <%= @settings['msfWorkspace'] %>
+          - <%= @settings['prefill'] %> 'db_import <%= @settings["rootDir"] %>/scans/nmap/*.xml'
   - gowitness: 
       panes: 
         - gowitness:
