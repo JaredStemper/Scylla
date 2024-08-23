@@ -40,7 +40,7 @@ windows:
           - tmux select-pane -T 'nmap all tcp ports after 4000' -t "unauthd:scanning.3"
           - nmap -oG - -v --top-ports 4000 | awk -F'[);]' '/Ports/{print $2}' > <%= @settings["rootDir"] %>/scans/nmap/LIST-top-4000-ports.txt
           - echo <%= @settings["sudoPass"] %> | sudo -S su
-          - <%= @settings["prefill"] %> 'sudo nmap -sC -sV -T4 -O -sS -vvv -p- -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile <%= @settings["rootDir"] %>/exclude.txt --exclude-ports $(cat <%= @settings["rootDir"] %>/scans/nmap/LIST-top-4000-ports.txt) -oA <%= @settings["rootDir"] %>/scans/all-tcp-after-4000'; clear
+          - <%= @settings["prefill"] %> 'sudo nmap -sC -sV -T4 -O -sS -vvv -p- -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile <%= @settings["rootDir"] %>/exclude.txt --exclude-ports $(cat <%= @settings["rootDir"] %>/scans/nmap/LIST-top-4000-ports.txt) -oA <%= @settings["rootDir"] %>/scans/nmap/all-tcp-after-4000'; clear
   - services: 
       panes:
         - dns:
