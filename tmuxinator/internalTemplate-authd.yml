@@ -45,13 +45,6 @@ windows:
         - getADusers:
           - tmux select-pane -T 'getADusers' -t "authd:LDAP.1"
           - GetADUsers.py -all '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>' -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) | tee <%= @settings["rootDir"] %>/scans/ldap/getADUsers.txt
-        - ldap signing:
-          - tmux select-pane -T 'ldap signing' -t "authd:LDAP.2"
-          - cd <%= @settings["toolDir"] %>/LdapRelayScan || git clone https://github.com/zyn3rgy/LdapRelayScan.git <%= @settings["toolDir"] %>/LdapRelayScan && cd <%= @settings["toolDir"] %>/LdapRelayScan && echo "git+https://github.com/wbond/oscrypto.git@d5f3437" >> requirements.txt; pipenv run pip install -r requirements.txt --force-reinstall && mkdir -p <%= @settings["rootDir"] %>/scans/ldap && cd <%= @settings["toolDir"] %>/LdapRelayScan && pipenv install --skip-lock && cd <%= @settings["toolDir"] %>/LdapRelayScan; clear
-          - pipenv run python3 LdapRelayScan.py -method BOTH -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee <%= @settings["rootDir"] %>/scans/ldap/ldapSigning.txt
-        - get user descriptions:
-          - tmux select-pane -T 'get user descriptions' -t "authd:LDAP.3"
-          - nxc ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M get-desc-users | tee <%= @settings["rootDir"] %>/scans/ldap/userDescriptions.txt
         - MAQ:
           - tmux select-pane -T 'MAQ' -t "authd:LDAP.4"
           - nxc ldap $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M maq | tee <%= @settings["rootDir"] %>/scans/ldap/MAQ.txt
@@ -59,9 +52,16 @@ windows:
           - tmux select-pane -T 'MAQ ~ costa tool check' -t "authd:LDAP.5"
           - cd <%= @settings["toolDir"] %>/MAQCheck || git clone https://github.com/sn8k3sec/MAQCheck.git <%= @settings["toolDir"] %>/MAQCheck && cd <%= @settings["toolDir"] %>/MAQCheck && pipenv install -r requirements.txt && cd <%= @settings["toolDir"] %>/MAQCheck
           - pipenv run python3 maqcheck.py --username '<%= @settings["user"] %>' --password '<%= @settings["pass"] %>' --domain <%= @settings["domain"] %> | tee <%= @settings["rootDir"] %>/scans/ldap/MAQ-costaCheck.txt
-        - ldap-checker:
+        - ldap signing ~ ldapRelayScan:
+          - tmux select-pane -T 'ldap signing' -t "authd:LDAP.2"
+          - cd <%= @settings["toolDir"] %>/LdapRelayScan || git clone https://github.com/zyn3rgy/LdapRelayScan.git <%= @settings["toolDir"] %>/LdapRelayScan && cd <%= @settings["toolDir"] %>/LdapRelayScan && echo "git+https://github.com/wbond/oscrypto.git@d5f3437" >> requirements.txt; pipenv run pip install -r requirements.txt --force-reinstall && mkdir -p <%= @settings["rootDir"] %>/scans/ldap && cd <%= @settings["toolDir"] %>/LdapRelayScan && pipenv install --skip-lock && cd <%= @settings["toolDir"] %>/LdapRelayScan; clear
+          - pipenv run python3 LdapRelayScan.py -method BOTH -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee <%= @settings["rootDir"] %>/scans/ldap/ldapSigning.txt
+        - ldap-checker ~ nxc:
           - tmux select-pane -T 'ldap-checker' -t "authd:LDAP.6"
           - nxc ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M ldap-checker | tee <%= @settings["rootDir"] %>/scans/ldap/ldap-checker-cme.txt
+        - get user descriptions:
+          - tmux select-pane -T 'get user descriptions' -t "authd:LDAP.3"
+          - nxc ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M get-desc-users | tee <%= @settings["rootDir"] %>/scans/ldap/userDescriptions.txt
   - kerberoasting: 
       pre: mkdir -p <%= @settings["rootDir"] %>/loot/kerberoast
       panes:
