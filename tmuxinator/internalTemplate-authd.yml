@@ -124,7 +124,7 @@ windows:
       panes:
         - printNightmare:
           - tmux select-pane -T 'printNightmare' -t "authd:misc.0"
-          - nxc smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst -M spooler
+          - nxc smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst -M spooler | tee <%= @settings["rootDir"] %>/scans/printNightmare-spoolerServicesEnabled.txt
           - echo <%= @settings['sudoPass'] %> | sudo -S su 
           - cd <%= @settings["toolDir"] %>/ItWasAllADream || git clone https://github.com/eversinc34/ItWasAllADream.git <%= @settings["toolDir"] %>/ItWasAllADream && cd ItWasAllADream && docker build -t itwasalladream .
           # grab hosts with open RPC ports (often more are found through additional nmap scans, but this can also be modified to use results from masscan)
