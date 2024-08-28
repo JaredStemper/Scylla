@@ -142,4 +142,4 @@ windows:
           - cd  <%= @settings["toolDir"] %>/WebclientServiceScanner || git clone https://github.com/Hackndo/WebclientServiceScanner.git  <%= @settings["toolDir"] %>/WebclientServiceScanner && cd  <%= @settings["toolDir"] %>/WebclientServiceScanner
           - echo <%= @settings['sudoPass'] %> | sudo -S su
           - sudo python3 setup.py install
-          - for IP in $(cat <%= @settings["rootDir"] %>/ipList.txt); do webclientservicescanner -dc-ip `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>@'$IP
+          - for IP in $(cat <%= @settings["rootDir"] %>/ipList.txt); do webclientservicescanner -dc-ip `cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1` '<%= @settings["domain"] %>/<%= @settings["user"] %>:<%= @settings["pass"] %>@'$IP; done
