@@ -54,7 +54,7 @@ windows:
           - nxc ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M get-desc-users | tee <%= @settings["rootDir"] %>/scans/ldap/userDescriptions.txt
         - MAQ:
           - tmux select-pane -T 'MAQ' -t "authd:LDAP.4"
-          - nxc ldap $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M MAQ | tee <%= @settings["rootDir"] %>/scans/ldap/MAQ.txt
+          - nxc ldap $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M maq | tee <%= @settings["rootDir"] %>/scans/ldap/MAQ.txt
         - MAQ ~ costa tool check:
           - tmux select-pane -T 'MAQ ~ costa tool check' -t "authd:LDAP.5"
           - cd <%= @settings["toolDir"] %>/MAQCheck || git clone https://github.com/sn8k3sec/MAQCheck.git <%= @settings["toolDir"] %>/MAQCheck && cd <%= @settings["toolDir"] %>/MAQCheck && pipenv install -r requirements.txt && cd <%= @settings["toolDir"] %>/MAQCheck
