@@ -30,11 +30,11 @@ windows:
           - nxc smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst --shares -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee <%= @settings["rootDir"] %>/scans/masscanPortList/smb/nxc-<%= @settings["user"] %>-shares.txt
         - nxc spider + download:
           - tmux select-pane -T 'smbmap' -t "authd:SMB.1"
-          - <%= @settings["prefill"] %> "nxc smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %> -M spider_plus -o DOWNLOAD_FLAG=True' | tee <%= @settings["rootDir"] %>/scans/masscanPortList/smb/nxc-<%= @settings["user"] %>-spider_plus.txt"; clear; echo -e "\e[0;32mSpecify a SINGLE IP unless you want to download ALL SHARED FILES (minus PRINT/IPC shares). NOTE- all files are downloaded to /tmp/nxc_spider_plus"
-        - dumpsterdiver:
-          - tmux select-pane -T 'dumpsterdiver' -t "authd:SMB.2"
-          - cd <%= @settings["toolDir"] %>/DumpsterDiver || git clone https://github.com/securing/DumpsterDiver.git <%= @settings["toolDir"] %>/DumpsterDiver && cd <%= @settings["toolDir"] %>/DumpsterDiver && pipenv install
-          - pipenv run python3 DumpsterDiver.py --help
+          - <%= @settings["prefill"] %> "nxc smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %> -M spider_plus -o DOWNLOAD_FLAG=True' | tee <%= @settings["rootDir"] %>/scans/masscanPortList/smb/nxc-<%= @settings["user"] %>-spider_plus.txt"; clear; echo -e "\e[0;32mSpecify a SINGLE IP unless you want to download ALL SHARED FILES (minus PRINT/IPC shares). NOTE- all files are downloaded to /tmp/nxc_spider_plus until trufflehog command is ran"
+        - trufflehog:
+          - tmux select-pane -T 'trufflehog' -t "authd:SMB.2"
+          - mkdir -p <%= @settings["rootDir"] %>/loot/smbFiles; cd <%= @settings["rootDir"] %>/loot/smbFiles
+          - <%= @settings["prefill"] %> 'mv /tmp/nxc_spider_plus <%= @settings["rootDir"] %>/loot/smbFiles docker run --rm -it -v "<%= @settings["rootDir"] %>/loot/smbFiles:/pwd" trufflesecurity/trufflehog:latest filesystem /pwd; echo -e "\e[0;32mNOTE- This automatically moves spider_plus to the loot directory and runs trufflehog on the results"
   - LDAP: 
       pre: mkdir -p <%= @settings["rootDir"] %>/loot/ldap-domaindump <%= @settings["rootDir"] %>/scans/ldap 
       panes:
