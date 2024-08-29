@@ -24,13 +24,13 @@ pre_window: cd <%= @settings["rootDir"] %>; if [ "<%= @settings['pass'] %>" = "t
 windows:
   - SMB: 
       panes:
-        - cme:
+        - nxc:
           - tmux select-pane -T 'SMB shares' -t "authd:SMB.0"
           - mkdir -p <%= @settings["rootDir"] %>/scans/masscanPortList/smb; cd <%= @settings["rootDir"] %>/scans/masscanPortList/smb
-          - nxc smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst --shares -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee <%= @settings["rootDir"] %>/scans/masscanPortList/smb/cme-<%= @settings["user"] %>-shares.txt
-        - smbmap:
+          - nxc smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst --shares -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee <%= @settings["rootDir"] %>/scans/masscanPortList/smb/nxc-<%= @settings["user"] %>-shares.txt
+        - nxc spider + download:
           - tmux select-pane -T 'smbmap' -t "authd:SMB.1"
-          - <%= @settings["prefill"] %> "smbmap -H smbIP -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -r"; clear
+          - <%= @settings["prefill"] %> "nxc smb <%= @settings["rootDir"] %>/scans/masscanPortList/smb.lst --shares -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee <%= @settings["rootDir"] %>/scans/masscanPortList/smb/nxc-<%= @settings["user"] %>-shares.txt"; clear
         - dumpsterdiver:
           - tmux select-pane -T 'dumpsterdiver' -t "authd:SMB.2"
           - cd <%= @settings["toolDir"] %>/DumpsterDiver || git clone https://github.com/securing/DumpsterDiver.git <%= @settings["toolDir"] %>/DumpsterDiver && cd <%= @settings["toolDir"] %>/DumpsterDiver && pipenv install
@@ -58,7 +58,7 @@ windows:
           - pipenv run python3 LdapRelayScan.py -method BOTH -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' | tee <%= @settings["rootDir"] %>/scans/ldap/ldapSigning.txt
         - ldap-checker ~ nxc:
           - tmux select-pane -T 'ldap-checker' -t "authd:LDAP.6"
-          - nxc ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M ldap-checker | tee <%= @settings["rootDir"] %>/scans/ldap/ldap-checker-cme.txt
+          - nxc ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M ldap-checker | tee <%= @settings["rootDir"] %>/scans/ldap/ldap-checker-nxc.txt
         - get user descriptions:
           - tmux select-pane -T 'get user descriptions' -t "authd:LDAP.3"
           - nxc ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M get-desc-users | tee <%= @settings["rootDir"] %>/scans/ldap/userDescriptions.txt
@@ -94,9 +94,9 @@ windows:
   - ADCS: 
       pre: mkdir -p <%= @settings["rootDir"] %>/loot/ADCS && cd <%= @settings["rootDir"] %>/loot/ADCS
       panes:
-        - cme ADCS:
-          - tmux select-pane -T 'cme ADCS' -t "authd:ADCS.0"
-          - nxc ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M adcs | tee mkdir -p <%= @settings["rootDir"] %>/loot/ADCS/cme-ADCS.txt
+        - nxc ADCS:
+          - tmux select-pane -T 'nxc ADCS' -t "authd:ADCS.0"
+          - nxc ldap <%= @settings["rootDir"] %>/dcIP.txt -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M adcs | tee mkdir -p <%= @settings["rootDir"] %>/loot/ADCS/nxc-ADCS.txt
         - certipy:
           - tmux select-pane -T 'certipy' -t "authd:ADCS.1"
           - cd <%= @settings["toolDir"] %>/Certipy-Docker || git clone https://github.com/secure-77/Certipy-Docker.git <%= @settings["toolDir"] %>/Certipy-Docker && cd <%= @settings["toolDir"] %>/Certipy-Docker
@@ -105,7 +105,7 @@ windows:
   - coercAuth: 
       layout: 786e,113x25,0,0[113x10,0,0,23,113x14,0,11{56x14,0,11,37,56x14,57,11,41}]
       panes:
-        - cme petit:
+        - nxc petit:
           - tmux select-pane -T 'PetitPotam' -t "authd:coercAuth.0"
           - nxc smb $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -u '<%= @settings["user"] %>' -p '<%= @settings["pass"] %>' -d <%= @settings["domain"] %> -M petitpotam | tee <%= @settings["rootDir"] %>/scans/petitpotam.txt
         - PetitPotam.py:
