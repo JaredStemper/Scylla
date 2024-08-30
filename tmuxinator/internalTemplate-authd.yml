@@ -101,7 +101,7 @@ windows:
           - tmux select-pane -T 'certipy' -t "authd:ADCS.1"
           - cd <%= @settings["toolDir"] %>/Certipy-Docker || git clone https://github.com/secure-77/Certipy-Docker.git <%= @settings["toolDir"] %>/Certipy-Docker && cd <%= @settings["toolDir"] %>/Certipy-Docker
           - docker build -t certipy:latest .
-          - docker run -it -v <%= @settings["rootDir"] %>/loot/ADCS:/tmp certipy:latest certipy find -u '<%= @settings["user"] %>@<%= @settings["domain"] %>' -p '<%= @settings["pass"] %>' -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -old-bloodhound -output /tmp/<%= @settings["user"] %> -scheme ldap | tee <%= @settings["rootDir"] %>/loot/ADCS/<%= @settings["user"] %>-certipyTee.txt
+          - docker run -it -v <%= @settings["rootDir"] %>/loot/ADCS:/tmp certipy:latest certipy find -vulnerable -u '<%= @settings["user"] %>@<%= @settings["domain"] %>' -p '<%= @settings["pass"] %>' -dc-ip $(cat <%= @settings["rootDir"] %>/dcIP.txt | head -n 1) -old-bloodhound -output /tmp/<%= @settings["user"] %> -scheme ldap -ldap-channel-binding | tee <%= @settings["rootDir"] %>/loot/ADCS/<%= @settings["user"] %>-certipyTee.txt
   - coercAuth: 
       layout: 786e,113x25,0,0[113x10,0,0,23,113x14,0,11{56x14,0,11,37,56x14,57,11,41}]
       panes:
