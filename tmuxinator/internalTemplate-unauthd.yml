@@ -59,9 +59,10 @@ windows:
           - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_dumphashes; set OUTPUT_HASHCAT_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.hashcat; set OUTPUT_JOHN_FILE /<%= @settings["rootDir"] %>/loot/ipmi/ipmiHashes.john; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi_dumphashes.txt; run; spool off; exit'
           - cat <%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst && msfconsole -q -x 'use auxiliary/scanner/ipmi/ipmi_cipher_zero; set RHOSTS file:/<%= @settings["rootDir"] %>/scans/masscanPortList/ipmi.lst; spool <%= @settings["rootDir"] %>/scans/ipmi/ipmi_cipher_zero.txt; run; spool off; exit'
           - wc -l <%= @settings["rootDir"] %>/scans/ipmi/*
-        - printers:
-          - tmux select-pane -T 'printers' -t "unauthd:services.4"
-          - msfconsole -q -x "workspace -a <%= @settings['msfWorkspace'] %>; services -u -S 'print'"
+        - rdp NLA:
+          - tmux select-pane -T 'rdp NLA' -t "unauthd:services.4"
+          - echo <%= @settings["sudoPass"] %> | sudo -S su
+          - sudo nmap -T4 -vvv -p 3389 -sC rdp-enum-encryption -iL <%= @settings["rootDir"] %>/ipList.txt --excludefile <%= @settings["rootDir"] %>/exclude.txt -oA <%= @settings["rootDir"] %>/scans/nmap/rdpWithoutNLA
   - SMB/nullSesh:
       layout: 1eb3,115x27,0,0[115x13,0,0,0,115x13,0,14{57x13,0,14,1,57x13,58,14,2}]
       pre: mkdir -p <%= @settings["rootDir"] %>/scans/smb/enum4linux; cd <%= @settings["rootDir"] %>/scans/smb
